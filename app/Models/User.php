@@ -21,6 +21,21 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'email_nf',
+        'cpf',
+        'cnpj',
+        'vinculo',
+        'whatsapp',
+        'instagram',
+        'cep',
+        'caixa_postal',
+        'pais',
+        'estado',
+        'cidade',
+        'bairro',
+        'logradouro',
+        'numero',
+        'complemento'
     ];
 
     /**
