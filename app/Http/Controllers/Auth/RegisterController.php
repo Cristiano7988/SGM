@@ -64,8 +64,12 @@ class RegisterController extends Controller
      * @return \App\Models\User
      */
     protected function all() {
-        $users = User::all();
-        return $users;
+        try {
+            $users = User::paginate(10);
+            return $users;
+        } catch(\Throwable $th) {
+            return $th->getMessage();
+        }
     }
 
     /**
@@ -76,12 +80,16 @@ class RegisterController extends Controller
      */
     protected function create(Request $request)
     {
-        DB::beginTransaction();
-        $request['password'] = Hash::make($request['password']);
-        $user = User::create($request->all());
-        DB::commit();
-
-        return $user;
+        try {
+            DB::beginTransaction();
+            if (!!$request['password']) $request['password'] = Hash::make($request['password']);
+            $user = User::create($request->all());
+            DB::commit();
+    
+            return $user;
+        } catch (\Throwable $th) {
+            return $th->getMessage();
+        }
     }
 
     /**
@@ -92,7 +100,11 @@ class RegisterController extends Controller
      */
     protected function show(User $user)
     {
-         return $user;
+        try {
+            return $user;
+        } catch(\Throwable $th) {
+            return $th->getMessage();
+        }
     }
 
     /**
@@ -103,12 +115,16 @@ class RegisterController extends Controller
      * @return \App\Models\User
      */
     protected function update(User $user, Request $request) {
-        DB::beginTransaction();
-        $request['password'] = Hash::make($request['password']);
-        $user->update($request->all());
-        DB::commit();
-
-        return $user;
+        try {
+            DB::beginTransaction();
+            if (!!$request['password']) $request['password'] = Hash::make($request['password']);
+            $user->update($request->all());
+            DB::commit();
+    
+            return $user;
+        } catch (\Throwable $th) {
+            return $th->getMessage();
+        }
     }
 
     /**
@@ -118,10 +134,14 @@ class RegisterController extends Controller
      * @return Boolean
      */
     protected function delete(User $user) {
-        DB::beginTransaction();
-        $deleted = $user->delete();
-        DB::commit();
-    
-        return !!$deleted;
+        try {
+            DB::beginTransaction();
+            $deleted = $user->delete();
+            DB::commit();
+        
+            return !!$deleted;
+        } catch (\Throwable $th) {
+            return $th->getMessage();
+        }
     }
 }
