@@ -24,7 +24,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        dd(User::all());
         return view('home');
     }
 }

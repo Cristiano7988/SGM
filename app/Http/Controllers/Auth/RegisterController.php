@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -57,17 +59,69 @@ class RegisterController extends Controller
     }
 
     /**
-     * Create a new user instance after a valid registration.
+     * Show all users.
      *
-     * @param  array  $data
      * @return \App\Models\User
      */
-    protected function create(array $data)
+    protected function all() {
+        $users = User::all();
+        return $users;
+    }
+
+    /**
+     * Create a new user instance after a valid registration.
+     *
+     * @param  Request  $request
+     * @return \App\Models\User
+     */
+    protected function create(Request $request)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        DB::beginTransaction();
+        $request['password'] = Hash::make($request['password']);
+        $user = User::create($request->all());
+        DB::commit();
+
+        return $user;
+    }
+
+    /**
+     * Show an user.
+     *
+     * @param  User  $user
+     * @return \App\Models\User
+     */
+    protected function show(User $user)
+    {
+         return $user;
+    }
+
+    /**
+     * Update an user.
+     *
+     * @param  User  $user
+     * @param  Request  $request
+     * @return \App\Models\User
+     */
+    protected function update(User $user, Request $request) {
+        DB::beginTransaction();
+        $request['password'] = Hash::make($request['password']);
+        $user->update($request->all());
+        DB::commit();
+
+        return $user;
+    }
+
+    /**
+     * Delete an user.
+     *
+     * @param  User  $user
+     * @return Boolean
+     */
+    protected function delete(User $user) {
+        DB::beginTransaction();
+        $deleted = $user->delete();
+        DB::commit();
+    
+        return !!$deleted;
     }
 }

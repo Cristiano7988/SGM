@@ -1,4 +1,4 @@
-## Sistema de Gerenciamento de Matrículas
+## Sistema de Gerenciamento de Matrículas [WEB]
 
 # Usuários:
 
@@ -17,3 +17,22 @@
         '/register'
     ];
 
+## Sistema de Gerenciamento de Matrículas [API]
+
+# Usuários:
+
+[Criar]:
+    name
+    email
+    password
+
+[Ver]:
+    id
+
+[Editar]:
+    name
+    email
+    password
+
+[Deletar]:
+    id
