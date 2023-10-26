@@ -10,4 +10,7 @@ class Situacao extends Model
     use HasFactory;
 
     protected $table = "situacao";
+    protected $fillable = [
+        "esta"
+    ];
 }
