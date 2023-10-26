@@ -143,6 +143,7 @@ class RegisterController extends Controller
     protected function delete(User $user) {
         try {
             DB::beginTransaction();
+            $user->tipos()->detach();
             $deleted = $user->delete();
             DB::commit();
         
