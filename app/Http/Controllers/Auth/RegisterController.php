@@ -84,6 +84,8 @@ class RegisterController extends Controller
             DB::beginTransaction();
             if (!!$request['password']) $request['password'] = Hash::make($request['password']);
             $user = User::create($request->all());
+            
+            if (isset($request['tipos']) && !!count($request['tipos'])) $user->tipos()->attach($request['tipos']);
             DB::commit();
     
             return $user;
@@ -119,6 +121,11 @@ class RegisterController extends Controller
             DB::beginTransaction();
             if (!!$request['password']) $request['password'] = Hash::make($request['password']);
             $user->update($request->all());
+
+            if (isset($request['tipos']) && !!count($request['tipos'])) {
+                $user->tipos()->detach();
+                $user->tipos()->attach($request['tipos']);
+            }
             DB::commit();
     
             return $user;

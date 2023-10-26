@@ -17,4 +17,9 @@ class Tipo extends Model
     protected $fillable = [
         'nome',
     ];
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
+    }
 }

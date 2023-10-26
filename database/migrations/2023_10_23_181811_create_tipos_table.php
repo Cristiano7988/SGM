@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateTiposTable extends Migration
@@ -15,9 +16,16 @@ class CreateTiposTable extends Migration
     {
         Schema::create('tipos', function (Blueprint $table) {
             $table->id();
-            $table->string('nome')->unique();
+            $table->string('nome')->nullable();
             $table->timestamps();
         });
+
+        DB::table('tipos')->insert([
+            ['nome' => 'Admin'],
+            ['nome' => 'Responsável'],
+            ['nome' => 'Pagante'],
+            ['nome' => 'Acompanhante']
+        ]);
     }
 
     /**
