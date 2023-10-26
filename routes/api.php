@@ -4,6 +4,7 @@ use App\Http\Controllers\AlunoController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DiaController;
 use App\Http\Controllers\NucleoController;
+use App\Http\Controllers\SituacaoController;
 use App\Http\Controllers\TipoController;
 use App\Http\Controllers\TurmaController;
 use App\Http\Controllers\StatusController;
@@ -83,6 +84,15 @@ Route::prefix('/dia')->group(function () {
     Route::get('/', [DiaController::class, 'index']);
 
     Route::get('/{dia}', [DiaController::class, 'show']);
+});
+
+Route::prefix('/situacao')->group(function () {
+    Route::get('/', [SituacaoController::class, 'index']);
+
+    Route::post('/', [SituacaoController::class, 'store']);
+    Route::get('/{situacao}', [SituacaoController::class, 'show']);
+    Route::patch('/{situacao}', [SituacaoController::class, 'update']);
+    Route::delete('/{situacao}', [SituacaoController::class, 'destroy']);
 });
 
 
