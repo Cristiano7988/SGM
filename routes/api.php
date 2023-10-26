@@ -2,8 +2,11 @@
 
 use App\Http\Controllers\AlunoController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\DiaController;
 use App\Http\Controllers\NucleoController;
 use App\Http\Controllers\TipoController;
+use App\Http\Controllers\TurmaController;
+use App\Http\Controllers\StatusController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -56,6 +59,30 @@ Route::prefix('/nucleo')->group(function () {
     Route::get('/{nucleo}', [NucleoController::class, 'show']);
     Route::patch('/{nucleo}', [NucleoController::class, 'update']);
     Route::delete('/{nucleo}', [NucleoController::class, 'destroy']);
+});
+
+Route::prefix('/turma')->group(function () {
+    Route::get('/', [TurmaController::class, 'index']);
+
+    Route::post('/', [TurmaController::class, 'store']);
+    Route::get('/{turma}', [TurmaController::class, 'show']);
+    Route::patch('/{turma}', [TurmaController::class, 'update']);
+    Route::delete('/{turma}', [TurmaController::class, 'destroy']);
+});
+
+Route::prefix('/status')->group(function () {
+    Route::get('/', [StatusController::class, 'index']);
+
+    Route::post('/', [StatusController::class, 'store']);
+    Route::get('/{status}', [StatusController::class, 'show']);
+    Route::patch('/{status}', [StatusController::class, 'update']);
+    Route::delete('/{status}', [StatusController::class, 'destroy']);
+});
+
+Route::prefix('/dia')->group(function () {
+    Route::get('/', [DiaController::class, 'index']);
+
+    Route::get('/{dia}', [DiaController::class, 'show']);
 });
 
 
