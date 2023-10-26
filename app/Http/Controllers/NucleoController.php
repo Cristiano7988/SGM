@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Nucleo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class NucleoController extends Controller
 {
@@ -43,8 +44,13 @@ class NucleoController extends Controller
     {
         try {
             DB::beginTransaction();
-            $nucleo = Nucleo::create($request->all());
+            $nucleo = Nucleo::create($request->except('imagem'));
             
+            if ($request->imagem) {
+                $path = $request->imagem->store('nucleos');
+                $nucleo->imagem = $path;
+                $nucleo->save();
+            }
             DB::commit();
 
             return $nucleo;
@@ -89,8 +95,16 @@ class NucleoController extends Controller
     public function update(Request $request, Nucleo $nucleo)
     {
         try {
-            $nucleo->update($request->all());
+            DB::beginTransaction();
+            $nucleo->update($request->except('imagem'));
 
+            if ($request->imagem) {
+                Storage::delete($nucleo->imagem);
+                $path = $request->imagem->store('nucleos');
+                $nucleo->imagem = $path;
+                $nucleo->save();
+            }
+            DB::commit();
             return $nucleo;
         } catch (\Throwable $th) {
             return $th->getMessage();
@@ -106,6 +120,7 @@ class NucleoController extends Controller
     public function destroy(Nucleo $nucleo)
     {
         try {
+            Storage::delete($nucleo->imagem);
             $deleted = $nucleo->delete();
             return !!$deleted;
         } catch (\Throwable $th) {
