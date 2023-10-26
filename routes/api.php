@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\AlunoController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\TipoController;
+use App\Models\Aluno;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +38,15 @@ Route::prefix('/tipo')->group(function () {
     Route::get('/{tipo}', [TipoController::class, 'show']);
     Route::patch('/{tipo}', [TipoController::class, 'update']);
     Route::delete('/{tipo}', [TipoController::class, 'destroy']);
+});
+
+Route::prefix('/aluno')->group(function () {
+    Route::get('/', [AlunoController::class, 'index']);
+
+    Route::post('/', [AlunoController::class, 'store']);
+    Route::get('/{aluno}', [AlunoController::class, 'show']);
+    Route::patch('/{aluno}', [AlunoController::class, 'update']);
+    Route::delete('/{aluno}', [AlunoController::class, 'destroy']);
 });
 
 
