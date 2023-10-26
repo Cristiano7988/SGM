@@ -13,4 +13,9 @@ class Aluno extends Model
         'nome',
         'data_de_nascimento'
     ];
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
+    }
 }

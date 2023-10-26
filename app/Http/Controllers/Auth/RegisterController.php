@@ -86,6 +86,7 @@ class RegisterController extends Controller
             $user = User::create($request->all());
             
             if (isset($request['tipos']) && !!count($request['tipos'])) $user->tipos()->attach($request['tipos']);
+            if (isset($request['alunos']) && !!count($request['alunos'])) $user->alunos()->attach($request['alunos']);
             DB::commit();
     
             return $user;
@@ -126,6 +127,10 @@ class RegisterController extends Controller
                 $user->tipos()->detach();
                 $user->tipos()->attach($request['tipos']);
             }
+            if (isset($request['alunos']) && !!count($request['alunos'])) {
+                $user->alunos()->detach();
+                $user->alunos()->attach($request['alunos']);
+            }
             DB::commit();
     
             return $user;
@@ -144,6 +149,7 @@ class RegisterController extends Controller
         try {
             DB::beginTransaction();
             $user->tipos()->detach();
+            $user->alunos()->detach();
             $deleted = $user->delete();
             DB::commit();
         

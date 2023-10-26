@@ -44,6 +44,8 @@ class AlunoController extends Controller
         try {
             DB::beginTransaction();
             $aluno = Aluno::create($request->all());
+            if (isset($request['users']) && !!count($request['users'])) $aluno->users()->attach($request['users']);
+            
             DB::commit();
 
             return $aluno;
@@ -89,6 +91,10 @@ class AlunoController extends Controller
     {
         try {
             $aluno->update($request->all());
+            if (isset($request['users']) && !!count($request['users'])) {
+                $aluno->users()->detach();
+                $aluno->users()->attach($request['users']);
+            }
             return $aluno;
         } catch (\Throwable $th) {
             return $th->getMessage();
@@ -104,6 +110,7 @@ class AlunoController extends Controller
     public function destroy(Aluno $aluno)
     {
         try {
+            $aluno->users()->detach();
             $deleted = $aluno->delete();
             return !!$deleted;
         } catch (\Throwable $th) {

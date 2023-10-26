@@ -105,6 +105,7 @@ class TipoController extends Controller
     public function destroy(Tipo $tipo)
     {
         try {
+            $tipo->users()->detach();
             $deleted = $tipo->delete();
             return !!$deleted;
         } catch (\Throwable $th) {
