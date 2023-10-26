@@ -3,6 +3,7 @@
 use App\Http\Controllers\AlunoController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DiaController;
+use App\Http\Controllers\MarcacaoController;
 use App\Http\Controllers\NucleoController;
 use App\Http\Controllers\SituacaoController;
 use App\Http\Controllers\TipoController;
@@ -93,6 +94,15 @@ Route::prefix('/situacao')->group(function () {
     Route::get('/{situacao}', [SituacaoController::class, 'show']);
     Route::patch('/{situacao}', [SituacaoController::class, 'update']);
     Route::delete('/{situacao}', [SituacaoController::class, 'destroy']);
+});
+
+Route::prefix('/marcacao')->group(function () {
+    Route::get('/', [MarcacaoController::class, 'index']);
+
+    Route::post('/', [MarcacaoController::class, 'store']);
+    Route::get('/{marcacao}', [MarcacaoController::class, 'show']);
+    Route::patch('/{marcacao}', [MarcacaoController::class, 'update']);
+    Route::delete('/{marcacao}', [MarcacaoController::class, 'destroy']);
 });
 
 
