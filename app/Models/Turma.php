@@ -42,4 +42,9 @@ class Turma extends Model
     {
         return $this->belongsTo(Status::class);
     }
+
+    public function alunos()
+    {
+        return $this->belongsToMany(Aluno::class);
+    }
 }

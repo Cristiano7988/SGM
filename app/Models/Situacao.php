@@ -13,4 +13,9 @@ class Situacao extends Model
     protected $fillable = [
         "esta"
     ];
+
+    public function matriculas()
+    {
+        return $this->belongsToMany(Matricula::class);
+    }
 }

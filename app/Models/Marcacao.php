@@ -15,4 +15,9 @@ class Marcacao extends Model
         "cor",
         "key_code"
     ];
+
+    public function matriculas()
+    {
+        return $this->belongsToMany(Matricula::class);
+    }
 }

@@ -18,4 +18,14 @@ class Aluno extends Model
     {
         return $this->belongsToMany(User::class);
     }
+
+    public function turmas()
+    {
+        return $this->belongsToMany(Turma::class);
+    }
+
+    public function matriculas()
+    {
+        return $this->belongsToMany(Matricula::class);
+    }
 }
