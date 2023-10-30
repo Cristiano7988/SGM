@@ -44,8 +44,14 @@ class AlunoController extends Controller
         try {
             DB::beginTransaction();
             $aluno = Aluno::create($request->all());
-            if (isset($request['users']) && !!count($request['users'])) $aluno->users()->attach($request['users']);
-            
+            if (isset($request->users) && !!count($request->users)) $aluno->users()->attach($request->users);
+            if (isset($request->matriculas) && !!count($request->matriculas)) {
+                foreach($request->matriculas as $matricula) {
+                    $aluno->matriculas()->create([
+                        "turma_id" => $matricula['turma_id']
+                    ], $matricula);
+                }
+            }
             DB::commit();
 
             return $aluno;
@@ -63,7 +69,8 @@ class AlunoController extends Controller
     public function show(Aluno $aluno)
     {
         try {
-            return $aluno;
+            foreach($aluno->matriculas as $matricula);
+            return $aluno->matriculas[0]->situacao;
         } catch (\Throwable $th) {
             return $th->getMessage();
         }
@@ -91,10 +98,15 @@ class AlunoController extends Controller
     {
         try {
             $aluno->update($request->all());
-            if (isset($request['users']) && !!count($request['users'])) {
-                $aluno->users()->detach();
-                $aluno->users()->attach($request['users']);
+            if (isset($request->users) && !!count($request->users)) $aluno->users()->sync($request->users);            
+            if (isset($request->matriculas) && !!count($request->matriculas)) {
+                foreach($request->matriculas as $matricula) {
+                    $aluno->matriculas()->updateOrCreate([
+                        "turma_id" => $matricula['turma_id']
+                    ], $matricula);
+                }
             }
+
             return $aluno;
         } catch (\Throwable $th) {
             return $th->getMessage();

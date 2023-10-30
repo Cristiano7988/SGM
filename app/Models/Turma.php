@@ -43,8 +43,8 @@ class Turma extends Model
         return $this->belongsTo(Status::class);
     }
 
-    public function alunos()
+    public function matriculas()
     {
-        return $this->belongsToMany(Aluno::class);
+        return $this->hasMany(Matricula::class);
     }
 }

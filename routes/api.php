@@ -4,6 +4,7 @@ use App\Http\Controllers\AlunoController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DiaController;
 use App\Http\Controllers\MarcacaoController;
+use App\Http\Controllers\MatriculaController;
 use App\Http\Controllers\NucleoController;
 use App\Http\Controllers\SituacaoController;
 use App\Http\Controllers\TipoController;
@@ -103,6 +104,15 @@ Route::prefix('/marcacao')->group(function () {
     Route::get('/{marcacao}', [MarcacaoController::class, 'show']);
     Route::patch('/{marcacao}', [MarcacaoController::class, 'update']);
     Route::delete('/{marcacao}', [MarcacaoController::class, 'destroy']);
+});
+
+Route::prefix('/matricula')->group(function () {
+    Route::get('/', [MatriculaController::class, 'index']);
+
+    Route::post('/', [MatriculaController::class, 'store']);
+    Route::get('/{matricula}', [MatriculaController::class, 'show']);
+    Route::patch('/{matricula}', [MatriculaController::class, 'update']);
+    Route::delete('/{matricula}', [MatriculaController::class, 'destroy']);
 });
 
 
