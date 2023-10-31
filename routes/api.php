@@ -12,6 +12,7 @@ use App\Http\Controllers\SituacaoController;
 use App\Http\Controllers\TipoController;
 use App\Http\Controllers\TurmaController;
 use App\Http\Controllers\StatusController;
+use App\Http\Controllers\TransacaoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -135,4 +136,11 @@ Route::prefix('/pacote')->group(function () {
     Route::delete('/{pacote}', [PacoteController::class, 'destroy']);
 });
 
+Route::prefix('/transacao')->group(function () {
+    Route::get('/', [TransacaoController::class, 'index']);
 
+    Route::post('/', [TransacaoController::class, 'store']);
+    Route::get('/{transacao}', [TransacaoController::class, 'show']);
+    Route::patch('/{transacao}', [TransacaoController::class, 'update']);
+    Route::delete('/{transacao}', [TransacaoController::class, 'destroy']);
+});
