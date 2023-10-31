@@ -6,6 +6,7 @@ use App\Http\Controllers\DiaController;
 use App\Http\Controllers\MarcacaoController;
 use App\Http\Controllers\MatriculaController;
 use App\Http\Controllers\NucleoController;
+use App\Http\Controllers\PacoteController;
 use App\Http\Controllers\PeriodoController;
 use App\Http\Controllers\SituacaoController;
 use App\Http\Controllers\TipoController;
@@ -123,6 +124,15 @@ Route::prefix('/periodo')->group(function () {
     Route::get('/{periodo}', [PeriodoController::class, 'show']);
     Route::patch('/{periodo}', [PeriodoController::class, 'update']);
     Route::delete('/{periodo}', [PeriodoController::class, 'destroy']);
+});
+
+Route::prefix('/pacote')->group(function () {
+    Route::get('/', [PacoteController::class, 'index']);
+
+    Route::post('/', [PacoteController::class, 'store']);
+    Route::get('/{pacote}', [PacoteController::class, 'show']);
+    Route::patch('/{pacote}', [PacoteController::class, 'update']);
+    Route::delete('/{pacote}', [PacoteController::class, 'destroy']);
 });
 
 

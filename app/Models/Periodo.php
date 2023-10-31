@@ -13,4 +13,9 @@ class Periodo extends Model
         'fim',
         'pacote_id',
     ];
+
+    public function pacote()
+    {
+        return $this->belongsTo(Pacote::class);
+    }
 }
