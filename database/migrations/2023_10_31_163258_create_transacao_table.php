@@ -17,7 +17,7 @@ class CreateTransacaoTable extends Migration
         Schema::create('transacao', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable();
-            $table->foreignId('pacote_id')->nullable();
+            $table->foreignId('matricula_id')->nullable();
             $table->foreignId('cupom_id')->nullable();
             $table->foreignId('forma_de_pagamento_id')->nullable();
             $table->string('comprovante')->nullable();

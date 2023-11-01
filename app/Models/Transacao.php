@@ -11,7 +11,7 @@ class Transacao extends Model
     protected $table = "transacao";
     protected $fillable = [
         'user_id',
-        'pacote_id',
+        'matricula_id',
         'cupom_id',
         'forma_de_pagamento_id',
         'comprovante',
@@ -31,9 +31,9 @@ class Transacao extends Model
         return $this->belongsTo(FormaDePagamento::class);
     }
 
-    public function pacote()
+    public function matricula()
     {
-        return $this->belongsTo(Pacote::class);
+        return $this->belongsTo(Matricula::class);
     }
 
     public function user()
