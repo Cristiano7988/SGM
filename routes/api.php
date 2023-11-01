@@ -3,6 +3,7 @@
 use App\Http\Controllers\AlunoController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DiaController;
+use App\Http\Controllers\FormaDePagamentoController;
 use App\Http\Controllers\MarcacaoController;
 use App\Http\Controllers\MatriculaController;
 use App\Http\Controllers\NucleoController;
@@ -143,4 +144,13 @@ Route::prefix('/transacao')->group(function () {
     Route::get('/{transacao}', [TransacaoController::class, 'show']);
     Route::patch('/{transacao}', [TransacaoController::class, 'update']);
     Route::delete('/{transacao}', [TransacaoController::class, 'destroy']);
+});
+
+Route::prefix('/forma-de-pagamento')->group(function () {
+    Route::get('/', [FormaDePagamentoController::class, 'index']);
+
+    Route::post('/', [FormaDePagamentoController::class, 'store']);
+    Route::get('/{forma-de-pagamento}', [FormaDePagamentoController::class, 'show']);
+    Route::patch('/{forma-de-pagamento}', [FormaDePagamentoController::class, 'update']);
+    Route::delete('/{forma-de-pagamento}', [FormaDePagamentoController::class, 'destroy']);
 });
