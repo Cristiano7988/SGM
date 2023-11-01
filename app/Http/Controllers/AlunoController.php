@@ -70,7 +70,7 @@ class AlunoController extends Controller
     {
         try {
             foreach($aluno->matriculas as $matricula);
-            return $aluno->matriculas[0]->situacao;
+            return $aluno;
         } catch (\Throwable $th) {
             return $th->getMessage();
         }
