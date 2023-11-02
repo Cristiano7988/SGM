@@ -16,6 +16,7 @@ class Transacao extends Model
         'forma_de_pagamento_id',
         'comprovante',
         'valor_pago',
+        'desconto_aplicado',
         'data_de_pagamento',
         'obs',
         'forma_de_pagamento',

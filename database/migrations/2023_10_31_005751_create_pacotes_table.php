@@ -16,7 +16,7 @@ class CreatePacotesTable extends Migration
         Schema::create('pacotes', function (Blueprint $table) {
             $table->id();
             $table->string('nome');
-            $table->string('valor');
+            $table->decimal('valor');
             $table->boolean('ativo')->default(false);
             $table->foreignId('nucleo_id')->nullable();
             $table->timestamps();

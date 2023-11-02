@@ -21,17 +21,18 @@ class CreateTransacaoTable extends Migration
             $table->foreignId('cupom_id')->nullable();
             $table->foreignId('forma_de_pagamento_id')->nullable();
             $table->string('comprovante')->nullable();
-            $table->string('valor_pago');
+            $table->decimal('valor_pago');
             $table->date('data_de_pagamento');
             $table->string('obs')->nullable();
             
             // Informações de backup (caso haja algum aluno, usuário, pacote, forma de pagamento ou período deletado)
             $table->string('forma_de_pagamento')->nullable();
+            $table->string('desconto_aplicado')->nullable();
             $table->string('nome_do_aluno')->nullable();
             $table->string('nome_do_usuario')->nullable();
             $table->string('nome_do_pacote')->nullable();
             $table->string('vigencia_do_pacote')->nullable();
-            $table->string('valor_do_pacote')->nullable();
+            $table->decimal('valor_do_pacote')->nullable();
             $table->timestamps();
         });
     }

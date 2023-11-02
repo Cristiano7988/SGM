@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AlunoController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\CupomController;
 use App\Http\Controllers\DiaController;
 use App\Http\Controllers\FormaDePagamentoController;
 use App\Http\Controllers\MarcacaoController;
@@ -154,4 +155,13 @@ Route::prefix('/forma-de-pagamento')->group(function () {
     Route::get('/{forma-de-pagamento}', [FormaDePagamentoController::class, 'show']);
     Route::patch('/{forma-de-pagamento}', [FormaDePagamentoController::class, 'update']);
     Route::delete('/{forma-de-pagamento}', [FormaDePagamentoController::class, 'destroy']);
+});
+
+Route::prefix('/cupom')->group(function () {
+    Route::get('/', [CupomController::class, 'index']);
+
+    Route::post('/', [CupomController::class, 'store']);
+    Route::get('/{cupom}', [CupomController::class, 'show']);
+    Route::patch('/{cupom}', [CupomController::class, 'update']);
+    Route::delete('/{cupom}', [CupomController::class, 'destroy']);
 });
