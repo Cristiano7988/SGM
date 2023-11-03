@@ -15,7 +15,11 @@ class PacoteController extends Controller
     public function index()
     {
         try {
-            $pacotes = Pacote::paginate(10);
+            $ativo = !!request()->ativo;
+
+            if ($ativo) $pacotes = Pacote::where('ativo', '=', true)->paginate(10);
+            else $pacotes = Pacote::paginate(10);
+
             return $pacotes;
         } catch (\Throwable $th) {
             return $th->getMessage();
@@ -57,6 +61,8 @@ class PacoteController extends Controller
     public function show(Pacote $pacote)
     {
         try {
+            if (!!request()->ativo && !$pacote->ativo) return response("Pacote inativo.", 403);
+
             return $pacote;
         } catch (\Throwable $th) {
             return $th->getMessage();
