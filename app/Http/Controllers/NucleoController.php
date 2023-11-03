@@ -21,10 +21,17 @@ class NucleoController extends Controller
     {
         try {
             $meses = request()->meses;
-
-            $nucleos = $meses
-                ? Nucleo::where('idade_minima', '<', $meses)->where('idade_maxima', '>', $meses)->paginate(10)
-                : Nucleo::paginate(10);
+            $matricular = !!request()->matricular;
+            $now = Carbon::now();
+            
+            if (!$matricular && !$meses)
+                $nucleos = Nucleo::paginate(10);
+            if (!$matricular && $meses)
+                $nucleos = Nucleo::where('idade_minima', '<', $meses)->where('idade_maxima', '>', $meses)->paginate(10);
+            if ($matricular && !$meses)
+                $nucleos = Nucleo::where('fim_rematricula', '>=', $now)->where('inicio_rematricula', '<=', $now)->paginate(10);
+            if ($matricular && $meses)
+                $nucleos = Nucleo::where('idade_minima', '<', $meses)->where('idade_maxima', '>', $meses)->where('fim_rematricula', '>=', $now)->where('inicio_rematricula', '<=', $now)->paginate(10);
 
             return $nucleos;
         } catch (\Throwable $th) {
@@ -79,9 +86,14 @@ class NucleoController extends Controller
     {
         try {
             $meses = request()->meses;
+            $matricular = request()->matricular;
+            $now = Carbon::now();
+
             $escopoDaIdade = $nucleo->idade_minima < $meses && $nucleo->idade_maxima > $meses;
+            $noPeriodoDeRematricula = $nucleo->inicio_rematricula <= $now && $nucleo->fim_rematricula >= $now;
 
             if ($meses && !$escopoDaIdade) return response("Esse núcleo está indisponível para esta faixa etária", 403);
+            if ($matricular && !$noPeriodoDeRematricula) return response("Este núcleo não está disponível para matrículas ou rematrículas no momento.", 403);
 
             return $nucleo;
         } catch (\Throwable $th) {
