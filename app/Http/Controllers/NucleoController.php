@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Aluno;
 use App\Models\Nucleo;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -10,14 +12,30 @@ use Illuminate\Support\Facades\Storage;
 class NucleoController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Exibe os núcleos registrados.
+     * Se o id do aluno é passado na requisição então retorna somente os núcleos disponíveis para essa faixa etária
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
         try {
-            $nucleos = Nucleo::paginate(10);
+            $id = request()->aluno_id;
+
+            if ($id) {
+                $aluno = Aluno::find($id);
+                $now = Carbon::now();
+
+                if (!$aluno) return response("Aluno não encontrado", 403);
+
+                $data_de_nascimento = Carbon::create($aluno->data_de_nascimento);
+                $meses = $data_de_nascimento->diffInMonths($now);
+
+                $nucleos = Nucleo::where('idade_minima', '<', $meses)->where('idade_maxima', '>', $meses)->paginate(10);
+            } else {
+                $nucleos = Nucleo::paginate(10);
+            }
+
             return $nucleos;
         } catch (\Throwable $th) {
             return $th->getMessage();
