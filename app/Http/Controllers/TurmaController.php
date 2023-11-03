@@ -17,7 +17,11 @@ class TurmaController extends Controller
     public function index()
     {
         try {
-            $turmas = Turma::paginate(10);
+            $disponivel = !!request()->disponivel;
+
+            if ($disponivel) $turmas = Turma::where('disponivel', '=', $disponivel)->paginate(10);
+            else $turmas = Turma::paginate(10);
+
             return $turmas;
         } catch (\Throwable $th) {
             return $th->getMessage();
@@ -69,6 +73,8 @@ class TurmaController extends Controller
     public function show(Turma $turma)
     {
         try {
+            if (!$turma->disponivel) return response("Turma indisponível no momento.", 403);
+
             return $turma;
         } catch (\Throwable $th) {
             return $th->getMessage();
