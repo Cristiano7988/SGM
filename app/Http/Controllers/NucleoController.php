@@ -20,21 +20,11 @@ class NucleoController extends Controller
     public function index()
     {
         try {
-            $id = request()->aluno_id;
+            $meses = request()->meses;
 
-            if ($id) {
-                $aluno = Aluno::find($id);
-                $now = Carbon::now();
-
-                if (!$aluno) return response("Aluno não encontrado", 403);
-
-                $data_de_nascimento = Carbon::create($aluno->data_de_nascimento);
-                $meses = $data_de_nascimento->diffInMonths($now);
-
-                $nucleos = Nucleo::where('idade_minima', '<', $meses)->where('idade_maxima', '>', $meses)->paginate(10);
-            } else {
-                $nucleos = Nucleo::paginate(10);
-            }
+            $nucleos = $meses
+                ? Nucleo::where('idade_minima', '<', $meses)->where('idade_maxima', '>', $meses)->paginate(10)
+                : Nucleo::paginate(10);
 
             return $nucleos;
         } catch (\Throwable $th) {
@@ -78,7 +68,9 @@ class NucleoController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Exibe um núcleo em específico.
+     * Se o id do aluno é passado na requisição então retorna somente se o núcleo estiver disponível para sua faixa etária
+
      *
      * @param  \App\Models\Nucleo  $nucleo
      * @return \Illuminate\Http\Response
@@ -86,6 +78,11 @@ class NucleoController extends Controller
     public function show(Nucleo $nucleo)
     {
         try {
+            $meses = request()->meses;
+            $escopoDaIdade = $nucleo->idade_minima < $meses && $nucleo->idade_maxima > $meses;
+
+            if ($meses && !$escopoDaIdade) return response("Esse núcleo está indisponível para esta faixa etária", 403);
+
             return $nucleo;
         } catch (\Throwable $th) {
             return $th->getMessage();

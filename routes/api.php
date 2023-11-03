@@ -15,6 +15,7 @@ use App\Http\Controllers\TipoController;
 use App\Http\Controllers\TurmaController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TransacaoController;
+use App\Http\Middleware\calculaIdadeDoAluno;
 use App\Http\Middleware\preparaBackupDaTransacao;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -62,10 +63,10 @@ Route::prefix('/aluno')->group(function () {
 });
 
 Route::prefix('/nucleo')->group(function () {
-    Route::get('/', [NucleoController::class, 'index']);
+    Route::get('/', [NucleoController::class, 'index'])->middleware(calculaIdadeDoAluno::class);
 
     Route::post('/', [NucleoController::class, 'store']);
-    Route::get('/{nucleo}', [NucleoController::class, 'show']);
+    Route::get('/{nucleo}', [NucleoController::class, 'show'])->middleware(calculaIdadeDoAluno::class);
     Route::patch('/{nucleo}', [NucleoController::class, 'update']);
     Route::delete('/{nucleo}', [NucleoController::class, 'destroy']);
 });
