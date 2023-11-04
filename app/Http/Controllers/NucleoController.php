@@ -27,7 +27,7 @@ class NucleoController extends Controller
             if (!$matricular && !$meses)
                 $nucleos = Nucleo::paginate(10);
             if (!$matricular && $meses)
-                $nucleos = Nucleo::where('idade_minima', '<', $meses)->where('idade_maxima', '>', $meses)->paginate(10);
+                $nucleos = Nucleo::where('idade_minima', '<=', $meses)->where('idade_maxima', '>=', $meses)->paginate(10);
             if ($matricular && !$meses)
                 $nucleos = Nucleo::where('fim_rematricula', '>=', $now)->where('inicio_rematricula', '<=', $now)->paginate(10);
             if ($matricular && $meses)
