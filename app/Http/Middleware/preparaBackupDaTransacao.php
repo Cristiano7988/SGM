@@ -45,8 +45,8 @@ class preparaBackupDaTransacao
                 : $cupom->medida->tipo . " " . number_format($cupom->desconto, 2, ',', '');
             
             $desconto = $cupom->medida->tipo == '%'
-            ? $matricula->pacote->valor * ($cupom->desconto / 100)
-            : $cupom->desconto;
+                ? $matricula->pacote->valor * ($cupom->desconto / 100)
+                : $cupom->desconto;
             
             $request['valor_pago'] = number_format($matricula->pacote->valor - $desconto, 2, ',', '');
         }

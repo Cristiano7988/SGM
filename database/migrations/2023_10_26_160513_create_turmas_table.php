@@ -47,7 +47,7 @@ class CreateTurmasTable extends Migration
             $table->string('imagem')->nullable();
             $table->integer('vagas_preenchidas')->default(0);
             $table->integer('vagas_fora_do_site')->default(0);
-            $table->integer('vagas_disponíveis')->default(6);
+            $table->integer('vagas_disponiveis')->default(6);
             $table->time('horario')->nullable();
             $table->boolean('disponivel')->default(false);
             $table->string('zoom')->nullable();

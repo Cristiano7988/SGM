@@ -73,8 +73,6 @@ class TurmaController extends Controller
     public function show(Turma $turma)
     {
         try {
-            if (!$turma->disponivel) return response("Turma indisponível no momento.", 403);
-
             return $turma;
         } catch (\Throwable $th) {
             return $th->getMessage();

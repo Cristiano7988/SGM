@@ -16,6 +16,7 @@ use App\Http\Controllers\TurmaController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TransacaoController;
 use App\Http\Middleware\calculaIdadeDoAluno;
+use App\Http\Middleware\checaDisponibilidadeDaTurma;
 use App\Http\Middleware\preparaBackupDaTransacao;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -75,7 +76,7 @@ Route::prefix('/turma')->group(function () {
     Route::get('/', [TurmaController::class, 'index']);
 
     Route::post('/', [TurmaController::class, 'store']);
-    Route::get('/{turma}', [TurmaController::class, 'show']);
+    Route::get('/{turma}', [TurmaController::class, 'show'])->middleware(checaDisponibilidadeDaTurma::class);
     Route::patch('/{turma}', [TurmaController::class, 'update']);
     Route::delete('/{turma}', [TurmaController::class, 'destroy']);
 });
@@ -116,7 +117,7 @@ Route::prefix('/marcacao')->group(function () {
 Route::prefix('/matricula')->group(function () {
     Route::get('/', [MatriculaController::class, 'index']);
 
-    Route::post('/', [MatriculaController::class, 'store']);
+    Route::post('/', [MatriculaController::class, 'store'])->middleware(checaDisponibilidadeDaTurma::class)->middleware(calculaIdadeDoAluno::class);
     Route::get('/{matricula}', [MatriculaController::class, 'show']);
     Route::patch('/{matricula}', [MatriculaController::class, 'update']);
     Route::delete('/{matricula}', [MatriculaController::class, 'destroy']);
