@@ -18,6 +18,7 @@ use App\Http\Controllers\TransacaoController;
 use App\Http\Middleware\calculaIdadeDoAluno;
 use App\Http\Middleware\checaDisponibilidadeDaTurma;
 use App\Http\Middleware\checaDisponibilidadeDoNucleo;
+use App\Http\Middleware\checaDisponibilidadeDoPacote;
 use App\Http\Middleware\preparaBackupDaTransacao;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -118,7 +119,7 @@ Route::prefix('/marcacao')->group(function () {
 Route::prefix('/matricula')->group(function () {
     Route::get('/', [MatriculaController::class, 'index']);
 
-    Route::post('/', [MatriculaController::class, 'store'])->middleware(checaDisponibilidadeDaTurma::class)->middleware(calculaIdadeDoAluno::class)->middleware(checaDisponibilidadeDoNucleo::class);
+    Route::post('/', [MatriculaController::class, 'store'])->middleware(checaDisponibilidadeDaTurma::class)->middleware(calculaIdadeDoAluno::class)->middleware(checaDisponibilidadeDoNucleo::class)->middleware(checaDisponibilidadeDoPacote::class);
     Route::get('/{matricula}', [MatriculaController::class, 'show']);
     Route::patch('/{matricula}', [MatriculaController::class, 'update']);
     Route::delete('/{matricula}', [MatriculaController::class, 'destroy']);
@@ -137,7 +138,7 @@ Route::prefix('/pacote')->group(function () {
     Route::get('/', [PacoteController::class, 'index']);
 
     Route::post('/', [PacoteController::class, 'store']);
-    Route::get('/{pacote}', [PacoteController::class, 'show']);
+    Route::get('/{pacote}', [PacoteController::class, 'show'])->middleware(checaDisponibilidadeDoPacote::class);
     Route::patch('/{pacote}', [PacoteController::class, 'update']);
     Route::delete('/{pacote}', [PacoteController::class, 'destroy']);
 });

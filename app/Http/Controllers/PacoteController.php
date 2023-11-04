@@ -61,8 +61,6 @@ class PacoteController extends Controller
     public function show(Pacote $pacote)
     {
         try {
-            if (!!request()->ativo && !$pacote->ativo) return response("Pacote inativo.", 403);
-
             return $pacote;
         } catch (\Throwable $th) {
             return $th->getMessage();
