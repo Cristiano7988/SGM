@@ -85,16 +85,6 @@ class NucleoController extends Controller
     public function show(Nucleo $nucleo)
     {
         try {
-            $meses = request()->meses;
-            $matricular = request()->matricular;
-            $now = Carbon::now();
-
-            $escopoDaIdade = $nucleo->idade_minima < $meses && $nucleo->idade_maxima > $meses;
-            $noPeriodoDeRematricula = $nucleo->inicio_rematricula <= $now && $nucleo->fim_rematricula >= $now;
-
-            if ($meses && !$escopoDaIdade) return response("Esse núcleo está indisponível para esta faixa etária", 403);
-            if ($matricular && !$noPeriodoDeRematricula) return response("Este núcleo não está disponível para matrículas ou rematrículas no momento.", 403);
-
             return $nucleo;
         } catch (\Throwable $th) {
             return $th->getMessage();
