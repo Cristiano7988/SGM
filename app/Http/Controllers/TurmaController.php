@@ -18,9 +18,12 @@ class TurmaController extends Controller
     {
         try {
             $disponivel = !!request()->disponivel;
+            $nucleo_id = !!request()->nucleo_id;
 
-            if ($disponivel) $turmas = Turma::where('disponivel', '=', $disponivel)->paginate(10);
-            else $turmas = Turma::paginate(10);
+            if (!$disponivel && !$nucleo_id) $turmas = Turma::paginate(10);
+            else if (!$disponivel && $nucleo_id) $turmas = Turma::where('nucleo_id', '=', $nucleo_id)->paginate(10);
+            else if ($disponivel && !$nucleo_id) $turmas = Turma::where('disponivel', '=', $disponivel)->paginate(10);
+            else if ($disponivel && $nucleo_id) $turmas = Turma::where('nucleo_id', '=', $nucleo_id)->where('disponivel', '=', $disponivel)->paginate(10);
 
             return $turmas;
         } catch (\Throwable $th) {
@@ -47,16 +50,15 @@ class TurmaController extends Controller
     public function store(Request $request)
     {
         try {
-            $turma = Turma::create($request->all());
-            if ($request->imagem) {
-                DB::beginTransaction();
+            DB::beginTransaction();
+            $turma = Turma::create($request->except('imagem'));
 
+            if ($request->imagem) {
                 $path = $request->imagem->store('turmas');
                 $turma->imagem = $path;
                 $turma->save();
-                
-                DB::commit();
             }
+            DB::commit();
 
             return $turma;
         } catch (\Throwable $th) {
@@ -100,18 +102,16 @@ class TurmaController extends Controller
     public function update(Request $request, Turma $turma)
     {
         try {
+            DB::beginTransaction();
             $turma->update($request->except('imagem'));
 
             if ($request->imagem) {
-                DB::beginTransaction();
-
                 Storage::delete($turma->imagem);
                 $path = $request->imagem->store('turmas');
                 $turma->imagem = $path;
                 $turma->save();
-
-                DB::commit();
             }
+            DB::commit();
             return $turma;
         } catch (\Throwable $th) {
             return $th->getMessage();

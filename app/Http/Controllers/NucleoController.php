@@ -137,8 +137,10 @@ class NucleoController extends Controller
     public function destroy(Nucleo $nucleo)
     {
         try {
+            DB::beginTransaction();
             Storage::delete($nucleo->imagem);
             $deleted = $nucleo->delete();
+            DB::commit();
             return !!$deleted;
         } catch (\Throwable $th) {
             return $th->getMessage();
