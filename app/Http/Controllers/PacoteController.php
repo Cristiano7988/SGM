@@ -16,9 +16,12 @@ class PacoteController extends Controller
     {
         try {
             $ativo = !!request()->ativo;
+            $nucleo_id = request()->nucleo_id;
 
-            if ($ativo) $pacotes = Pacote::where('ativo', '=', true)->paginate(10);
-            else $pacotes = Pacote::paginate(10);
+            if (!$ativo && !$nucleo_id) $pacotes = Pacote::paginate(10);
+            else if (!$ativo && $nucleo_id) $pacotes = Pacote::where('nucleo_id', '=', $nucleo_id)->paginate(10);
+            else if ($ativo && !$nucleo_id) $pacotes = Pacote::where('ativo', '=', true)->paginate(10);
+            else if ($ativo && $nucleo_id) $pacotes = Pacote::where('nucleo_id', '=', $nucleo_id)->where('ativo', '=', true)->paginate(10);
 
             return $pacotes;
         } catch (\Throwable $th) {
