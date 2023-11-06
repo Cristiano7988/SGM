@@ -20,6 +20,7 @@ class checaDisponibilidadeDoPacote
         $pacote = $request->route('pacote') ?? Pacote::find($request->pacote_id);
         $matricula = $request->server('REQUEST_URI') == '/api/matricula';
         $checaDisponibilidade =  $matricula || !!$request->ativo; // Checa disponibilidade na matricula ou quando requisitado
+        if (!$pacote) return response('Pacote não encontrado', 404);
         if ($checaDisponibilidade && !$pacote->ativo) return response("Pacote inativo.", 403);
 
         return $next($request);
