@@ -57,7 +57,12 @@ class CupomController extends Controller
     public function show(Cupom $cupom)
     {
         try {
-            return $cupom;
+            $codigo = request()->codigo;
+
+            if ($codigo) $cupom = Cupom::where('codigo', '=', $codigo)->first();
+            
+            if (!$cupom) return response("Cupom não encontrado", 404);
+            else return $cupom;
         } catch (\Throwable $th) {
             return $th->getMessage();
         }

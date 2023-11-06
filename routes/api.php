@@ -165,6 +165,7 @@ Route::prefix('/cupom')->group(function () {
     Route::get('/', [CupomController::class, 'index']);
 
     Route::post('/', [CupomController::class, 'store']);
+    Route::get('/codigo', [CupomController::class, 'show']);
     Route::get('/{cupom}', [CupomController::class, 'show']);
     Route::patch('/{cupom}', [CupomController::class, 'update']);
     Route::delete('/{cupom}', [CupomController::class, 'destroy']);
