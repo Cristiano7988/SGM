@@ -7,6 +7,7 @@ use App\Http\Controllers\DiaController;
 use App\Http\Controllers\FormaDePagamentoController;
 use App\Http\Controllers\MarcacaoController;
 use App\Http\Controllers\MatriculaController;
+use App\Http\Controllers\MedidaController;
 use App\Http\Controllers\NucleoController;
 use App\Http\Controllers\PacoteController;
 use App\Http\Controllers\PeriodoController;
@@ -159,6 +160,11 @@ Route::prefix('/forma-de-pagamento')->group(function () {
     Route::get('/{forma-de-pagamento}', [FormaDePagamentoController::class, 'show']);
     Route::patch('/{forma-de-pagamento}', [FormaDePagamentoController::class, 'update']);
     Route::delete('/{forma-de-pagamento}', [FormaDePagamentoController::class, 'destroy']);
+});
+
+Route::prefix('/medida')->group(function () {
+    Route::get('/', [MedidaController::class, 'index']);
+    Route::get('/{{medida}}', [MedidaController::class, 'show']);
 });
 
 Route::prefix('/cupom')->group(function () {
