@@ -59,26 +59,12 @@ class RegisterController extends Controller
     }
 
     /**
-     * Show all users.
-     *
-     * @return \App\Models\User
-     */
-    protected function all() {
-        try {
-            $users = User::paginate(10);
-            return $users;
-        } catch(\Throwable $th) {
-            return $th->getMessage();
-        }
-    }
-
-    /**
      * Create a new user instance after a valid registration.
      *
      * @param  Request  $request
      * @return \App\Models\User
      */
-    protected function create(Request $request)
+    protected function store(Request $request)
     {
         try {
             DB::beginTransaction();
@@ -90,70 +76,6 @@ class RegisterController extends Controller
             DB::commit();
     
             return $user;
-        } catch (\Throwable $th) {
-            return $th->getMessage();
-        }
-    }
-
-    /**
-     * Show an user.
-     *
-     * @param  User  $user
-     * @return \App\Models\User
-     */
-    protected function show(User $user)
-    {
-        try {
-            return $user;
-        } catch(\Throwable $th) {
-            return $th->getMessage();
-        }
-    }
-
-    /**
-     * Update an user.
-     *
-     * @param  User  $user
-     * @param  Request  $request
-     * @return \App\Models\User
-     */
-    protected function update(User $user, Request $request) {
-        try {
-            DB::beginTransaction();
-            if (!!$request['password']) $request['password'] = Hash::make($request['password']);
-            $user->update($request->all());
-
-            if (isset($request['tipos']) && !!count($request['tipos'])) {
-                $user->tipos()->detach();
-                $user->tipos()->attach($request['tipos']);
-            }
-            if (isset($request['alunos']) && !!count($request['alunos'])) {
-                $user->alunos()->detach();
-                $user->alunos()->attach($request['alunos']);
-            }
-            DB::commit();
-    
-            return $user;
-        } catch (\Throwable $th) {
-            return $th->getMessage();
-        }
-    }
-
-    /**
-     * Delete an user.
-     *
-     * @param  User  $user
-     * @return Boolean
-     */
-    protected function delete(User $user) {
-        try {
-            DB::beginTransaction();
-            $user->tipos()->detach();
-            $user->alunos()->detach();
-            $deleted = $user->delete();
-            DB::commit();
-        
-            return !!$deleted;
         } catch (\Throwable $th) {
             return $th->getMessage();
         }

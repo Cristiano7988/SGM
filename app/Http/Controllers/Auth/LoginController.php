@@ -3,8 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class LoginController extends Controller
 {
@@ -28,13 +33,46 @@ class LoginController extends Controller
      */
     protected $redirectTo = RouteServiceProvider::HOME;
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    protected function login(Request $request)
     {
-        $this->middleware('guest')->except('logout');
+        try {
+            $request->validate([
+                'email' => ['required', 'email'],
+                'password' => ['required']
+            ]);
+
+            $request->only('email', 'password');
+
+            $user = User::where('email', '=', $request->email)->first();
+            if (!$user) throw ValidationException::withMessages([
+                'email' => ['Email não cadastrado']
+            ]);
+
+            $passwordChecked = Hash::check($request->password, $user->password);
+            if (!$passwordChecked) throw ValidationException::withMessages([
+                'password' => ['Senha inválida']
+            ]);
+
+            $user->tokens()->delete();
+
+            $token = $user->createToken($request->email)->plainTextToken;
+
+            return $token;
+        } catch (\Throwable $th) {
+            return $th->getMessage();
+        }
+    }
+
+    public function logout(Request $request)
+    {
+        try {
+            $accessToken = $request->bearerToken();
+            $token = PersonalAccessToken::findToken($accessToken);
+            $loggedOut = $token->delete();
+
+            return $loggedOut;
+        } catch (\Throwable $th) {
+            return $th->getMessage();
+        }
     }
 }
