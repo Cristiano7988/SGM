@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Aluno;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class AlunoController extends Controller
@@ -16,7 +17,11 @@ class AlunoController extends Controller
     public function index()
     {
         try {
-            $alunos = Aluno::paginate(10);
+            $user = Auth::user();
+
+            if ($user->is_admin) $alunos = Aluno::paginate(10);
+            else $alunos = $user->alunos;
+
             return $alunos;
         } catch (\Throwable $th) {
             return $th->getMessage();
@@ -42,9 +47,11 @@ class AlunoController extends Controller
     public function store(Request $request)
     {
         try {
+            $user = Auth::user();
+
             DB::beginTransaction();
             $aluno = Aluno::create($request->all());
-            if (isset($request->users) && !!count($request->users)) $aluno->users()->attach($request->users);
+            $aluno->users()->attach($user->id);
             DB::commit();
 
             return $aluno;

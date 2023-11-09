@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
 use App\Models\User;
-use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -35,9 +34,53 @@ class UserController extends Controller
      */
     protected function index() {
         try {
-            $users = User::paginate(10);
+            $user = Auth::user();
+            $tipo_id = request()->tipo_id;
+
+            if (!$user->is_admin && !$tipo_id) $users = $user->alunos->first()->users;
+            if (!$user->is_admin && $tipo_id) {
+                $users = User::whereHas('tipos', function ($query) {
+                    $tipo_id = request()->tipo_id;
+                    $ids = Auth::user()->alunos->first()->users->pluck('id')->toArray();
+                    $query->where('tipo_id', '=',  $tipo_id)->whereIn('user_id', $ids);
+                })->get();
+            }
+
+            if ($user->is_admin && !$tipo_id) $users = User::paginate(10);
+            if ($user->is_admin && $tipo_id) {
+                $users = User::whereHas('tipos', function ($query) {
+                    $tipo_id = request()->tipo_id;
+                    $query->where('tipo_id', '=',  $tipo_id);
+                })->get();
+            }
+
             return $users;
         } catch(\Throwable $th) {
+            return $th->getMessage();
+        }
+    }
+
+    /**
+     * Create a new user instance after a valid registration.
+     *
+     * @param  Request  $request
+     * @return \App\Models\User
+     */
+    protected function store(Request $request)
+    {
+        try {
+            $user = Auth::user();
+
+            DB::beginTransaction();
+            if (!!$request['password']) $request['password'] = Hash::make($request['password']);
+            $newUser = User::create($request->all());
+            
+            if (isset($request['tipos']) && !!count($request['tipos'])) $newUser->tipos()->attach($request['tipos']);
+            $newUser->alunos()->attach($user->alunos);
+            DB::commit();
+    
+            return $newUser;
+        } catch (\Throwable $th) {
             return $th->getMessage();
         }
     }

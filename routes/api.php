@@ -36,7 +36,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/user', [RegisterController::class, 'store']);
+Route::post('/register', [RegisterController::class, 'store']);
 Route::post('/login', [LoginController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -45,6 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('/user')->group(function () {
         Route::get('/', [UserController::class, 'index']);
     
+        Route::post('/', [UserController::class, 'store']);
         Route::get('/{user}', [UserController::class, 'show']);
         Route::patch('/{user}', [UserController::class, 'update']);
         Route::delete('/{user}', [UserController::class, 'delete']);

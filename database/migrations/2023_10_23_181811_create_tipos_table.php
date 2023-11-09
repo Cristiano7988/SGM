@@ -21,7 +21,6 @@ class CreateTiposTable extends Migration
         });
 
         DB::table('tipos')->insert([
-            ['nome' => 'admin'],
             ['nome' => 'responsável'],
             ['nome' => 'pagante'],
             ['nome' => 'acompanhante']
