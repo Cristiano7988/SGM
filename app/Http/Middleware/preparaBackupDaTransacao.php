@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Helpers\Formata;
 use App\Models\Cupom;
 use App\Models\FormaDePagamento;
 use App\Models\Matricula;
@@ -39,21 +40,9 @@ class preparaBackupDaTransacao
             $vigencia .= $separador . "De " . $periodo->inicio . " até " . $periodo->fim;
         }
 
-        if ($cupom) {
-            $request['desconto_aplicado'] = $cupom->medida->tipo == '%'
-                ? $cupom->desconto . $cupom->medida->tipo
-                : $cupom->medida->tipo . " " . number_format($cupom->desconto, 2, ',', '');
-            
-            $desconto = $cupom->medida->tipo == '%'
-                ? $matricula->pacote->valor * ($cupom->desconto / 100)
-                : $cupom->desconto;
-            
-            $request['valor_pago'] = number_format($matricula->pacote->valor - $desconto, 2, ',', '');
-        }
-        else $request['valor_pago'] = $matricula->pacote->valor;
 
         $request['forma_de_pagamento'] = $forma_de_pagamento->tipo;
-        $request['valor_do_pacote'] = number_format($matricula->pacote->valor, 2, ',', '');
+        $request['valor_do_pacote'] = Formata::moeda($matricula->pacote->valor);
         $request['nome_do_aluno'] = $matricula->aluno->nome;
         $request['nome_do_usuario'] = $user->nome;
         $request['nome_do_pacote'] = $matricula->pacote->nome;

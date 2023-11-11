@@ -18,6 +18,8 @@ use App\Http\Controllers\TipoController;
 use App\Http\Controllers\TurmaController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TransacaoController;
+use App\Http\Middleware\CalculaDescontoAntesDaController;
+use App\Http\Middleware\CalculaDescontoDepoisDaController;
 use App\Http\Middleware\calculaIdadeDoAluno;
 use App\Http\Middleware\checaDisponibilidadeDaTurma;
 use App\Http\Middleware\checaDisponibilidadeDoNucleo;
@@ -139,7 +141,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('/pacote')->group(function () {
-        Route::get('/', [PacoteController::class, 'index']);
+        Route::get('/', [PacoteController::class, 'index'])->middleware(CalculaDescontoDepoisDaController::class);
 
         Route::post('/', [PacoteController::class, 'store']);
         Route::get('/{pacote}', [PacoteController::class, 'show'])->middleware(checaDisponibilidadeDoPacote::class);
@@ -150,7 +152,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('/transacao')->group(function () {
         Route::get('/', [TransacaoController::class, 'index']);
 
-        Route::post('/', [TransacaoController::class, 'store'])->middleware(preparaBackupDaTransacao::class);
+        Route::middleware(CalculaDescontoAntesDaController::class)->post('/', [TransacaoController::class, 'store'])->middleware(preparaBackupDaTransacao::class);
         Route::get('/{transacao}', [TransacaoController::class, 'show']);
         Route::patch('/{transacao}', [TransacaoController::class, 'update'])->middleware(preparaBackupDaTransacao::class);
         Route::delete('/{transacao}', [TransacaoController::class, 'destroy']);
