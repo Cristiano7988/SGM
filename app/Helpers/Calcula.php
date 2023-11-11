@@ -3,28 +3,38 @@
 namespace App\Helpers;
 
 use App\Models\Cupom;
+use App\Models\FormaDePagamento;
 
 class Calcula
 {
     public static function desconto($pacotes)
     {
         $codigo = request()->codigo;
-        $cupom = Cupom::where('codigo', '=', $codigo)->first();        
-        
-        if (!$cupom) return $pacotes;
+        $cupom = Cupom::where('codigo', '=', $codigo)->first(); 
+        $forma_de_pagamento = FormaDePagamento::find(request()->forma_de_pagamento_id);
 
         foreach($pacotes as $pacote) {
-            $pacote->desconto_aplicado = $cupom->medida->tipo == '%'
-                ? $cupom->desconto . $cupom->medida->tipo
-                : Formata::moeda($cupom->desconto);
+            if ($forma_de_pagamento && $forma_de_pagamento->tipo == 'paypal') $pacote->valor = Calcula::paypal($pacote->valor);
 
-            $desconto = $cupom->medida->tipo == '%'
-                ? $pacote->valor * ($cupom->desconto / 100)
-                : $cupom->desconto;
-            
-            $pacote->valor_a_pagar = Formata::moeda($pacote->valor - $desconto);
+            if ($cupom) {
+                $pacote->desconto_aplicado = $cupom->medida->tipo == '%'
+                    ? $cupom->desconto . $cupom->medida->tipo
+                    : Formata::moeda($cupom->desconto);
+    
+                $desconto = $cupom->medida->tipo == '%'
+                    ? $pacote->valor * ($cupom->desconto / 100)
+                    : $cupom->desconto;
+                
+                $pacote->valor_a_pagar = Formata::moeda($pacote->valor - $desconto);
+            }
         }
 
         return $pacotes;
+    }
+
+    public static function paypal($valor)
+    {
+        $taxa = 0.07;
+        return $valor + ($valor * $taxa);
     }
 }

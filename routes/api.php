@@ -144,7 +144,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [PacoteController::class, 'index'])->middleware(CalculaDescontoDepoisDaController::class);
 
         Route::post('/', [PacoteController::class, 'store']);
-        Route::get('/{pacote}', [PacoteController::class, 'show'])->middleware(checaDisponibilidadeDoPacote::class);
+        Route::get('/{pacote}', [PacoteController::class, 'show'])->middleware(checaDisponibilidadeDoPacote::class)->middleware(CalculaDescontoDepoisDaController::class);
         Route::patch('/{pacote}', [PacoteController::class, 'update']);
         Route::delete('/{pacote}', [PacoteController::class, 'destroy']);
     });

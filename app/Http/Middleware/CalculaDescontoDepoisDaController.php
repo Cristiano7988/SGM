@@ -18,8 +18,13 @@ class CalculaDescontoDepoisDaController
     public function handle(Request $request, Closure $next)
     {      
         $response = $next($request)->getData();
-        $pacotes = Calcula::desconto($response->data);
-        $response->data = $pacotes;
+        $temVariosPacotes = isset($response->data);
+        $pacotes = $temVariosPacotes ? $response->data : [$response];
+
+        $pacotes = Calcula::desconto($pacotes);
+        
+        if ($temVariosPacotes) $response->data = $pacotes;
+        else [$response] = $pacotes;
 
         return response()->json($response);
     }
