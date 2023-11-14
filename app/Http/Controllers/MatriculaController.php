@@ -15,7 +15,34 @@ class MatriculaController extends Controller
     public function index()
     {
         try {
-            $matriculas = Matricula::paginate(10);
+            extract(request()->all());
+
+            if (!isset($situacoes) && !isset($marcacoes)) $matriculas = Matricula::paginate(10);
+
+            if (!isset($situacoes) && isset($marcacoes)) {
+                $matriculas = Matricula::whereHas('marcacao', function ($query) {
+                    $marcacoes = explode(',', request()->marcacoes);
+                    $query->whereIn('marcacao_id', $marcacoes);
+                })->paginate(10);
+            }
+
+            if (isset($situacoes) && !isset($marcacoes)) {
+                $matriculas = Matricula::whereHas('situacao', function ($query) {
+                    $situacoes = explode(',', request()->situacoes);
+                    $query->whereIn('situacao_id', $situacoes);
+                })->paginate(10);
+            }
+
+            if (isset($situacoes) && isset($marcacoes)) {
+                $matriculas = Matricula::whereHas('situacao', function ($query) {
+                    $situacoes = explode(',', request()->situacoes);
+                    $query->whereIn('situacao_id', $situacoes);
+                })->whereHas('marcacao', function($query) {
+                    $marcacoes = explode(',', request()->marcacoes);
+                    $query->whereIn('marcacao_id', $marcacoes);
+                })->paginate(10);
+            }
+
             return $matriculas;
         } catch (\Throwable $th) {
             return $th->getMessage();
