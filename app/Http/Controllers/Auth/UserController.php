@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -70,11 +71,12 @@ class UserController extends Controller
     {
         try {
             $user = Auth::user();
+            $senhaAleatoria = Str::random(8);
+            $senhaCriptografada = $request['password'] || $senhaAleatoria;
+            $request['password'] = Hash::make($senhaCriptografada);
 
             DB::beginTransaction();
-            if (!!$request['password']) $request['password'] = Hash::make($request['password']);
             $newUser = User::create($request->all());
-            
             if (isset($request['tipos']) && !!count($request['tipos'])) $newUser->tipos()->attach($request['tipos']);
             $newUser->alunos()->attach($user->alunos);
             DB::commit();
