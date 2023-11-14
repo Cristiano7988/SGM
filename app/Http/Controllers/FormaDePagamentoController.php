@@ -15,7 +15,7 @@ class FormaDePagamentoController extends Controller
     public function index()
     {
         try {
-            $formaDePagamento = FormaDePagamento::paginate(10);
+            $formaDePagamento = FormaDePagamento::all('tipo');
             return $formaDePagamento;
         } catch (\Throwable $th) {
             return $th->getMessage();

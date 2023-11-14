@@ -15,7 +15,7 @@ class SituacaoController extends Controller
     public function index()
     {
         try {
-            $situacoes = Situacao::paginate(10);
+            $situacoes = Situacao::all('esta');
             return $situacoes;
         } catch (\Throwable $th) {
             return $th->getMessage();

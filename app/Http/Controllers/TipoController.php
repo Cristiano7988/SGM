@@ -17,7 +17,7 @@ class TipoController extends Controller
     public function index()
     {
         try {
-            $tipos = Tipo::paginate(10);
+            $tipos = Tipo::all('nome');
             return $tipos;
         } catch (\Throwable $th) {
             return $th->getMessage();

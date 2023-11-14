@@ -14,7 +14,7 @@ class DiaController extends Controller
     public function index()
     {
         try {
-            $dia = Dia::paginate(10);
+            $dia = Dia::all('nome');
             return $dia;
         } catch (\Throwable $th) {
             return $th->getMessage();

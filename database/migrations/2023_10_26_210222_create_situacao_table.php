@@ -17,7 +17,6 @@ class CreateSituacaoTable extends Migration
         Schema::create('situacao', function (Blueprint $table) {
             $table->id();
             $table->string('esta');
-            $table->timestamps();
         });
 
         DB::table('situacao')->insert([

@@ -14,7 +14,7 @@ class   MedidaController extends Controller
     public function index()
     {
         try {
-            $medidas = Medida::paginate(10);
+            $medidas = Medida::all('tipo');
             return $medidas;
         } catch (\Throwable $th) {
             return $th->getMessage();

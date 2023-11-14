@@ -17,7 +17,6 @@ class CreateTipoUserTable extends Migration
             $table->id();
             $table->foreignId('user_id')->nullable();
             $table->foreignId('tipo_id')->nullable();
-            $table->timestamps();
         });
     }
 

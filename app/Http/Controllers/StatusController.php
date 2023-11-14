@@ -15,7 +15,7 @@ class StatusController extends Controller
     public function index()
     {
         try {
-            $status = Status::paginate(10);
+            $status = Status::all('tipo');
             return $status;
         } catch (\Throwable $th) {
             return $th->getMessage();
