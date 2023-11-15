@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Matricula;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MatriculaController extends Controller
 {
@@ -15,35 +16,15 @@ class MatriculaController extends Controller
     public function index()
     {
         try {
+            $matriculas = DB::table('matriculas');
             extract(request()->all());
+            if (isset($situacoes)) $matriculas = $matriculas->whereIn('situacao_id', explode(',', $situacoes));
+            if (isset($marcacoes)) $matriculas = $matriculas->whereIn('marcacao_id', explode(',', $marcacoes));
+            if (isset($alunos)) $matriculas = $matriculas->whereIn('aluno_id', explode(',', $alunos));
+            if (isset($turmas)) $matriculas = $matriculas->whereIn('turma_id', explode(',', $turmas));
+            if (isset($pacotes)) $matriculas = $matriculas->whereIn('pacote_id', explode(',', $pacotes));
 
-            if (!isset($situacoes) && !isset($marcacoes)) $matriculas = Matricula::paginate(10);
-
-            if (!isset($situacoes) && isset($marcacoes)) {
-                $matriculas = Matricula::whereHas('marcacao', function ($query) {
-                    $marcacoes = explode(',', request()->marcacoes);
-                    $query->whereIn('marcacao_id', $marcacoes);
-                })->paginate(10);
-            }
-
-            if (isset($situacoes) && !isset($marcacoes)) {
-                $matriculas = Matricula::whereHas('situacao', function ($query) {
-                    $situacoes = explode(',', request()->situacoes);
-                    $query->whereIn('situacao_id', $situacoes);
-                })->paginate(10);
-            }
-
-            if (isset($situacoes) && isset($marcacoes)) {
-                $matriculas = Matricula::whereHas('situacao', function ($query) {
-                    $situacoes = explode(',', request()->situacoes);
-                    $query->whereIn('situacao_id', $situacoes);
-                })->whereHas('marcacao', function($query) {
-                    $marcacoes = explode(',', request()->marcacoes);
-                    $query->whereIn('marcacao_id', $marcacoes);
-                })->paginate(10);
-            }
-
-            return $matriculas;
+            return $matriculas->paginate(10);
         } catch (\Throwable $th) {
             return $th->getMessage();
         }
