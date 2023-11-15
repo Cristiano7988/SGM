@@ -18,7 +18,7 @@ class EnviaConfirmacaoDeMatricula
     {
         $response = $next($request);
         $matricula = $request->route('matricula');
-        $cursando = $matricula->situacao_id == 2;
+        $cursando = $matricula->situacao_id == 2 && $request->situacao_id == 2;
 
         if ($cursando && $request->enviar) // Envia email
 
