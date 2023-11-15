@@ -25,6 +25,7 @@ use App\Http\Middleware\checaDisponibilidadeDaTurma;
 use App\Http\Middleware\checaDisponibilidadeDoNucleo;
 use App\Http\Middleware\checaDisponibilidadeDoPacote;
 use App\Http\Middleware\ChecaSeEAdmin;
+use App\Http\Middleware\EnviaConfirmacaoDeMatricula;
 use App\Http\Middleware\preparaBackupDaTransacao;
 use Illuminate\Support\Facades\Route;
 
@@ -154,7 +155,7 @@ Route::middleware('auth:sanctum')->group(function () {
         });
 
         Route::prefix('/matricula')->group(function () {
-            Route::patch('/{matricula}', [MatriculaController::class, 'update']);
+            Route::patch('/{matricula}', [MatriculaController::class, 'update'])->middleware(EnviaConfirmacaoDeMatricula::class);
             Route::delete('/{matricula}', [MatriculaController::class, 'destroy']);
         });
 
