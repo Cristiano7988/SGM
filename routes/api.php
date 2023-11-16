@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\CupomController;
 use App\Http\Controllers\DiaController;
+use App\Http\Controllers\EmailController;
 use App\Http\Controllers\FormaDePagamentoController;
 use App\Http\Controllers\MarcacaoController;
 use App\Http\Controllers\MatriculaController;
@@ -139,6 +140,15 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::patch('/{cupom}', [CupomController::class, 'update']);
             Route::delete('/{cupom}', [CupomController::class, 'destroy']);
         });
+
+        Route::prefix('/emails')->group(function () {            
+            Route::get('/', [EmailController::class, 'index']);
+            Route::get('/{email}', [EmailController::class, 'show']);
+            Route::post('/', [EmailController::class, 'store']);
+            Route::patch('/{email}', [EmailController::class, 'update']);
+            Route::delete('/{email}', [EmailController::class, 'destroy']);
+        });
+    
 
         Route::prefix('/forma-de-pagamento')->group(function () {
             Route::post('/', [FormaDePagamentoController::class, 'store']);
