@@ -22,13 +22,13 @@ class User extends Authenticatable
         'email',
         'password',
         'email_nf',
-        'cpf',
-        'cnpj',
+        'cpf', // Rever formatação
+        'cnpj', // Rever formatação
         'vinculo',
         'whatsapp',
         'instagram',
         'cep',
-        'caixa_postal',
+        'caixa_postal', // Rever formatação
         'pais',
         'estado',
         'cidade',

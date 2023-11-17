@@ -15,7 +15,7 @@ class Turma extends Model
         'imagem',
         'vagas_preenchidas',
         'vagas_fora_do_site',
-        'vagas_disponíveis',
+        'vagas_disponiveis',
         'horario',
         'disponivel',
         'zoom',

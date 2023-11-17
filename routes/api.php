@@ -26,7 +26,6 @@ use App\Http\Middleware\checaDisponibilidadeDaTurma;
 use App\Http\Middleware\checaDisponibilidadeDoNucleo;
 use App\Http\Middleware\checaDisponibilidadeDoPacote;
 use App\Http\Middleware\ChecaSeEAdmin;
-use App\Http\Middleware\EnviaConfirmacaoDeMatricula;
 use App\Http\Middleware\preparaBackupDaTransacao;
 use Illuminate\Support\Facades\Route;
 
@@ -143,10 +142,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::prefix('/emails')->group(function () {            
             Route::get('/', [EmailController::class, 'index']);
-            Route::get('/{email}', [EmailController::class, 'show']);
             Route::post('/', [EmailController::class, 'store']);
-            Route::patch('/{email}', [EmailController::class, 'update']);
-            Route::delete('/{email}', [EmailController::class, 'destroy']);
+            
+            Route::prefix('{email}')->group(function () {
+                Route::post('/', [EmailController::class, 'send']);
+                Route::get('/', [EmailController::class, 'show']);
+                Route::patch('/', [EmailController::class, 'update']);
+                Route::delete('/', [EmailController::class, 'destroy']);
+            });
         });
     
 
@@ -165,7 +168,7 @@ Route::middleware('auth:sanctum')->group(function () {
         });
 
         Route::prefix('/matricula')->group(function () {
-            Route::patch('/{matricula}', [MatriculaController::class, 'update'])->middleware(EnviaConfirmacaoDeMatricula::class);
+            Route::patch('/{matricula}', [MatriculaController::class, 'update']);
             Route::delete('/{matricula}', [MatriculaController::class, 'destroy']);
         });
 

@@ -16,10 +16,8 @@ class Calcula
         foreach($pacotes as $pacote) {
             if ($forma_de_pagamento && $forma_de_pagamento->tipo == 'paypal') $pacote->valor = Calcula::paypal($pacote->valor);
 
-            if ($cupom) {
-                $pacote->desconto_aplicado = $cupom->medida->tipo == '%'
-                    ? $cupom->desconto . $cupom->medida->tipo
-                    : Formata::moeda($cupom->desconto);
+            if ($cupom) {   
+                $pacote->desconto_aplicado = Formata::desconto($cupom);
     
                 $desconto = $cupom->medida->tipo == '%'
                     ? $pacote->valor * ($cupom->desconto / 100)

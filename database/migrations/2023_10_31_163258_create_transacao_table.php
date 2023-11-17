@@ -21,7 +21,7 @@ class CreateTransacaoTable extends Migration
             $table->foreignId('cupom_id')->nullable();
             $table->foreignId('forma_de_pagamento_id')->nullable();
             $table->string('comprovante')->nullable();
-            $table->decimal('valor_pago');
+            $table->string('valor_pago');
             $table->date('data_de_pagamento');
             $table->string('obs')->nullable();
             

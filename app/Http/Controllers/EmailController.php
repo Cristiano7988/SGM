@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Substitui;
+use App\Mail\EmailGenerico;
 use App\Models\Email;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class EmailController extends Controller
@@ -69,6 +73,39 @@ class EmailController extends Controller
     {
         try {
             return $email;
+        } catch (\Throwable $th) {
+            return $th->getMessage();
+        }
+    }
+
+    /**
+     * Envia email populado com as informações específicadas na requisição
+     * de acordo com a convenção {{model-propriedade}} especificada no corpo ou assunto do email.
+     * ex.: aluno-nome | matricula-nucleo-turma-horario
+     *
+     * @param  Illuminate\Http\Request  $request
+     * @param  \App\Models\Email  $email
+     * @return \Illuminate\Http\Response
+     */
+    public function send(Request $request, Email $email)
+    {
+        try {
+            $user = User::find($request->user_id);
+            if (!$user) return response("Usuário não encontrado");
+            
+            $conteudo = new EmailGenerico(
+                $request,
+                $user,
+                $email->conteudo,
+                $email->anexo
+            );
+
+            $user->name = $user->nome;
+            $conteudo->subject = Substitui::masAntesChecaSePrecisa($request, $email->assunto);;
+
+            Mail::to($user)->send($conteudo);            
+
+            return response()->json($email);
         } catch (\Throwable $th) {
             return $th->getMessage();
         }
