@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Substitui;
 use App\Mail\EmailGenerico;
+use App\Mail\TodasTransacoes;
 use App\Models\Email;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -106,6 +107,30 @@ class EmailController extends Controller
             Mail::to($user)->send($conteudo);            
 
             return response()->json($email);
+        } catch (\Throwable $th) {
+            return $th->getMessage();
+        }
+    }
+
+    /**
+     * Envia as transações por e-mail conforme especificado na requisição
+     * @param  Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function send_transactions(Request $request)
+    {
+        try {
+            $user = User::find($request->user_id);
+
+            if (!$user) return response("Usuário não encontrado", 404);
+            if (!$request->ids) return response("Selecione as transações a serem enviadas");
+            
+            $conteudo = new TodasTransacoes($request);
+            $user->name = $user->nome;
+
+            Mail::to($user)->send($conteudo);            
+
+            return response()->json($user);
         } catch (\Throwable $th) {
             return $th->getMessage();
         }

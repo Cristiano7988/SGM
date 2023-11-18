@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use App\Helpers\Formata;
-use App\Models\Cupom;
 use App\Models\FormaDePagamento;
 use App\Models\Matricula;
 use App\Models\User;
@@ -24,7 +23,6 @@ class preparaBackupDaTransacao
         $user = User::find($request->user_id);
         $matricula = Matricula::find($request->matricula_id);
         $forma_de_pagamento = FormaDePagamento::find($request->forma_de_pagamento_id);
-        $cupom = Cupom::find($request->cupom_id);
 
         if (!$user) return response("Usuário não encontrado", 403);
         if (!$matricula) return response("Matrícula não encontrada", 403);
@@ -37,7 +35,7 @@ class preparaBackupDaTransacao
         $vigencia = "";
         foreach($matricula->pacote->periodos as $key => $periodo) {
             $separador = $key ? " - " : "";
-            $vigencia .= $separador . "De " . $periodo->inicio . " até " . $periodo->fim;
+            $vigencia .= $separador . "De " . Formata::data($periodo->inicio) . " até " . Formata::data($periodo->fim);
         }
 
 

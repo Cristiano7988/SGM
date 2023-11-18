@@ -24,7 +24,11 @@ class Formata
 
     public static function data(string $data): string
     {
-        return Carbon::parse($data)->format('d/m/Y');
+        try {
+            return Carbon::parse($data)->format('d/m/Y');
+        } catch (\Throwable $th) {
+            return $data;
+        }
     }
 
     public static function desconto(Cupom $cupom): string
@@ -47,7 +51,7 @@ class Formata
             'data_de_nascimento', // aluno
             'inicio', // periodo
             'fim', // periodo
-            'data_do_pagamento', // transacao
+            'data_de_pagamento', // transacao
         ];
 
         $booleanos = [
