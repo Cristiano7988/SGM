@@ -14,6 +14,8 @@ class Aluno extends Model
         'data_de_nascimento'
     ];
 
+    public $timestamp = true;
+
     public function users()
     {
         return $this->belongsToMany(User::class);

@@ -66,4 +66,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Aluno::class);
     }
+
+    public function transacoes()
+    {
+        return $this->hasMany(Transacao::class);
+    }
 }

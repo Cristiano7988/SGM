@@ -44,6 +44,6 @@ class Transacao extends Model
 
     public function cupom()
     {
-        return $this->belongsTo(Cupon::class);
+        return $this->belongsTo(Cupom::class);
     }
 }

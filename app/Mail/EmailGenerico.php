@@ -19,7 +19,7 @@ class EmailGenerico extends Mailable
      *
      * @return void
      */
-    public function __construct($request, $user, $conteudo, $anexo = null)
+    public function __construct($request, $conteudo, $anexo = null)
     {
         $conteudo = Substitui::masAntesChecaSePrecisa($request, $conteudo);
         $conteudo = str_replace('{{anexo}}', env('APP_URL') . '/storage/' . $anexo, $conteudo);

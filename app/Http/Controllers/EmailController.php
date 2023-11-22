@@ -6,6 +6,8 @@ use App\Helpers\Substitui;
 use App\Mail\EmailGenerico;
 use App\Mail\TodasTransacoes;
 use App\Models\Email;
+use App\Models\Matricula;
+use App\Models\Transacao;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -91,20 +93,20 @@ class EmailController extends Controller
     public function send(Request $request, Email $email)
     {
         try {
-            $user = User::find($request->user_id);
-            if (!$user) return response("Usuário não encontrado");
-            
+            if ($request->destinatarios) $users = User::all()->whereIn('id', explode(',', $request->destinatarios));
             $conteudo = new EmailGenerico(
                 $request,
-                $user,
                 $email->conteudo,
                 $email->anexo
             );
-
-            $user->name = $user->nome;
-            $conteudo->subject = Substitui::masAntesChecaSePrecisa($request, $email->assunto);;
-
-            Mail::to($user)->send($conteudo);            
+            
+            foreach ($users as $user) {
+                if (!$user) return response("Usuário não encontrado");
+                $conteudo->subject = Substitui::masAntesChecaSePrecisa($request, $email->assunto);;
+                
+                $user->name = $user->nome;
+                Mail::to($user)->send($conteudo);
+            }
 
             return response()->json($email);
         } catch (\Throwable $th) {
