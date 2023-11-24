@@ -64,11 +64,16 @@ class User extends Authenticatable
 
     public function alunos()
     {
-        return $this->belongsToMany(Aluno::class);
+        return $this->belongsToMany(Aluno::class)->withTimestamps();
     }
 
     public function transacoes()
     {
         return $this->hasMany(Transacao::class);
+    }
+
+    public function emails()
+    {
+        return $this->belongsToMany(Email::class)->withTimestamps();
     }
 }

@@ -106,6 +106,7 @@ class EmailController extends Controller
                 
                 $user->name = $user->nome;
                 Mail::to($user)->send($conteudo);
+                $user->emails()->attach($email);
             }
 
             return response()->json($email);

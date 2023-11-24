@@ -66,6 +66,8 @@ class UserController extends Controller
                 ->leftJoin('cupons', 'transacao.cupom_id', '=', 'cupons.id')
                 ->leftJoin('medidas', 'cupons.medida_id', '=', 'medidas.id')
                 ->leftJoin('forma_de_pagamento', 'transacao.forma_de_pagamento_id', '=', 'forma_de_pagamento.id')
+                ->leftJoin('email_user', 'users.id', '=', 'email_user.user_id')
+                ->leftJoin('emails', 'email_id', '=', 'emails.id')
                 ->get([
                     // Users
                     'users.*',
@@ -84,13 +86,17 @@ class UserController extends Controller
                     'status.id as status_id', // Status
                     'nucleos.id as nucleo_id', // Núcleos
                     'situacao.id as situacao_id', // Situações
-                    'marcacao.id as marcacao_id' // Marcações
+                    'marcacao.id as marcacao_id', // Marcações
+                    'email_user.email_id'
                 ]);
 
             if (!$user->is_admin) $usuariosFiltrados = $usuariosFiltrados->whereIn('aluno_id', $user->alunos->pluck('id')); // Aqui é estabelecido que o usuário poderá acessar apenas informações relacionadas ao aluno ao qual está associado
 
             // Aqui filtramos os usuários de acordo com suas relações
-            if (isset($usuarios)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $usuarios, 'user_id');
+            if (isset($usuarios) && !isset($todos)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $usuarios, 'user_id');
+            else if (isset($usuarios) && isset($todos)) $usuariosFiltrados = $usuariosFiltrados->whereNotIn('user_id', explode(',', $usuarios));
+            
+            if (isset($emails)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $emails, 'email_id');
             if (isset($tipos)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $tipos, 'tipo_id');
             if ($que_fizeram_transacoes) {
                 $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $transacoes, 'transacao_id');
@@ -125,9 +131,12 @@ class UserController extends Controller
 
             // Aqui retornamos as informações requisitadas no formato de eager Loading
             $ids = $usuariosFiltrados->pluck('id');
-            $users = User::whereIn('id', $ids);
+            $order = isset($order) ? $order : "asc";
+            $orderBy = isset($orderBy) ? $orderBy : "nome";
+            $users = User::whereIn('id', $ids)->orderBy($orderBy, $order);
 
             if (isset($tipos)) $users = $users->with('tipos');
+            if (isset($emails)) $users = $users->with('emails:id,assunto,anexo');
 
             if ($que_fizeram_transacoes) $users = $users->with([
                 'transacoes' => function ($transacao) use ($request) {
@@ -156,7 +165,7 @@ class UserController extends Controller
             ]);
 
             
-            $users = $users->paginate(10);
+            $users = isset($todos) ? $users->get() : $users->paginate(10);
 
             return response()->json($users);
 

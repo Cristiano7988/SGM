@@ -43,6 +43,6 @@ class Adiciona
             }
         ]);
 
-        return $parentModel;
+        return $parentModel->whereHas('matriculas');
     }
 }
