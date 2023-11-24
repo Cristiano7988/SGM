@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Helpers\Adiciona;
+use App\Helpers\Filtra;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Str;
@@ -36,133 +38,125 @@ class UserController extends Controller
     protected function index(Request $request) {
         try {
             $user = Auth::user();
-            $usuarios = explode(',', $request['usuarios']);
-            $tipos = explode(',', $request['tipos']);
-            $alunos = explode(',', $request['alunos']);
-            $transacoes = explode(',', $request['transacoes']);
-            $matriculas = explode(',', $request['matriculas']);
-            $cupons = explode(',', $request['cupons']);
-            $medidas = explode(',', $request['medidas']);
+            extract(request()->all());
+            /**
+             * Variáves que alteram o circuito relacional das informações requisitadas para pegar
+             * usuários que fizeram transações
+             * ou
+             * usuários que tenham alunos matrículados cuja as transações foram realizadas
+             */
+            $que_fizeram_transacoes = isset($que_fizeram_transacoes) && isset($transacoes);
+            $nucleo_do_pacote = isset($nucleo_do_pacote); // Dissocia o núcleo do pacote do núcleo da turma, embora sejam o mesmo na requisição a específicação pode surgir
 
-            // Conecta todas tabelas que possuem relaão direta com o usuário
-            $usuariosFiltrados = User::leftJoin('aluno_user', 'users.id', '=', 'aluno_user.user_id' )
-                ->leftJoin('alunos', 'aluno_user.aluno_id', '=', 'alunos.id')
-                ->leftJoin('tipo_user', 'users.id', '=', 'tipo_user.user_id' )
+            // Conecta todas tabelas que possuem relação direta com o usuário
+            $usuariosFiltrados = User::leftJoin('tipo_user', 'users.id', '=', 'tipo_user.user_id' )
                 ->leftJoin('tipos', 'tipo_id', '=', 'tipos.id')
+                ->leftJoin('aluno_user', 'users.id', '=', 'aluno_user.user_id' )
+                ->leftJoin('alunos', 'aluno_user.aluno_id', '=', 'alunos.id')
                 ->leftJoin('transacao', 'users.id', '=', 'transacao.user_id')
+                ->leftJoin('matriculas', $que_fizeram_transacoes ? 'transacao.matricula_id' : 'alunos.id', '=', $que_fizeram_transacoes ? 'matriculas.id' : 'matriculas.aluno_id')
+                ->leftJoin('situacao', 'matriculas.situacao_id', '=', 'situacao.id')
+                ->leftJoin('marcacao', 'matriculas.marcacao_id', '=', 'marcacao.id')
+                ->leftJoin('pacotes', 'matriculas.pacote_id', '=', 'pacotes.id')
+                ->leftJoin('periodos', 'periodos.pacote_id', '=', 'pacotes.id')
+                ->leftJoin('turmas', 'matriculas.turma_id', '=', 'turmas.id')
+                ->leftJoin('dias', 'turmas.dia_id', '=', 'dias.id')
+                ->leftJoin('status', 'turmas.status_id', '=', 'status.id')
+                ->leftJoin('nucleos', $nucleo_do_pacote ? 'pacotes.nucleo_id' : 'turmas.nucleo_id', '=', 'nucleos.id')
                 ->leftJoin('cupons', 'transacao.cupom_id', '=', 'cupons.id')
-                ->leftJoin('matriculas', 'transacao.matricula_id', '=', 'matriculas.id')
                 ->leftJoin('medidas', 'cupons.medida_id', '=', 'medidas.id')
+                ->leftJoin('forma_de_pagamento', 'transacao.forma_de_pagamento_id', '=', 'forma_de_pagamento.id')
                 ->get([
                     // Users
                     'users.*',
                     'users.id as user_id',
-                    // Alunos
-                    'alunos.id as aluno_id',
-                    'alunos.nome as aluno',
-                    'alunos.data_de_nascimento',
-                    // Tipos
-                    'tipos.nome as tipo',
-                    'tipo_user.tipo_id',
-                    // Transações
-                    'transacao.id as transacao_id',
-                    'transacao.matricula_id as matricula_id',
-                    'transacao.comprovante',
-                    'transacao.valor_pago',
-                    'transacao.desconto_aplicado',
-                    'transacao.data_de_pagamento',
-                    'transacao.obs',
-                    'transacao.forma_de_pagamento',
-                    'transacao.nome_do_aluno',
-                    'transacao.nome_do_usuario',
-                    'transacao.nome_do_pacote',
-                    'transacao.vigencia_do_pacote',
-                    'transacao.valor_do_pacote',
-                    // Matrículas
-                    'matriculas.id as matricula_id',
-                    'matriculas.aluno_id as matricula_aluno_id',
-                    'matriculas.pacote_id as matricula_pacote_id',
-                    'matriculas.turma_id as matricula_turma_id',
-                    'matriculas.situacao_id',
-                    'matriculas.marcacao_id',
-                    // Cupons
-                    'cupons.id as cupom_id',
-                    'cupons.codigo',
-                    'cupons.desconto',
-                    // Medidas
-                    'medidas.id as medida_id',
-                    'medidas.tipo'
+                    'alunos.id as aluno_id', // Alunos
+                    'tipo_user.tipo_id', // Tipos
+                    'transacao.id as transacao_id', // Transações
+                    'matriculas.id as matricula_id', // Matrículas
+                    'pacotes.id as pacote_id', // Pacotes
+                    'periodos.id as periodo_id', // Periodos
+                    'cupons.id as cupom_id', // Cupons
+                    'medidas.id as medida_id', // Medidas
+                    'forma_de_pagamento.id as forma_de_pagamento_id', // Formas de Pagamento
+                    'turmas.id as turma_id', // Turmas
+                    'dias.id as dia_id', // Dias
+                    'status.id as status_id', // Status
+                    'nucleos.id as nucleo_id', // Núcleos
+                    'situacao.id as situacao_id', // Situações
+                    'marcacao.id as marcacao_id' // Marcações
                 ]);
 
             if (!$user->is_admin) $usuariosFiltrados = $usuariosFiltrados->whereIn('aluno_id', $user->alunos->pluck('id')); // Aqui é estabelecido que o usuário poderá acessar apenas informações relacionadas ao aluno ao qual está associado
-                
-            if ($request['usuarios']) $usuariosFiltrados = $request['usuarios'] == '*'
-                ? $usuariosFiltrados->whereNotNull('user_id') // Filtra usuários que tenham algum aluno
-                : $usuariosFiltrados->whereIn('user_id', $usuarios); // Filtra usuários pelos alunos especificados
-            
-            if ($request['alunos']) $usuariosFiltrados = $request['alunos'] == '*'
-                ? $usuariosFiltrados->whereNotNull('aluno_id') // Filtra usuários que tenham algum aluno
-                : $usuariosFiltrados->whereIn('aluno_id', $alunos); // Filtra usuários pelos alunos especificados
 
-            if ($request['tipos']) $usuariosFiltrados = $request['tipos'] == '*'
-                ? $usuariosFiltrados->whereNotNull('tipo_id')
-                : $usuariosFiltrados->whereIn('tipo_id', $tipos);
+            // Aqui filtramos os usuários de acordo com suas relações
+            if (isset($usuarios)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $usuarios, 'user_id');
+            if (isset($tipos)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $tipos, 'tipo_id');
+            if ($que_fizeram_transacoes) {
+                $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $transacoes, 'transacao_id');
+                if (isset($forma_de_pagamento)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $forma_de_pagamento, 'forma_de_pagamento_id');
+                if (isset($cupons)) {
+                    $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $cupons, 'cupom_id');
+                    if (isset($medidas)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $medidas, 'medida_id');
+                }
+            }
+            else if (isset($alunos)) {
+                $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $alunos, 'aluno_id');
+            }
 
-            if ($request['transacoes']) $usuariosFiltrados = $request['transacoes'] == '*'
-                ? $usuariosFiltrados->whereNotNull('transacao_id')
-                : $usuariosFiltrados->whereNotNull('transacao_id')->whereIn('transacao_id', $transacoes);
-
-            if ($request['matriculas']) $usuariosFiltrados = $request['matriculas'] == '*'
-                ? $usuariosFiltrados->whereNotNull('matricula_id')
-                : $usuariosFiltrados->whereIn('matricula_id', $matriculas);
-
-            if ($request['cupons']) $usuariosFiltrados = $request['cupons'] == '*'
-                ? $usuariosFiltrados->whereNotNull('cupom_id')
-                : $usuariosFiltrados->whereNotNull('cupom_id')->whereIn('cupom_id', $cupons);
-
-            if ($request['medidas']) $usuariosFiltrados = $request['medidas'] == '*'
-                ? $usuariosFiltrados
-                : $usuariosFiltrados->whereIn('medida_id', $medidas);
+            if (isset($matriculas) && (isset($alunos) || $que_fizeram_transacoes)) {
+                $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $matriculas, 'matricula_id');
+                if (isset($situacoes)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $situacoes, 'situacao_id');
+                if (isset($marcacoes)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $marcacoes, 'marcacao_id');
     
+                if (isset($turmas)) {
+                    $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $turmas, 'turma_id');
+                    if (isset($dias)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $dias, 'dia_id');
+                    if (isset($status)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $status, 'status_id');
+                }
+                if (isset($pacotes)) {
+                    $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $pacotes, 'pacote_id');
+                    if (isset($periodos)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $periodos, 'periodo_id');
+                }
+
+                if (isset($nucleos) && (isset($turmas) || isset($pacotes))) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $nucleos, 'nucleo_id');
+            }
+
+
+            // Aqui retornamos as informações requisitadas no formato de eager Loading
             $ids = $usuariosFiltrados->pluck('id');
             $users = User::whereIn('id', $ids);
 
-            if ($request['alunos']) $users = $users->with('alunos'); // Retorna usuários com seus alunos
-            if ($request['tipos']) $users = $users->with('tipos');
+            if (isset($tipos)) $users = $users->with('tipos');
 
-            if ($request['transacoes']) $users = $users->with([
-                'transacoes' => function ($transacao) use ($request, $transacoes, $matriculas, $cupons, $medidas) {
-                    if ($request['matriculas']) $transacao = $request['matriculas'] == '*'
-                        ? $transacao->with('matricula')
-                        : $transacao->with('matricula')->whereIn('id', $matriculas);
-                        
-                    if ($request['cupons']) $transacao = $request['cupons'] == '*'
-                        ? $transacao->whereNotNull('cupom_id')->with([
-                            'cupom' => function ($cupom) use ($request, $medidas) {
+            if ($que_fizeram_transacoes) $users = $users->with([
+                'transacoes' => function ($transacao) use ($request) {
+                    if ($request['transacoes'] !== '*') $transacao = $transacao->whereIn('id', explode(',', $request['transacoes']));
+                    if ($request['matriculas']) $transacao = Adiciona::matriculas($request, $transacao, true);
+                    if ($request['forma_de_pagamento']) $transacao = Adiciona::modelRelacionada($transacao, $request['forma_de_pagamento'], 'forma_de_pagamento_id', 'forma_de_pagamento');
+                    if ($request['cupons'] && ($request['cupons'] !== '*')) $transacao = $transacao->whereIn('cupom_id', explode(',', $request['cupons']));
 
-                                if ($request['medidas']) $cupom = $request['medidas'] == '*'
-                                    ? $cupom->with('medida')
-                                    : $cupom->with('medida')->whereIn('medida_id', $medidas);
+                    if ($request['cupons']) $transacao = $transacao->whereNotNull('cupom_id')->with([
+                            'cupom' => function ($cupom) use ($request) {
+                                if ($request['medidas']) $cupom = Adiciona::modelRelacionada($cupom, $request['medidas'], 'medida_id', 'medida');
                                 return $cupom;
                             }
-                        ])
-                        : $transacao->with([
-                            'cupom' => function ($cupom) use ($request, $medidas) {
-
-                                if ($request['medidas']) $cupom = $request['medidas'] == '*'
-                                    ? $cupom->with('medida')
-                                    : $cupom->with('medida')->whereIn('medida_id', $medidas);
-                                return $cupom;
-                            }
-                        ])->whereIn('cupom_id', $cupons);
-                        
-                    if ($request['transacoes'] !== '*') $transacao = $transacao->whereIn('id', $transacoes);
+                        ]);
                         
                     return $transacao;
                 }
             ]);
+            else if (isset($alunos)) $users = $users->with([
+                'alunos' => function ($aluno) use($request) {
+                    if ($request['alunos'] !== '*') $aluno = $aluno->whereIn('aluno_id', explode(',', $request['alunos']));
+                    if ($request['matriculas']) $aluno = Adiciona::matriculas($request, $aluno);
+
+                    return $aluno;
+                }
+            ]);
+
             
-            $users = $users->get();
+            $users = $users->paginate(10);
 
             return response()->json($users);
 

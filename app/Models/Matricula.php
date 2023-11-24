@@ -41,4 +41,9 @@ class Matricula extends Model
     {
         return $this->belongsTo(Pacote::class);
     }
+
+    public function transacoes()
+    {
+        return $this->hasMany(Transacao::class);
+    }
 }
