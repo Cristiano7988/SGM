@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Filtra;
 use App\Models\Turma;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,15 +18,19 @@ class TurmaController extends Controller
     public function index()
     {
         try {
-            $disponivel = !!request()->disponivel;
-            $nucleo_id = !!request()->nucleo_id;
+            extract(request()->all());
 
-            if (!$disponivel && !$nucleo_id) $turmas = Turma::paginate(10);
-            else if (!$disponivel && $nucleo_id) $turmas = Turma::where('nucleo_id', '=', $nucleo_id)->paginate(10);
-            else if ($disponivel && !$nucleo_id) $turmas = Turma::where('disponivel', '=', $disponivel)->paginate(10);
-            else if ($disponivel && $nucleo_id) $turmas = Turma::where('nucleo_id', '=', $nucleo_id)->where('disponivel', '=', $disponivel)->paginate(10);
+            $turmas = Turma::query();
+            if (isset($nucleos)) $turmas = Filtra::resultado($turmas, $nucleos, 'nucleo_id');
+            if (isset($dias)) $turmas = Filtra::resultado($turmas, $dias, 'dia_id');
+            if (isset($status)) $turmas = Filtra::resultado($turmas, $status, 'status_id');
+            if (isset($disponivel)) $turmas = $turmas->where('disponivel', '=', true);
 
-            return $turmas;
+            $orderBy = isset($orderBy) ? $orderBy : 'nome';
+            $sort = isset($sort) ? $sort : 'asc';
+            $turmas = $turmas->orderBy($orderBy, $sort);
+
+            return $turmas->paginate(10);
         } catch (\Throwable $th) {
             return $th->getMessage();
         }
