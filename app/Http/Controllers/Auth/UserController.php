@@ -61,7 +61,7 @@ class UserController extends Controller
                 ->leftJoin('periodos', 'periodos.pacote_id', '=', 'pacotes.id')
                 ->leftJoin('turmas', 'matriculas.turma_id', '=', 'turmas.id')
                 ->leftJoin('dias', 'turmas.dia_id', '=', 'dias.id')
-                ->leftJoin('tipos_de_aula', 'turmas.tipo_de_aula_id', '=', 'tipo_de_aula.id')
+                ->leftJoin('tipos_de_aula', 'turmas.tipo_de_aula_id', '=', 'tipos_de_aula.id')
                 ->leftJoin('nucleos', $nucleo_do_pacote ? 'pacotes.nucleo_id' : 'turmas.nucleo_id', '=', 'nucleos.id')
                 ->leftJoin('idade_minima', 'nucleos.idade_minima_id', '=', 'idade_minima.id')
                 ->leftJoin('medida_de_tempo as m_min', 'idade_minima.medida_de_tempo_id', '=', 'm_min.id')

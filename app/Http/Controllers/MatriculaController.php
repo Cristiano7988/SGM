@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Filtra;
 use App\Models\Matricula;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,14 +17,14 @@ class MatriculaController extends Controller
     public function index()
     {
         try {
-            $matriculas = DB::table('matriculas');
+            $matriculas = Matricula::query();
             extract(request()->all());
-            if (isset($situacoes)) $matriculas = $matriculas->whereIn('situacao_id', explode(',', $situacoes));
-            if (isset($marcacoes)) $matriculas = $matriculas->whereIn('marcacao_id', explode(',', $marcacoes));
-            if (isset($alunos)) $matriculas = $matriculas->whereIn('aluno_id', explode(',', $alunos));
-            if (isset($turmas)) $matriculas = $matriculas->whereIn('turma_id', explode(',', $turmas));
-            if (isset($pacotes)) $matriculas = $matriculas->whereIn('pacote_id', explode(',', $pacotes));
-
+            if (isset($situacoes)) $matriculas = Filtra::resultado($matriculas, $situacoes, 'situacao_id')->with('situacao');
+            if (isset($marcacoes)) $matriculas = Filtra::resultado($matriculas, $marcacoes, 'marcacao_id')->with('marcacao');
+            if (isset($alunos)) $matriculas = Filtra::resultado($matriculas, $alunos, 'aluno_id')->with('aluno');
+            if (isset($turmas)) $matriculas = Filtra::resultado($matriculas, $turmas, 'turma_id')->with('turma');
+            if (isset($pacotes)) $matriculas = Filtra::resultado($matriculas, $pacotes, 'pacote_id')->with('pacote');
+            
             return $matriculas->paginate(10);
         } catch (\Throwable $th) {
             return $th->getMessage();

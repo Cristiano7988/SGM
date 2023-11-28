@@ -21,11 +21,11 @@ class TurmaController extends Controller
             extract(request()->all());
 
             $turmas = Turma::query();
-            if (isset($nucleos)) $turmas = Filtra::resultado($turmas, $nucleos, 'nucleo_id');
-            if (isset($dias)) $turmas = Filtra::resultado($turmas, $dias, 'dia_id');
-            if (isset($tipos_de_aula)) $turmas = Filtra::resultado($turmas, $tipos_de_aula, 'tipo_de_aula_id');
+            if (isset($nucleos)) $turmas = Filtra::resultado($turmas, $nucleos, 'nucleo_id')->with('nucleo');
+            if (isset($dias)) $turmas = Filtra::resultado($turmas, $dias, 'dia_id')->with('dia');
+            if (isset($tipos_de_aula)) $turmas = Filtra::resultado($turmas, $tipos_de_aula, 'tipo_de_aula_id')->with('tipo_de_aula');
             if (isset($disponivel)) $turmas = $turmas->where('disponivel', '=', true);
-
+            
             $orderBy = isset($orderBy) ? $orderBy : 'nome';
             $sort = isset($sort) ? $sort : 'asc';
             $turmas = $turmas->orderBy($orderBy, $sort);
