@@ -14,7 +14,7 @@ class Aluno extends Model
         'data_de_nascimento'
     ];
 
-    public $timestamp = true;
+    public $timestamps = true;
 
     public function users()
     {

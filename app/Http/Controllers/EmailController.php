@@ -6,8 +6,6 @@ use App\Helpers\Substitui;
 use App\Mail\EmailGenerico;
 use App\Mail\TodasTransacoes;
 use App\Models\Email;
-use App\Models\Matricula;
-use App\Models\Transacao;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
