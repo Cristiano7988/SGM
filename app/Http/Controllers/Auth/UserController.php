@@ -61,7 +61,7 @@ class UserController extends Controller
                 ->leftJoin('periodos', 'periodos.pacote_id', '=', 'pacotes.id')
                 ->leftJoin('turmas', 'matriculas.turma_id', '=', 'turmas.id')
                 ->leftJoin('dias', 'turmas.dia_id', '=', 'dias.id')
-                ->leftJoin('status', 'turmas.status_id', '=', 'status.id')
+                ->leftJoin('tipos_de_aula', 'turmas.tipo_de_aula_id', '=', 'tipo_de_aula.id')
                 ->leftJoin('nucleos', $nucleo_do_pacote ? 'pacotes.nucleo_id' : 'turmas.nucleo_id', '=', 'nucleos.id')
                 ->leftJoin('idade_minima', 'nucleos.idade_minima_id', '=', 'idade_minima.id')
                 ->leftJoin('medida_de_tempo as m_min', 'idade_minima.medida_de_tempo_id', '=', 'm_min.id')
@@ -87,7 +87,7 @@ class UserController extends Controller
                     'forma_de_pagamento.id as forma_de_pagamento_id', // Formas de Pagamento
                     'turmas.id as turma_id', // Turmas
                     'dias.id as dia_id', // Dias
-                    'status.id as status_id', // Status
+                    'tipos_de_aula.id as tipo_de_aula_id', // TipoDeAula
                     'nucleos.id as nucleo_id', // Núcleos
                     'idade_minima.id as idade_minima_id', // Idade Mínima
                     'm_min.id as medida_minima_id', // Medida Mínima de Tempo
@@ -126,7 +126,7 @@ class UserController extends Controller
                 if (isset($turmas)) {
                     $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $turmas, 'turma_id');
                     if (isset($dias)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $dias, 'dia_id');
-                    if (isset($status)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $status, 'status_id');
+                    if (isset($tipos_de_aula)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $tipos_de_aula, 'tipo_de_aula_id');
                 }
                 if (isset($pacotes)) {
                     $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $pacotes, 'pacote_id');

@@ -23,7 +23,7 @@ class TurmaController extends Controller
             $turmas = Turma::query();
             if (isset($nucleos)) $turmas = Filtra::resultado($turmas, $nucleos, 'nucleo_id');
             if (isset($dias)) $turmas = Filtra::resultado($turmas, $dias, 'dia_id');
-            if (isset($status)) $turmas = Filtra::resultado($turmas, $status, 'status_id');
+            if (isset($tipos_de_aula)) $turmas = Filtra::resultado($turmas, $tipos_de_aula, 'tipo_de_aula_id');
             if (isset($disponivel)) $turmas = $turmas->where('disponivel', '=', true);
 
             $orderBy = isset($orderBy) ? $orderBy : 'nome';

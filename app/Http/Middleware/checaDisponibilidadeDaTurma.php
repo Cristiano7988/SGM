@@ -25,7 +25,7 @@ class checaDisponibilidadeDaTurma
         if (!$checaDisponibilidade) return $next($request);
         if (!$turma) return response("Turma não encontrada", 403);
         if (!$turma->disponivel) return response("Turma indisponível no momento", 403);
-        if ($vagas_preenchidas > $turma->vagas_disponiveis) return response("Não há vagas disponíveis na turma {$turma->nome}", 403);
+        if ($vagas_preenchidas > $turma->vagas_ofertadas) return response("Não há vagas disponíveis na turma {$turma->nome}", 403);
         
         return $next($request);
     }

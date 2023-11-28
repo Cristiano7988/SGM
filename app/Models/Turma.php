@@ -15,7 +15,7 @@ class Turma extends Model
         'imagem',
         'vagas_preenchidas',
         'vagas_fora_do_site',
-        'vagas_disponiveis',
+        'vagas_ofertadas',
         'horario',
         'disponivel',
         'zoom',
@@ -25,7 +25,7 @@ class Turma extends Model
         'spotify',
         'nucleo_id',
         'dia_id',
-        'status_id'
+        'tipo_de_aula_id'
     ];
 
     public function nucleo()
@@ -38,9 +38,9 @@ class Turma extends Model
         return $this->belongsTo(Dia::class);
     }
 
-    public function status()
+    public function tipo_de_aula()
     {
-        return $this->belongsTo(Status::class);
+        return $this->belongsTo(TipoDeAula::class);
     }
 
     public function matriculas()

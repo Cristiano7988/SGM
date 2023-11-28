@@ -29,12 +29,12 @@ class CreateTurmasTable extends Migration
             ['nome' => 'sabado']
         ]);
         
-        Schema::create('status', function (Blueprint $table) {
+        Schema::create('tipos_de_aula', function (Blueprint $table) {
             $table->id();
             $table->string('tipo')->nullable();
         });
 
-        DB::table('status')->insert([
+        DB::table('tipos_de_aula')->insert([
             ['tipo' => 'coletiva'],
             ['tipo' => 'naipes'],
             ['tipo' => 'individual']
@@ -47,7 +47,7 @@ class CreateTurmasTable extends Migration
             $table->string('imagem')->nullable();
             $table->integer('vagas_preenchidas')->default(0);
             $table->integer('vagas_fora_do_site')->default(0);
-            $table->integer('vagas_disponiveis')->default(6);
+            $table->integer('vagas_ofertadas')->default(6);
             $table->time('horario')->nullable();
             $table->boolean('disponivel')->default(false);
             $table->string('zoom')->nullable();
@@ -57,7 +57,7 @@ class CreateTurmasTable extends Migration
             $table->string('spotify')->nullable();
             $table->foreignId('nucleo_id')->nullable();
             $table->foreignId('dia_id')->nullable();
-            $table->foreignId('status_id')->nullable();
+            $table->foreignId('tipo_de_aula_id')->nullable();
             $table->timestamps();
         });
     }
@@ -70,7 +70,7 @@ class CreateTurmasTable extends Migration
     public function down()
     {
         Schema::dropIfExists('dias');
-        Schema::dropIfExists('status');
+        Schema::dropIfExists('tipos_de_aula');
         Schema::dropIfExists('turmas');
     }
 }

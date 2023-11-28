@@ -25,7 +25,7 @@ class Adiciona
                     'turma' => function ($turma) use ($request) {
                         if ($request['nucleos']) $turma = Adiciona::modelRelacionada($turma, $request['nucleos'], 'nucleo_id', 'nucleo');
                         if ($request['dias']) $turma = Adiciona::modelRelacionada($turma, $request['dias'], 'dia_id', 'dia');
-                        if ($request['status']) $turma = Adiciona::modelRelacionada($turma, $request['status'], 'status_id', 'status');
+                        if ($request['tipos_de_aula']) $turma = Adiciona::modelRelacionada($turma, $request['tipos_de_aula'], 'tipo_de_aula_id', 'tipos_de_aula');
                         return $turma;
                     }
                 ]);
