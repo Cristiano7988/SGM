@@ -198,7 +198,7 @@ Route::middleware('auth:sanctum')->group(function () {
         });
 
         Route::prefix('/matricula')->group(function () {
-            Route::patch('/{matricula}', [MatriculaController::class, 'update']);
+            Route::patch('/{matricula}', [MatriculaController::class, 'update'])->middleware(checaDisponibilidadeDaTurma::class);
             Route::delete('/{matricula}', [MatriculaController::class, 'destroy']);
         });
 

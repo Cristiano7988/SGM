@@ -93,6 +93,9 @@ class MatriculaController extends Controller
     {
         try {
             $matricula->update($request->all());
+            $matricula->turma->vagas_preenchidas = $matricula->turma->matriculas()->count();
+            $matricula->turma->save();
+
             return $matricula;
         } catch(\Throwable $th) {
             return $th->getMessage();
