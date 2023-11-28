@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Aluno;
 use App\Models\Nucleo;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -20,22 +19,50 @@ class NucleoController extends Controller
     public function index()
     {
         try {
-            $meses = request()->meses;
-            $matricular = !!request()->matricular;
-            $now = Carbon::now();
-            
-            if (!$matricular && !$meses)
-                $nucleos = Nucleo::paginate(10);
-            if (!$matricular && $meses)
-                $nucleos = Nucleo::where('idade_minima', '<=', $meses)->where('idade_maxima', '>=', $meses)->paginate(10);
-            if ($matricular && !$meses)
-                $nucleos = Nucleo::where('fim_rematricula', '>=', $now)->where('inicio_rematricula', '<=', $now)->paginate(10);
-            if ($matricular && $meses)
-                $nucleos = Nucleo::where('idade_minima', '<', $meses)->where('idade_maxima', '>', $meses)->where('fim_rematricula', '>=', $now)->where('inicio_rematricula', '<=', $now)->paginate(10);
+            $nucleos = Nucleo::leftJoin('idade_minima', 'idade_minima_id', '=', 'idade_minima.id')
+                ->leftJoin('idade_maxima', 'idade_maxima_id', '=', 'idade_maxima.id')
+                ->leftJoin('medida_de_tempo as m_min', 'idade_minima.medida_de_tempo_id', '=', 'm_min.id')
+                ->leftJoin('medida_de_tempo as m_max', 'idade_maxima.medida_de_tempo_id', '=', 'm_max.id')
+                ->where(function ($query) {
+                    $meses = request()->meses;
+                    $anos = request()->anos;
+                    $matricular = request()->matricular;
+                    $now = Carbon::now();
+                    /**
+                     * Seleciona todos os núcleos dentro da faixa etária especificada
+                     * Tenham sido eles definidos em meses ou em anos
+                     */
+                    if ($meses && $anos) {
+                        $idMeses = 1;
+                        $idAnos = 2;
+                        $query->whereRaw("
+                            ((medida_minima_id = {$idMeses} AND minima <= {$meses}) OR
+                             (medida_minima_id = {$idAnos}  AND minima <= {$anos} ))
+                            AND
+                            ((medida_maxima_id = {$idMeses} AND maxima >= {$meses}) OR
+                             (medida_maxima_id = {$idAnos}  AND maxima >= {$anos} ))
+                        ");
+                    }
 
+                    if ($matricular) $query->where('fim_rematricula', '>=', $now)->where('inicio_rematricula', '<=', $now);
+                })
+                ->get([
+                    'nucleos.id as id',
+                    'idade_minima.id as idade_minima_id',
+                    'idade_minima.idade as minima',
+                    'idade_maxima.idade as maxima',
+                    'idade_maxima.id as idade_maxima_id',
+                    'm_min.id as medida_minima_id',
+                    'm_max.id as medida_maxima_id',
+                ]);
+
+            $ids = $nucleos->pluck('id');
+            $nucleos = Nucleo::whereIn('id', $ids);
+            $nucleos = $nucleos->paginate(10);
+            
             return $nucleos;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            return response()->json($th->getMessage());
         }
     }
 
@@ -68,9 +95,9 @@ class NucleoController extends Controller
             }
             DB::commit();
 
-            return $nucleo;
+            return response($nucleo);
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            return response($th->getMessage(), 500);
         }
     }
 

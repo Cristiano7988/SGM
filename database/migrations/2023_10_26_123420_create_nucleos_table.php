@@ -18,8 +18,8 @@ class CreateNucleosTable extends Migration
             $table->string('nome')->unique();
             $table->string('imagem')->nullable();
             $table->longText('descricao')->nullable();
-            $table->string('idade_minima');
-            $table->string('idade_maxima');
+            $table->foreignId('idade_minima_id')->nullable();
+            $table->foreignId('idade_maxima_id')->nullable();
             $table->date('inicio_rematricula');
             $table->date('fim_rematricula');
             $table->timestamps();

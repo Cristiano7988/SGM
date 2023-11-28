@@ -63,6 +63,10 @@ class UserController extends Controller
                 ->leftJoin('dias', 'turmas.dia_id', '=', 'dias.id')
                 ->leftJoin('status', 'turmas.status_id', '=', 'status.id')
                 ->leftJoin('nucleos', $nucleo_do_pacote ? 'pacotes.nucleo_id' : 'turmas.nucleo_id', '=', 'nucleos.id')
+                ->leftJoin('idade_minima', 'nucleos.idade_minima_id', '=', 'idade_minima.id')
+                ->leftJoin('medida_de_tempo as m_min', 'idade_minima.medida_de_tempo_id', '=', 'm_min.id')
+                ->leftJoin('idade_maxima', 'nucleos.idade_maxima_id', '=', 'idade_maxima.id')
+                ->leftJoin('medida_de_tempo as m_max', 'idade_maxima.medida_de_tempo_id', '=', 'm_max.id')
                 ->leftJoin('cupons', 'transacao.cupom_id', '=', 'cupons.id')
                 ->leftJoin('medidas', 'cupons.medida_id', '=', 'medidas.id')
                 ->leftJoin('forma_de_pagamento', 'transacao.forma_de_pagamento_id', '=', 'forma_de_pagamento.id')
@@ -85,6 +89,10 @@ class UserController extends Controller
                     'dias.id as dia_id', // Dias
                     'status.id as status_id', // Status
                     'nucleos.id as nucleo_id', // Núcleos
+                    'idade_minima.id as idade_minima_id', // Idade Mínima
+                    'm_min.id as medida_minima_id', // Medida Mínima de Tempo
+                    'idade_maxima.id as idade_maxima_id', // Idade Máxima
+                    'm_max.id as medida_maxima_id', // Medida Mínima de Tempo
                     'situacao.id as situacao_id', // Situações
                     'marcacao.id as marcacao_id', // Marcações
                     'email_user.email_id'
@@ -125,7 +133,13 @@ class UserController extends Controller
                     if (isset($periodos)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $periodos, 'periodo_id');
                 }
 
-                if (isset($nucleos) && (isset($turmas) || isset($pacotes))) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $nucleos, 'nucleo_id');
+                if (isset($nucleos) && (isset($turmas) || isset($pacotes))) {
+                    $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $nucleos, 'nucleo_id');
+                    if (isset($idade_minima)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $idade_minima, 'idade_minima_id');
+                    if (isset($medida_minima_de_tempo)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $medida_minima_de_tempo, 'medida_minima_id');
+                    if (isset($idade_maxima)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $idade_maxima, 'idade_maxima_id');
+                    if (isset($medida_maxima_de_tempo)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $medida_maxima_de_tempo, 'medida_maxima_id');
+                }
             }
 
 
