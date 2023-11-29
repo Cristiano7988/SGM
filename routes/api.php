@@ -47,35 +47,35 @@ Route::post('/register', [RegisterController::class, 'store']);
 Route::post('/login', [LoginController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::prefix('/aluno')->group(function () {
+    Route::prefix('/alunos')->group(function () {
         Route::get('/', [AlunoController::class, 'index']);
         Route::post('/', [AlunoController::class, 'store']);
         Route::get('/{aluno}', [AlunoController::class, 'show']);
         Route::patch('/{aluno}', [AlunoController::class, 'update']);
     });
 
-    Route::prefix('/cupom')->group(function () {
+    Route::prefix('/cupons')->group(function () {
         Route::get('/', [CupomController::class, 'index']);
         Route::get('/codigo', [CupomController::class, 'show']);
     });
 
-    Route::prefix('/dia')->group(function () {
+    Route::prefix('/dias')->group(function () {
         Route::get('/', [DiaController::class, 'index']);
         Route::get('/{dia}', [DiaController::class, 'show']);
     });
 
-    Route::prefix('/forma-de-pagamento')->group(function () {
+    Route::prefix('/formas-de-pagamento')->group(function () {
         Route::get('/', [FormaDePagamentoController::class, 'index']);
         Route::get('/{forma-de-pagamento}', [FormaDePagamentoController::class, 'show']);
     });
 
     Route::prefix('/idades')->group(function () {
-        Route::prefix('/minima')->group(function () {
+        Route::prefix('/minimas')->group(function () {
             Route::get('/', [IdadeMinimaController::class, 'index']);
             Route::get('/{idade_minima}', [IdadeMinimaController::class, 'show']);
         });
 
-        Route::prefix('/maxima')->group(function () {
+        Route::prefix('/maximas')->group(function () {
             Route::get('/', [IdadeMaximaController::class, 'index']);
             Route::get('/{idade_maxima}', [IdadeMaximaController::class, 'show']);
         });
@@ -83,33 +83,33 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/logout', [LoginController::class, 'logout']);
 
-    Route::prefix('/matricula')->group(function () {
+    Route::prefix('/matriculas')->group(function () {
         Route::get('/', [MatriculaController::class, 'index']);
         Route::post('/', [MatriculaController::class, 'store'])->middleware(checaDisponibilidadeDaTurma::class)->middleware(calculaIdadeDoAluno::class)->middleware(checaDisponibilidadeDoNucleo::class)->middleware(checaDisponibilidadeDoPacote::class);
         Route::get('/{matricula}', [MatriculaController::class, 'show']);
     });
 
-    Route::prefix('/medida')->group(function () {
+    Route::prefix('/medidas')->group(function () {
         Route::get('/', [MedidaController::class, 'index']);
         Route::get('/{{medida}}', [MedidaController::class, 'show']);
     });
 
-    Route::prefix('/nucleo')->group(function () {
+    Route::prefix('/nucleos')->group(function () {
         Route::get('/', [NucleoController::class, 'index'])->middleware(calculaIdadeDoAluno::class);
         Route::get('/{nucleo}', [NucleoController::class, 'show'])->middleware(calculaIdadeDoAluno::class)->middleware(checaDisponibilidadeDoNucleo::class);
     });
 
-    Route::prefix('/pacote')->group(function () {
+    Route::prefix('/pacotes')->group(function () {
         Route::get('/', [PacoteController::class, 'index'])->middleware(CalculaDescontoDepoisDaController::class);
         Route::get('/{pacote}', [PacoteController::class, 'show'])->middleware(checaDisponibilidadeDoPacote::class)->middleware(CalculaDescontoDepoisDaController::class);
     });
 
-    Route::prefix('/periodo')->group(function () {
+    Route::prefix('/periodos')->group(function () {
         Route::get('/', [PeriodoController::class, 'index']);
         Route::get('/{periodo}', [PeriodoController::class, 'show']);
     });
     
-    Route::prefix('/situacao')->group(function () {
+    Route::prefix('/situacoes')->group(function () {
         Route::get('/{situacao}', [SituacaoController::class, 'show']);
     });
 
@@ -118,24 +118,24 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{tipo_de_aula}', [TipoDeAulaController::class, 'show']);
     });
 
-    Route::prefix('/tipo')->group(function () {
+    Route::prefix('/tipos')->group(function () {
         Route::get('/', [TipoController::class, 'index']);
         Route::get('/{tipo}', [TipoController::class, 'show']);
     });
 
-    Route::prefix('/transacao')->group(function () {
+    Route::prefix('/transacoes')->group(function () {
         Route::get('/', [TransacaoController::class, 'index']);
         Route::middleware(CalculaDescontoAntesDaController::class)->post('/', [TransacaoController::class, 'store'])->middleware(preparaBackupDaTransacao::class);
         Route::get('/{transacao}', [TransacaoController::class, 'show']);
         Route::patch('/{transacao}', [TransacaoController::class, 'update'])->middleware(preparaBackupDaTransacao::class);
     });
 
-    Route::prefix('/turma')->group(function () {
+    Route::prefix('/turmas')->group(function () {
         Route::get('/', [TurmaController::class, 'index']);
         Route::get('/{turma}', [TurmaController::class, 'show'])->middleware(checaDisponibilidadeDaTurma::class);
     });
 
-    Route::prefix('/user')->group(function () {
+    Route::prefix('/users')->group(function () {
         Route::get('/', [UserController::class, 'index']);
         Route::post('/', [UserController::class, 'store']);
         Route::get('/{user}', [UserController::class, 'show']);
@@ -144,11 +144,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     /* Área Administrativa */
     Route::middleware(ChecaSeEAdmin::class)->group(function () {
-        Route::prefix('/aluno')->group(function () {
+        Route::prefix('/alunos')->group(function () {
             Route::delete('/{aluno}', [AlunoController::class, 'destroy']);
         });
 
-        Route::prefix('/cupom')->group(function () {
+        Route::prefix('/cupons')->group(function () {
             Route::post('/', [CupomController::class, 'store']);
             Route::get('/{cupom}', [CupomController::class, 'show']);
             Route::patch('/{cupom}', [CupomController::class, 'update']);
@@ -169,27 +169,27 @@ Route::middleware('auth:sanctum')->group(function () {
             });
         });
 
-        Route::prefix('/forma-de-pagamento')->group(function () {
+        Route::prefix('/formas-de-pagamento')->group(function () {
             Route::post('/', [FormaDePagamentoController::class, 'store']);
             Route::patch('/{forma-de-pagamento}', [FormaDePagamentoController::class, 'update']);
             Route::delete('/{forma-de-pagamento}', [FormaDePagamentoController::class, 'destroy']);
         });
 
         Route::prefix('/idades')->group(function () {
-            Route::prefix('/minima')->group(function () {
+            Route::prefix('/minimas')->group(function () {
                 Route::post('/', [IdadeMinimaController::class, 'store']);
                 Route::patch('/{idade_minima}', [IdadeMinimaController::class, 'update']);
                 Route::delete('/{idade_minima}', [IdadeMinimaController::class, 'destroy']);
             });
 
-            Route::prefix('/maxima')->group(function () {
+            Route::prefix('/maximas')->group(function () {
                 Route::post('/', [IdadeMaximaController::class, 'store']);
                 Route::patch('/{idade_maxima}', [IdadeMaximaController::class, 'update']);
                 Route::delete('/{idade_maxima}', [IdadeMaximaController::class, 'destroy']);
             });
         });
 
-        Route::prefix('/marcacao')->group(function () {
+        Route::prefix('/marcacoes')->group(function () {
             Route::get('/', [MarcacaoController::class, 'index']);
             Route::post('/', [MarcacaoController::class, 'store']);
             Route::get('/{marcacao}', [MarcacaoController::class, 'show']);
@@ -197,35 +197,35 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::delete('/{marcacao}', [MarcacaoController::class, 'destroy']);
         });
 
-        Route::prefix('/matricula')->group(function () {
+        Route::prefix('/matriculas')->group(function () {
             Route::patch('/{matricula}', [MatriculaController::class, 'update'])->middleware(checaDisponibilidadeDaTurma::class);
             Route::delete('/{matricula}', [MatriculaController::class, 'destroy']);
         });
 
-        Route::prefix('/medida_de_tempo')->group(function () {
+        Route::prefix('/medidas_de_tempo')->group(function () {
             Route::get('/', [MedidaDeTempoController::class, 'index']);
             Route::get('/{medida_de_tempo}', [MedidaDeTempoController::class, 'show']);
         });
 
-        Route::prefix('/nucleo')->group(function () {    
+        Route::prefix('/nucleos')->group(function () {    
             Route::post('/', [NucleoController::class, 'store']);
             Route::patch('/{nucleo}', [NucleoController::class, 'update']);
             Route::delete('/{nucleo}', [NucleoController::class, 'destroy']);
         });
 
-        Route::prefix('/pacote')->group(function () {    
+        Route::prefix('/pacotes')->group(function () {    
             Route::post('/', [PacoteController::class, 'store']);
             Route::patch('/{pacote}', [PacoteController::class, 'update']);
             Route::delete('/{pacote}', [PacoteController::class, 'destroy']);
         });
 
-        Route::prefix('/periodo')->group(function () {
+        Route::prefix('/periodos')->group(function () {
             Route::post('/', [PeriodoController::class, 'store']);
             Route::patch('/{periodo}', [PeriodoController::class, 'update']);
             Route::delete('/{periodo}', [PeriodoController::class, 'destroy']);
         });
 
-        Route::prefix('/situacao')->group(function () {
+        Route::prefix('/situacoes')->group(function () {
             Route::get('/', [SituacaoController::class, 'index']);
             Route::post('/', [SituacaoController::class, 'store']);
             Route::patch('/{situacao}', [SituacaoController::class, 'update']);
@@ -238,24 +238,24 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::delete('/{tipo_de_aula}', [TipoDeAulaController::class, 'destroy']);
         });
 
-        Route::prefix('/tipo')->group(function () {
+        Route::prefix('/tipos')->group(function () {
             Route::post('/', [TipoController::class, 'store']);
             Route::patch('/{tipo}', [TipoController::class, 'update']);
             Route::delete('/{tipo}', [TipoController::class, 'destroy']);
         });
 
-        Route::prefix('/transacao')->group(function () {
+        Route::prefix('/transacoes')->group(function () {
             Route::delete('/{transacao}', [TransacaoController::class, 'destroy']);
         });
     
 
-        Route::prefix('/turma')->group(function () {
+        Route::prefix('/turmas')->group(function () {
             Route::post('/', [TurmaController::class, 'store']);
             Route::patch('/{turma}', [TurmaController::class, 'update']);
             Route::delete('/{turma}', [TurmaController::class, 'destroy']);
         });
 
-        Route::prefix('/user')->group(function () {
+        Route::prefix('/users')->group(function () {
             Route::delete('/{user}', [UserController::class, 'delete']);
         });
     });
