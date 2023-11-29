@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class MedidaDeTempoSeeder extends Seeder
+class TipoSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,9 +14,10 @@ class MedidaDeTempoSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('medidas_de_tempo')->insert([
-            ['tipo' => 'meses'],
-            ['tipo' => 'anos']
+        DB::table('tipos')->insert([
+            ['nome' => 'responsável'],
+            ['nome' => 'pagante'],
+            ['nome' => 'acompanhante']
         ]);
     }
 }

@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\FormaDePagamento;
+use App\Models\MedidaDeTempo;
+use App\Models\TipoDeAula;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,6 +16,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        $this->call([
+            DiaSeeder::class,
+            FormaDePagamentoSeeder::class,
+            MarcacaoSeeder::class,
+            MedidaDeTempoSeeder::class,
+            MedidaSeeder::class,
+            SituacaoSeeder::class,
+            TipoDeAulaSeeder::class,
+            TipoSeeder::class,
+            UserSeeder::class,
+        ]);
     }
 }
