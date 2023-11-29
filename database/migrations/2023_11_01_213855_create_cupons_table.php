@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateCuponsTable extends Migration
@@ -14,16 +13,6 @@ class CreateCuponsTable extends Migration
      */
     public function up()
     {
-        Schema::create('medidas', function (Blueprint $table) {
-            $table->id();
-            $table->string('tipo');
-        });
-
-        DB::table('medidas')->insert([
-            ['tipo' => '%'],
-            ['tipo' => 'R$']
-        ]);
-
         Schema::create('cupons', function (Blueprint $table) {
             $table->id();
             $table->string('codigo')->unique();
@@ -41,6 +30,5 @@ class CreateCuponsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('cupons');
-        Schema::dropIfExists('medidas');
     }
 }

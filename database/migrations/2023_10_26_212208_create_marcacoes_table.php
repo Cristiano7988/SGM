@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSituacaoTable extends Migration
+class CreateMarcacoesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,11 @@ class CreateSituacaoTable extends Migration
      */
     public function up()
     {
-        Schema::create('situacao', function (Blueprint $table) {
+        Schema::create('marcacoes', function (Blueprint $table) {
             $table->id();
-            $table->string('esta');
+            $table->string("observacao");
+            $table->string("cor");
+            $table->integer("key_code");
         });
     }
 
@@ -26,6 +28,6 @@ class CreateSituacaoTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('situacao');
+        Schema::dropIfExists('marcacoes');
     }
 }

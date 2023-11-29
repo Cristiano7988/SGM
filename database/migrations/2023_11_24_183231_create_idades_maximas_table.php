@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateIdadeMinimaTable extends Migration
+class CreateIdadesMaximasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateIdadeMinimaTable extends Migration
      */
     public function up()
     {
-        Schema::create('idade_minima', function (Blueprint $table) {
+        Schema::create('idades_maximas', function (Blueprint $table) {
             $table->id();
             $table->integer('idade');
             $table->foreignId('medida_de_tempo_id')->nullable();
@@ -27,6 +27,6 @@ class CreateIdadeMinimaTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('idade_minima');
+        Schema::dropIfExists('idades_maximas');
     }
 }

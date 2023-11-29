@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateTiposTable extends Migration
@@ -18,12 +17,6 @@ class CreateTiposTable extends Migration
             $table->id();
             $table->string('nome')->nullable();
         });
-
-        DB::table('tipos')->insert([
-            ['nome' => 'responsável'],
-            ['nome' => 'pagante'],
-            ['nome' => 'acompanhante']
-        ]);
     }
 
     /**

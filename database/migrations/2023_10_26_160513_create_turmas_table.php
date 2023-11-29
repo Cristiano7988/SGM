@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateTurmasTable extends Migration
@@ -14,32 +13,6 @@ class CreateTurmasTable extends Migration
      */
     public function up()
     {
-        Schema::create('dias', function (Blueprint $table) {
-            $table->id();
-            $table->string('nome')->nullable();
-        });
-
-        DB::table('dias')->insert([
-            ['nome' => 'domingo'],
-            ['nome' => 'segunda'],
-            ['nome' => 'terça'],
-            ['nome' => 'quarta'],
-            ['nome' => 'quinta'],
-            ['nome' => 'sexta'],
-            ['nome' => 'sabado']
-        ]);
-        
-        Schema::create('tipos_de_aula', function (Blueprint $table) {
-            $table->id();
-            $table->string('tipo')->nullable();
-        });
-
-        DB::table('tipos_de_aula')->insert([
-            ['tipo' => 'coletiva'],
-            ['tipo' => 'naipes'],
-            ['tipo' => 'individual']
-        ]);
-
         Schema::create('turmas', function (Blueprint $table) {
             $table->id();
             $table->string('nome');

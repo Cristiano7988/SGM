@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMedidaDeTempoTable extends Migration
+class CreateMedidasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateMedidaDeTempoTable extends Migration
      */
     public function up()
     {
-        Schema::create('medida_de_tempo', function (Blueprint $table) {
+        Schema::create('medidas', function (Blueprint $table) {
             $table->id();
             $table->string('tipo');
         });
@@ -26,6 +26,6 @@ class CreateMedidaDeTempoTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('medida_de_tempo');
+        Schema::dropIfExists('medidas');
     }
 }
