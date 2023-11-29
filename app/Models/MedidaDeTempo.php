@@ -8,17 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class MedidaDeTempo extends Model
 {
     use HasFactory;
-    protected $table = 'medida_de_tempo';
+    protected $table = 'medidas_de_tempo';
     protected $fillable = [
         'tipo'
     ];
 
-    public function idade_minima()
+    public function idades_minimas()
     {
         return $this->hasMany(IdadeMinima::class);
     }
 
-    public function idade_maxima()
+    public function idades_maximas()
     {
         return $this->hasMany(IdadeMaxima::class);
     }

@@ -14,8 +14,6 @@ class Aluno extends Model
         'data_de_nascimento'
     ];
 
-    public $timestamps = true;
-
     public function users()
     {
         return $this->belongsToMany(User::class)->withTimestamps();

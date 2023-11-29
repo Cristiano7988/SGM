@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class IdadeMaxima extends Model
 {
     use HasFactory;
-    protected $table = 'idade_maxima';
+    protected $table = 'idades_maximas';
     protected $with = ['medida_de_tempo'];
     protected $fillable = [
         'idade',

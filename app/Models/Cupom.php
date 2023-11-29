@@ -24,7 +24,4 @@ class Cupom extends Model
     {
         return $this->hasMany(Transacao::class);
     }
-
-    /* Os cupons estão em uma tabela independente, sem relação com pacote, turma ou núcleo */
-    /* Caso haja alguma condição de validação do cupom na realização da transação referente ao pacote, turma ou núcleo escolhido a devida relação deve ser aplicada */
 }

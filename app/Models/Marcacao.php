@@ -9,7 +9,7 @@ class Marcacao extends Model
 {
     use HasFactory;
 
-    protected $table = "marcacao";
+    protected $table = "marcacoes";
     protected $fillable = [
         "observacao",
         "cor",
