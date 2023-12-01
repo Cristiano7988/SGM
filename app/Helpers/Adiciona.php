@@ -30,7 +30,7 @@ class Adiciona
                     }
                 ]);
                 if ($request['situacoes']) $matricula = Adiciona::modelRelacionada($matricula, $request['situacoes'], 'situacao_id', 'situacao');
-                if ($request['marcacoes']) $matricula = Adiciona::modelRelacionada($matricula, $request['marcacoes'], 'marcacao_id', 'marcacao');
+                if ($request['marcacoes']) $matricula = Adiciona::modelRelacionada($matricula, $request['marcacoes'], 'marcacao_id', 'marcacoes');
                 if ($request['pacotes']) $matricula = $matricula->with([
                     'pacote' => function ($pacote) use ($request) {
                         if ($request['periodos']) $pacote = $pacote->with(['periodos']);

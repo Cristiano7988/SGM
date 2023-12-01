@@ -16,6 +16,6 @@ class Situacao extends Model
 
     public function matriculas()
     {
-        return $this->belongsToMany(Matricula::class);
+        return $this->hasMany(Matricula::class);
     }
 }

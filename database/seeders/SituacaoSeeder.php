@@ -14,7 +14,7 @@ class SituacaoSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('situacao')->insert([
+        DB::table('situacoes')->insert([
             ['esta' => 'em espera'],
             ['esta' => 'cursando'],
             ['esta' => 'cursando e aguardando transação'],

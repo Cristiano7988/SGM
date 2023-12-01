@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTransacaoTable extends Migration
+class CreateTransacoesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateTransacaoTable extends Migration
      */
     public function up()
     {
-        Schema::create('transacao', function (Blueprint $table) {
+        Schema::create('transacoes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable();
             $table->foreignId('matricula_id')->nullable();
@@ -43,6 +43,6 @@ class CreateTransacaoTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('transacao');
+        Schema::dropIfExists('transacoes');
     }
 }
