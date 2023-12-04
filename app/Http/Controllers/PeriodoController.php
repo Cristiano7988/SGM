@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Filtra;
 use App\Models\Periodo;
 use Illuminate\Http\Request;
 
@@ -15,7 +16,21 @@ class PeriodoController extends Controller
     public function index()
     {
         try {
-            $periodos = Periodo::paginate(10);
+            extract(request()->all());
+            $periodos = Periodo::query();
+
+            $periodos
+                ->leftJoin('pacotes', 'pacotes.id', 'periodos.pacote_id')
+                ->select(['periodos.*'])->groupBy('periodos.id');
+
+            if (isset($pacotes)) $periodos = Filtra::resultado($periodos, $pacotes, 'pacotes.id')->with('pacote');
+
+            $order_by = $order_by ?? 'periodos.inicio'; // Ordenação por períodos e pacotes.
+            $sort = $sort ?? 'asc';
+            $per_page = $per_page ?? 10;
+
+            $periodos = $periodos->orderBy($order_by, $sort)->paginate($per_page);
+
             return $periodos;
         } catch (\Throwable $th) {
             return $th->getMessage();

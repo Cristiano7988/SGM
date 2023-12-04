@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Filtra;
 use App\Models\IdadeMinima;
 use Illuminate\Http\Request;
 
@@ -15,8 +16,23 @@ class IdadeMinimaController extends Controller
     public function index()
     {
         try {
-            $idades = IdadeMinima::paginate(10);
-            return response()->json($idades);
+            extract(request()->all());
+            $idades = IdadeMinima::query();
+
+            $idades
+                ->leftJoin('nucleos', 'idades_minimas.id', 'nucleos.idade_minima_id')
+                ->select(['idades_minimas.*'])->groupBy('idades_minimas.id');
+
+            if (isset($nucleos)) $idades = Filtra::resultado($idades, $nucleos, 'nucleos.id')->with('nucleos');
+            // Medida de tempo vem por default da Model
+
+            $order_by = $order_by ?? 'idade';
+            $sort =  $sort ?? 'asc';
+            $per_page = $per_page ?? 10;
+
+            $idades = $idades->orderBy('medida_de_tempo_id', $sort)->orderBy($order_by, $sort)->paginate($per_page);
+
+            return $idades;
         } catch (\Throwable $th) {
             return response()->json($th->getMessage());
         }
@@ -41,6 +57,7 @@ class IdadeMinimaController extends Controller
     public function store(Request $request)
     {
         try {
+            // $request->idade = intval($request->idade);
             $idadeMinima = IdadeMinima::create($request->all());
             return response()->json($idadeMinima);
         } catch (\Throwable $th) {

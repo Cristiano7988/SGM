@@ -27,8 +27,8 @@ class calculaIdadeDoAluno
             if (!$aluno) return response("Aluno não encontrado", 403);
 
             $data_de_nascimento = Carbon::create($aluno->data_de_nascimento);
-            $request['meses'] = $data_de_nascimento->diffInMonths($now);
-            $request['anos'] = $data_de_nascimento->diffInYears($now);
+            $request['meses'] = $data_de_nascimento->floatDiffInMonths($now);
+            $request['anos'] = $data_de_nascimento->floatDiffInYears($now);
         }
         return $next($request);
     }

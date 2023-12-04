@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Filtra;
 use App\Models\FormaDePagamento;
 use Illuminate\Http\Request;
 
@@ -15,8 +16,18 @@ class FormaDePagamentoController extends Controller
     public function index()
     {
         try {
-            $formaDePagamento = FormaDePagamento::all('tipo');
-            return $formaDePagamento;
+            extract(request()->all());
+            $formasDePagamento = FormaDePagamento::query();
+
+            $formasDePagamento
+                ->leftJoin('transacoes', 'formas_de_pagamento.id', 'transacoes.forma_de_pagamento_id')
+                ->select(['formas_de_pagamento.*'])->groupBy('formas_de_pagamento.id');
+
+            if (isset($transacoes)) $formasDePagamento = Filtra::resultado($formasDePagamento, $transacoes, 'transacoes.id')->with('transacoes');
+
+            $formasDePagamento = $formasDePagamento->get('tipo');
+
+            return $formasDePagamento;
         } catch (\Throwable $th) {
             return $th->getMessage();
         }

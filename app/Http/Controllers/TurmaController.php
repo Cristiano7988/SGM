@@ -19,18 +19,26 @@ class TurmaController extends Controller
     {
         try {
             extract(request()->all());
-
             $turmas = Turma::query();
+
+            $turmas
+                ->leftJoin('nucleos', 'turmas.nucleo_id', 'nucleos.id')
+                ->leftJoin('dias', 'turmas.dia_id', 'dias.id')
+                ->leftJoin('tipos_de_aula', 'turmas.tipo_de_aula_id', 'tipos_de_aula.id')
+                ->select(['turmas.*'])->groupBy('turmas.id');
+
             if (isset($nucleos)) $turmas = Filtra::resultado($turmas, $nucleos, 'nucleo_id')->with('nucleo');
-            if (isset($dias)) $turmas = Filtra::resultado($turmas, $dias, 'dia_id')->with('dia');
-            if (isset($tipos_de_aula)) $turmas = Filtra::resultado($turmas, $tipos_de_aula, 'tipo_de_aula_id')->with('tipo_de_aula');
+            if (isset($dias)) $turmas = Filtra::resultado($turmas, $dias, 'dia_id'); // Turma COM dia vem por padrão da model
+            if (isset($tipos_de_aula)) $turmas = Filtra::resultado($turmas, $tipos_de_aula, 'tipo_de_aula_id'); // Turma COM tipo de aula vem por padrão da model
+            
             if (isset($disponivel)) $turmas = $turmas->where('disponivel', '=', true);
             
-            $orderBy = isset($orderBy) ? $orderBy : 'nome';
-            $sort = isset($sort) ? $sort : 'asc';
-            $turmas = $turmas->orderBy($orderBy, $sort);
+            $order_by = $order_by ?? 'turmas.nome'; // Ordenação por turma, dia e tipo de aula
+            $sort = $sort ?? 'asc';
+            $per_page = $per_page ?? 10;
+            $turmas = $turmas->orderBy($order_by, $sort)->paginate($per_page);
 
-            return $turmas->paginate(10);
+            return $turmas;
         } catch (\Throwable $th) {
             return $th->getMessage();
         }

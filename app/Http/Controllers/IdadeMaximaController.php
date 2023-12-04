@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Filtra;
 use App\Models\IdadeMaxima;
 use Illuminate\Http\Request;
 
@@ -15,8 +16,23 @@ class IdadeMaximaController extends Controller
     public function index()
     {
         try {
-            $idades = IdadeMaxima::paginate(10);
-            return response()->json($idades);
+            extract(request()->all());
+            $idades = IdadeMaxima::query();
+
+            $idades
+                ->leftJoin('nucleos', 'idades_maximas.id', 'nucleos.idade_maxima_id')
+                ->select(['idades_maximas.*'])->groupBy('idades_maximas.id');
+
+            if (isset($nucleos)) $idades = Filtra::resultado($idades, $nucleos, 'nucleos.id')->with('nucleos');
+            // Medida de tempo vem por default da Model
+
+            $order_by = $order_by ?? 'idade';
+            $sort =  $sort ?? 'asc';
+            $per_page = $per_page ?? 10;
+
+            $idades = $idades->orderBy('medida_de_tempo_id', $sort)->orderBy($order_by, $sort)->paginate($per_page);
+
+            return $idades;
         } catch (\Throwable $th) {
             return response()->json($th->getMessage());
         }

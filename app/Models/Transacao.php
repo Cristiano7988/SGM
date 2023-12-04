@@ -9,6 +9,7 @@ class Transacao extends Model
 {
     use HasFactory;
     protected $table = "transacoes";
+    public $with = ['forma_de_pagamento'];
     protected $fillable = [
         'user_id',
         'matricula_id',

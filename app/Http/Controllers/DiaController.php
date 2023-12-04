@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Filtra;
 use App\Models\Dia;
 
 class DiaController extends Controller
@@ -14,8 +15,14 @@ class DiaController extends Controller
     public function index()
     {
         try {
-            $dia = Dia::all('nome');
-            return $dia;
+            extract(request()->all());
+            $dias = Dia::query();
+            
+            if (isset($turmas)) $dias = Filtra::resultado($dias, $turmas, 'turma_id')->with('turmas');
+
+            $dias = $dias->get('nome');
+
+            return $dias;
         } catch (\Throwable $th) {
             return $th->getMessage();
         }

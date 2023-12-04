@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Filtra;
 use App\Models\Aluno;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,10 +18,28 @@ class AlunoController extends Controller
     public function index()
     {
         try {
+            extract(request()->all());
             $user = Auth::user();
+            $alunos = Aluno::query();
 
-            if ($user->is_admin) $alunos = Aluno::paginate(10);
-            else $alunos = $user->alunos;
+            $alunos
+                ->leftJoin('aluno_user', 'alunos.id', 'aluno_user.aluno_id')
+                ->leftJoin('matriculas', 'alunos.id', 'matriculas.aluno_id')
+                ->select(['alunos.*'])->groupBy('alunos.id');
+
+            if (!$user->is_admin) $alunos = $alunos->whereIn('alunos.id', $user->alunos->pluck('id'));
+
+            if (isset($matriculas)) $alunos = Filtra::resultado($alunos, $matriculas, 'matriculas.id')->with('matriculas');
+            if (isset($users)) {
+                if ($users != '*') $alunos->whereIn('aluno_user.user_id', explode(',', $users));
+                $alunos->with('users');
+            }
+
+            $order_by = $order_by ?? 'nome'; // Apenas por alunos
+            $sort = $sort ?? 'asc';
+            $per_page = $per_page ?? 10;
+
+            $alunos = $alunos->orderBy($order_by, $sort)->paginate($per_page);
 
             return $alunos;
         } catch (\Throwable $th) {

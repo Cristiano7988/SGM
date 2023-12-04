@@ -40,6 +40,8 @@ class Formata
 
     public static function sePrecisa(string $key, $value, $model)
     {
+        if (!$value) return "";
+ 
         $imagens = [
             'imagem', // núcleo|turma
             'comprovante' // transacao

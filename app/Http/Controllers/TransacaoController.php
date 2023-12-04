@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Filtra;
 use App\Models\Transacao;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +18,27 @@ class TransacaoController extends Controller
     public function index()
     {
         try {
-            $transacoes = Transacao::paginate(10);
+            extract(request()->all());
+            $transacoes = Transacao::query();
+
+            $transacoes
+                ->leftJoin('matriculas', 'transacoes.matricula_id', 'matriculas.id')
+                ->leftJoin('users', 'transacoes.user_id', 'users.id')
+                ->leftJoin('cupons', 'transacoes.cupom_id', 'cupons.id')
+                ->leftJoin('formas_de_pagamento', 'transacoes.forma_de_pagamento_id', 'formas_de_pagamento.id')
+                ->select(['transacoes.*'])->groupBy('transacoes.id');
+
+            if (isset($matriculas)) $transacoes = Filtra::resultado($transacoes, $matriculas, 'matriculas.id')->with('matricula');
+            if (isset($users)) $transacoes = Filtra::resultado($transacoes, $users, 'users.id')->with('user');
+            if (isset($cupons)) $transacoes = Filtra::resultado($transacoes, $cupons, 'cupons.id')->with('cupom');
+            if (isset($formas_de_pagamento)) $transacoes = Filtra::resultado($transacoes, $formas_de_pagamento, 'formas_de_pagamento.id'); // Transação COM forma de pagamento vem por padrão da model.
+
+            $order_by = $order_by ?? 'transacoes.data_de_pagamento';
+            $sort =  $sort ?? 'asc';
+            $per_page = $per_page ?? 10;
+
+            $transacoes = $transacoes->orderBy($order_by, $sort)->paginate($per_page);
+
             return $transacoes;
         } catch (\Throwable $th) {
             return $th->getMessage();

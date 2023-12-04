@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Filtra;
 use App\Models\Pacote;
 use Illuminate\Http\Request;
 
@@ -18,10 +19,22 @@ class PacoteController extends Controller
             extract(request()->all());
             $pacotes = Pacote::query();
 
-            if (isset($nucleos) && $nucleos !== '*') $pacotes = $pacotes->whereIn('nucleo_id', explode(',', $nucleos));
+            $pacotes
+                ->leftJoin('periodos', 'pacotes.id', 'periodos.pacote_id')
+                ->leftJoin('matriculas', 'pacotes.id', 'matriculas.pacote_id')
+                ->leftJoin('nucleos', 'pacotes.nucleo_id', 'nucleos.id')
+                ->select(['pacotes.*'])->groupBy('pacotes.id');
+
+            if (isset($matriculas)) $pacotes = Filtra::resultado($pacotes, $matriculas, 'matriculas.id')->with('matriculas');
+            if (isset($periodos)) $pacotes = Filtra::resultado($pacotes, $periodos, 'periodos.id')->with('periodos');
+            if (isset($nucleos)) $pacotes = Filtra::resultado($pacotes, $nucleos, 'nucleos.id')->with('nucleo');
             if (isset($ativo)) $pacotes = $pacotes->where('ativo', true);
 
-            $pacotes = $pacotes->paginate(10);
+            $order_by = $order_by ?? 'pacotes.nome'; // Ordenação por pacote ou por núcleo
+            $sort = $sort ?? 'asc';
+            $per_page = $per_page ?? 10;
+
+            $pacotes = $pacotes->orderBy($order_by, $sort)->paginate($per_page);
 
             return $pacotes;
         } catch (\Throwable $th) {

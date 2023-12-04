@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\Filtra;
 use App\Models\Matricula;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class MatriculaController extends Controller
 {
@@ -17,15 +17,34 @@ class MatriculaController extends Controller
     public function index()
     {
         try {
-            $matriculas = Matricula::query();
             extract(request()->all());
-            if (isset($situacoes)) $matriculas = Filtra::resultado($matriculas, $situacoes, 'situacao_id')->with('situacao');
-            if (isset($marcacoes)) $matriculas = Filtra::resultado($matriculas, $marcacoes, 'marcacao_id')->with('marcacao');
-            if (isset($alunos)) $matriculas = Filtra::resultado($matriculas, $alunos, 'aluno_id')->with('aluno');
-            if (isset($turmas)) $matriculas = Filtra::resultado($matriculas, $turmas, 'turma_id')->with('turma');
-            if (isset($pacotes)) $matriculas = Filtra::resultado($matriculas, $pacotes, 'pacote_id')->with('pacote');
-            
-            return $matriculas->paginate(10);
+            $matriculas = Matricula::query();
+
+            $matriculas
+                ->leftJoin('situacoes', 'matriculas.situacao_id', 'situacoes.id')
+                ->leftJoin('marcacoes', 'matriculas.marcacao_id', 'marcacoes.id')
+                ->leftJoin('alunos', 'matriculas.aluno_id', 'alunos.id')
+                ->leftJoin('turmas', 'matriculas.turma_id', 'turmas.id')
+                ->leftJoin('pacotes', 'matriculas.pacote_id', 'pacotes.id')
+                ->select(['matriculas.*'])->groupBy('matriculas.id');
+
+            $user = Auth::user();
+            $alunosDoUsuario = $user->alunos->pluck('id');
+            if (!$user->is_admin) $matriculas->whereIn('aluno_id', $alunosDoUsuario);
+
+            if (isset($situacoes)) $matriculas = Filtra::resultado($matriculas, $situacoes, 'situacoes.id')->with('situacao');
+            if (isset($marcacoes)) $matriculas = Filtra::resultado($matriculas, $marcacoes, 'marcacoes.id')->with('marcacao');
+            if (isset($alunos)) $matriculas = Filtra::resultado($matriculas, $alunos, 'alunos.id')->with('aluno');
+            if (isset($turmas)) $matriculas = Filtra::resultado($matriculas, $turmas, 'turmas.id')->with('turma');
+            if (isset($pacotes)) $matriculas = Filtra::resultado($matriculas, $pacotes, 'pacotes.id')->with('pacote');
+
+            $order_by = $order_by ?? 'alunos.nome'; // Ordenação por situação, marcação, aluno, turma e pacote.
+            $sort =  $sort ?? 'asc';
+            $per_page = $per_page ?? 10;
+
+            $matriculas = $matriculas->orderBy($order_by, $sort)->paginate($per_page);
+
+            return $matriculas;
         } catch (\Throwable $th) {
             return $th->getMessage();
         }

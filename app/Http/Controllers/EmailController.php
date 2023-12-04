@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Filtra;
 use App\Helpers\Substitui;
 use App\Mail\EmailGenerico;
 use App\Mail\TodasTransacoes;
@@ -22,7 +23,26 @@ class EmailController extends Controller
     public function index()
     {
         try {
-            $emails = Email::paginate(10);
+            extract(request()->all());
+            $emails = Email::query();
+
+            $emails
+                ->leftJoin('email_user', 'emails.id', 'email_user.email_id')
+                ->leftJoin('users', 'users.id', 'email_user.user_id')
+                ->select(['emails.id as id', 'emails.assunto', 'emails.anexo'])->groupBy('emails.id');
+
+            if (isset($users)) $emails = Filtra::resultado($emails, $users, 'users.id')->with([
+                'users' => function ($query) use ($users) {
+                    if ($users != '*') $query->whereIn('users.id', explode(',', $users));
+                }
+            ]);
+
+            $order_by = $order_by ?? "emails.assunto";
+            $sort = $sort ?? "asc";
+            $per_page = $per_page ?? 10;
+
+            $emails = $emails->orderBy($order_by, $sort)->paginate($per_page);
+
             return $emails;
         } catch (\Throwable $th) {
             return $th->getMessage();
@@ -91,7 +111,12 @@ class EmailController extends Controller
     public function send(Request $request, Email $email)
     {
         try {
-            if ($request->destinatarios) $users = User::all()->whereIn('id', explode(',', $request->destinatarios));
+            if (!$request->destinatarios) return response("Informe algum destinatário", 403);
+            
+            $users = User::all();
+
+            if ($request->destinatarios != '*') $users = $users->whereIn('id', explode(',', $request->destinatarios));
+            
             $conteudo = new EmailGenerico(
                 $request,
                 $email->conteudo,
@@ -107,7 +132,7 @@ class EmailController extends Controller
                 $user->emails()->attach($email);
             }
 
-            return response()->json($email);
+            return $email;
         } catch (\Throwable $th) {
             return $th->getMessage();
         }

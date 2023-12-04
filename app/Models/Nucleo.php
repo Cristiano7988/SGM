@@ -9,6 +9,7 @@ class Nucleo extends Model
 {
     use HasFactory;
 
+    public $with = ['idade_minima', 'idade_maxima'];
     protected $fillable = [
         'nome',
         'imagem',

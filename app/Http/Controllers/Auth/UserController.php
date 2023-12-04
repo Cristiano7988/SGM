@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Helpers\Adiciona;
 use App\Helpers\Filtra;
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -35,154 +34,334 @@ class UserController extends Controller
      *
      * @return \App\Models\User
      */
-    protected function index(Request $request) {
+    protected function index() {
         try {
+
             $user = Auth::user();
             extract(request()->all());
             /**
-             * Variáves que alteram o circuito relacional das informações requisitadas para pegar
+             * $transacoes_feitas_pelo_usuario
+             * Variável que alteram o circuito relacional das informações requisitadas para pegar
              * usuários que fizeram transações
              * ou
              * usuários que tenham alunos matrículados cuja as transações foram realizadas
              */
-            $que_fizeram_transacoes = isset($que_fizeram_transacoes) && isset($transacoes);
-            $nucleo_do_pacote = isset($nucleo_do_pacote); // Dissocia o núcleo do pacote do núcleo da turma, embora sejam o mesmo na requisição a específicação pode surgir
-
-            // Conecta todas tabelas que possuem relação direta com o usuário
-            $usuariosFiltrados = User::leftJoin('tipo_user', 'users.id', '=', 'tipo_user.user_id' )
-                ->leftJoin('tipos', 'tipo_id', '=', 'tipos.id')
-                ->leftJoin('aluno_user', 'users.id', '=', 'aluno_user.user_id' )
-                ->leftJoin('alunos', 'aluno_user.aluno_id', '=', 'alunos.id')
-                ->leftJoin('transacao', 'users.id', '=', 'transacao.user_id')
-                ->leftJoin('matriculas', $que_fizeram_transacoes ? 'transacao.matricula_id' : 'alunos.id', '=', $que_fizeram_transacoes ? 'matriculas.id' : 'matriculas.aluno_id')
-                ->leftJoin('situacao', 'matriculas.situacao_id', '=', 'situacao.id')
-                ->leftJoin('marcacao', 'matriculas.marcacao_id', '=', 'marcacao.id')
-                ->leftJoin('pacotes', 'matriculas.pacote_id', '=', 'pacotes.id')
-                ->leftJoin('periodos', 'periodos.pacote_id', '=', 'pacotes.id')
-                ->leftJoin('turmas', 'matriculas.turma_id', '=', 'turmas.id')
-                ->leftJoin('dias', 'turmas.dia_id', '=', 'dias.id')
-                ->leftJoin('tipos_de_aula', 'turmas.tipo_de_aula_id', '=', 'tipos_de_aula.id')
-                ->leftJoin('nucleos', $nucleo_do_pacote ? 'pacotes.nucleo_id' : 'turmas.nucleo_id', '=', 'nucleos.id')
-                ->leftJoin('idade_minima', 'nucleos.idade_minima_id', '=', 'idade_minima.id')
-                ->leftJoin('medida_de_tempo as m_min', 'idade_minima.medida_de_tempo_id', '=', 'm_min.id')
-                ->leftJoin('idade_maxima', 'nucleos.idade_maxima_id', '=', 'idade_maxima.id')
-                ->leftJoin('medida_de_tempo as m_max', 'idade_maxima.medida_de_tempo_id', '=', 'm_max.id')
-                ->leftJoin('cupons', 'transacao.cupom_id', '=', 'cupons.id')
-                ->leftJoin('medidas', 'cupons.medida_id', '=', 'medidas.id')
-                ->leftJoin('forma_de_pagamento', 'transacao.forma_de_pagamento_id', '=', 'forma_de_pagamento.id')
-                ->leftJoin('email_user', 'users.id', '=', 'email_user.user_id')
-                ->leftJoin('emails', 'email_id', '=', 'emails.id')
-                ->get([
-                    // Users
-                    'users.*',
-                    'users.id as user_id',
-                    'alunos.id as aluno_id', // Alunos
-                    'tipo_user.tipo_id', // Tipos
-                    'transacao.id as transacao_id', // Transações
-                    'matriculas.id as matricula_id', // Matrículas
-                    'pacotes.id as pacote_id', // Pacotes
-                    'periodos.id as periodo_id', // Periodos
-                    'cupons.id as cupom_id', // Cupons
-                    'medidas.id as medida_id', // Medidas
-                    'forma_de_pagamento.id as forma_de_pagamento_id', // Formas de Pagamento
-                    'turmas.id as turma_id', // Turmas
-                    'dias.id as dia_id', // Dias
-                    'tipos_de_aula.id as tipo_de_aula_id', // TipoDeAula
-                    'nucleos.id as nucleo_id', // Núcleos
-                    'idade_minima.id as idade_minima_id', // Idade Mínima
-                    'm_min.id as medida_minima_id', // Medida Mínima de Tempo
-                    'idade_maxima.id as idade_maxima_id', // Idade Máxima
-                    'm_max.id as medida_maxima_id', // Medida Mínima de Tempo
-                    'situacao.id as situacao_id', // Situações
-                    'marcacao.id as marcacao_id', // Marcações
-                    'email_user.email_id'
-                ]);
-
-            if (!$user->is_admin) $usuariosFiltrados = $usuariosFiltrados->whereIn('aluno_id', $user->alunos->pluck('id')); // Aqui é estabelecido que o usuário poderá acessar apenas informações relacionadas ao aluno ao qual está associado
-
-            // Aqui filtramos os usuários de acordo com suas relações
-            if (isset($usuarios) && !isset($todos)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $usuarios, 'user_id');
-            else if (isset($usuarios) && isset($todos)) $usuariosFiltrados = $usuariosFiltrados->whereNotIn('user_id', explode(',', $usuarios));
             
-            if (isset($emails)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $emails, 'email_id');
-            if (isset($tipos)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $tipos, 'tipo_id');
-            if ($que_fizeram_transacoes) {
-                $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $transacoes, 'transacao_id');
-                if (isset($forma_de_pagamento)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $forma_de_pagamento, 'forma_de_pagamento_id');
-                if (isset($cupons)) {
-                    $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $cupons, 'cupom_id');
-                    if (isset($medidas)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $medidas, 'medida_id');
-                }
-            }
-            else if (isset($alunos)) {
-                $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $alunos, 'aluno_id');
-            }
+            // Conecta todas tabelas (exceto a relação pacotes -> núcleos)
+            $users = User::query();
+            
+                // Tipos
+            $users
+                ->leftJoin('tipo_user', 'users.id', 'tipo_user.user_id' )
+                ->leftJoin('tipos', 'tipo_user.tipo_id', 'tipos.id')
+                // Emails
+                ->leftJoin('email_user', 'users.id', 'email_user.user_id')
+                ->leftJoin('emails', 'email_user.email_id', 'emails.id')
+                // Alunos
+                ->leftJoin('aluno_user', 'users.id', 'aluno_user.user_id' )
+                ->leftJoin('alunos', 'aluno_user.aluno_id', 'alunos.id')
+                // Transações
+                ->leftJoin('transacoes', 'users.id', 'transacoes.user_id')
+                ->leftJoin('formas_de_pagamento', 'transacoes.forma_de_pagamento_id', 'formas_de_pagamento.id')
+                ->leftJoin('cupons', 'transacoes.cupom_id', 'cupons.id')
+                ->leftJoin('medidas', 'cupons.medida_id', 'medidas.id')
+                // Matrículas
+                ->leftJoin('matriculas', isset($transacoes_feitas_pelo_usuario) ? 'transacoes.matricula_id' : 'alunos.id', isset($transacoes_feitas_pelo_usuario) ? 'matriculas.id' : 'matriculas.aluno_id')
+                ->leftJoin('pacotes', 'matriculas.pacote_id', 'pacotes.id')
+                ->leftJoin('periodos', 'periodos.pacote_id', 'pacotes.id')
+                ->leftJoin('situacoes', 'matriculas.situacao_id', 'situacoes.id')
+                ->leftJoin('marcacoes', 'matriculas.marcacao_id', 'marcacoes.id')
+                // Turmas
+                ->leftJoin('turmas', 'matriculas.turma_id', 'turmas.id')
+                ->leftJoin('tipos_de_aula', 'turmas.tipo_de_aula_id', 'tipos_de_aula.id')
+                ->leftJoin('dias', 'turmas.dia_id', 'dias.id')
+                // Núcleos
+                ->leftJoin('nucleos', 'turmas.nucleo_id', 'nucleos.id')
+                ->leftJoin('idades_minimas', 'nucleos.idade_minima_id', 'idades_minimas.id')
+                ->leftJoin('medidas_de_tempo as m_min', 'idades_minimas.medida_de_tempo_id', 'm_min.id')
+                ->leftJoin('idades_maximas', 'nucleos.idade_maxima_id', 'idades_maximas.id')
+                ->leftJoin('medidas_de_tempo as m_max', 'idades_maximas.medida_de_tempo_id', 'm_max.id')
+                ->select(['users.*'])->groupBy('users.id');
 
-            if (isset($matriculas) && (isset($alunos) || $que_fizeram_transacoes)) {
-                $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $matriculas, 'matricula_id');
-                if (isset($situacoes)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $situacoes, 'situacao_id');
-                if (isset($marcacoes)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $marcacoes, 'marcacao_id');
-    
-                if (isset($turmas)) {
-                    $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $turmas, 'turma_id');
-                    if (isset($dias)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $dias, 'dia_id');
-                    if (isset($tipos_de_aula)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $tipos_de_aula, 'tipo_de_aula_id');
-                }
-                if (isset($pacotes)) {
-                    $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $pacotes, 'pacote_id');
-                    if (isset($periodos)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $periodos, 'periodo_id');
-                }
-
-                if (isset($nucleos) && (isset($turmas) || isset($pacotes))) {
-                    $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $nucleos, 'nucleo_id');
-                    if (isset($idade_minima)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $idade_minima, 'idade_minima_id');
-                    if (isset($medida_minima_de_tempo)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $medida_minima_de_tempo, 'medida_minima_id');
-                    if (isset($idade_maxima)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $idade_maxima, 'idade_maxima_id');
-                    if (isset($medida_maxima_de_tempo)) $usuariosFiltrados = Filtra::resultado($usuariosFiltrados, $medida_maxima_de_tempo, 'medida_maxima_id');
-                }
-            }
-
+            // Aqui é estabelecido que o usuário poderá acessar apenas informações relacionadas ao aluno ao qual está associado
+            if (!$user->is_admin) $users = $users->whereIn('alunos.id', $user->alunos->pluck('id'));
+            
+            // Aqui filtramos os usuários de acordo com suas relações
+            if (isset($usuarios))                       $users = Filtra::resultado($users, $usuarios, 'users.id');
+            if (isset($tipos))                          $users = Filtra::resultado($users, $tipos, 'tipo_id')->with('tipos');
+            if (isset($emails))                         $users = Filtra::resultado($users, $emails, 'emails.id')->with('emails:id,assunto,anexo');
+            if (isset($transacoes_feitas_pelo_usuario)) $users = Filtra::resultado($users, $transacoes_feitas_pelo_usuario, 'transacoes.id');
+            else if (isset($transacoes))                $users = Filtra::resultado($users, $transacoes, 'transacoes.id');
+            if (isset($formas_de_pagamento))            $users = Filtra::resultado($users, $formas_de_pagamento, 'formas_de_pagamento.id');
+            if (isset($cupons))                         $users = Filtra::resultado($users, $cupons, 'cupons.id');
+            if (isset($medidas))                        $users = Filtra::resultado($users, $medidas, 'medidas.id');
+            if (isset($matriculas))                     $users = Filtra::resultado($users, $matriculas, 'matriculas.id');
+            if (isset($pacotes))                        $users = Filtra::resultado($users, $pacotes, 'pacotes.id');
+            if (isset($periodos))                       $users = Filtra::resultado($users, $periodos, 'periodos.id');
+            if (isset($situacoes))                      $users = Filtra::resultado($users, $situacoes, 'situacoes.id');
+            if (isset($marcacoes))                      $users = Filtra::resultado($users, $marcacoes, 'marcacoes.id');
+            if (isset($turmas))                         $users = Filtra::resultado($users, $turmas, 'turmas.id');
+            if (isset($tipos_de_aula))                  $users = Filtra::resultado($users, $tipos_de_aula, 'tipos_de_aula.id');
+            if (isset($dias))                           $users = Filtra::resultado($users, $dias, 'dias.id');
+            if (isset($nucleos))                        $users = Filtra::resultado($users, $nucleos, 'nucleos.id');
+            if (isset($alunos))                         $users = Filtra::resultado($users, $alunos, 'alunos.id');
+            if (isset($idades_minimas))                 $users = Filtra::resultado($users, $idades_minimas, 'idades_minimas.id');
+            if (isset($idades_maximas))                 $users = Filtra::resultado($users, $idades_maximas, 'idades_maximas.id');
+            if (isset($medidas_minimas_de_tempo))       $users = Filtra::resultado($users, $medidas_minimas_de_tempo, 'm_min.id');
+            if (isset($medidas_maximas_de_tempo))       $users = Filtra::resultado($users, $medidas_maximas_de_tempo, 'm_max.id');
 
             // Aqui retornamos as informações requisitadas no formato de eager Loading
-            $ids = $usuariosFiltrados->pluck('id');
-            $order = isset($order) ? $order : "asc";
-            $orderBy = isset($orderBy) ? $orderBy : "nome";
-            $users = User::whereIn('id', $ids)->orderBy($orderBy, $order);
+            // Tabelas renomeadas não tem efeito a partir daqui
+            if (isset($transacoes_feitas_pelo_usuario)) $users->with([
+                'transacoes' => function ($query) {
+                    extract(request()->all());
+                    if ($transacoes_feitas_pelo_usuario != '*') $query->whereIn('transacoes.id', explode(',', $transacoes_feitas_pelo_usuario));
+                    // Formas de pagamento vem por padrão da model
 
-            if (isset($tipos)) $users = $users->with('tipos');
-            if (isset($emails)) $users = $users->with('emails:id,assunto,anexo');
+                    // Cupons
+                    if (isset($cupons)) {
+                        $query->whereNotNull('cupom_id');
 
-            if ($que_fizeram_transacoes) $users = $users->with([
-                'transacoes' => function ($transacao) use ($request) {
-                    if ($request['transacoes'] !== '*') $transacao = $transacao->whereIn('id', explode(',', $request['transacoes']));
-                    if ($request['matriculas']) $transacao = Adiciona::matriculas($request, $transacao, true);
-                    if ($request['forma_de_pagamento']) $transacao = Adiciona::modelRelacionada($transacao, $request['forma_de_pagamento'], 'forma_de_pagamento_id', 'forma_de_pagamento');
-                    if ($request['cupons'] && ($request['cupons'] !== '*')) $transacao = $transacao->whereIn('cupom_id', explode(',', $request['cupons']));
-
-                    if ($request['cupons']) $transacao = $transacao->whereNotNull('cupom_id')->with([
-                            'cupom' => function ($cupom) use ($request) {
-                                if ($request['medidas']) $cupom = Adiciona::modelRelacionada($cupom, $request['medidas'], 'medida_id', 'medida');
-                                return $cupom;
+                        // With
+                        $query->with([
+                            'cupom' => function ($query) {
+                                extract(request()->all());
+                                if ($cupons != '*') $query->whereIn('cupons.id', explode(',', $cupons));
+                                // Medidas vem por padrão da model
                             }
                         ]);
-                        
-                    return $transacao;
+                    }
+
+                    // Matrículas
+                    if (isset($matriculas)) {
+                        $query->whereNotNull('matricula_id');
+
+                        // With
+                        $query->with([
+                            'matricula' => function ($query) {
+                                extract(request()->all());
+                                if ($matriculas != '*') $query->whereIn('matriculas.id', explode(',', $matriculas));
+
+                                // Alunos
+                                if (isset($alunos)) {
+                                    $query->whereNotNull('aluno_id');
+
+                                    // With
+                                    $query->with([
+                                        'aluno' => function ($query) {
+                                            extract(request()->all());
+                                            if ($alunos != '*') $query->whereIn('alunos.id', explode(',', $alunos));
+                                        }
+                                    ]);
+                                }
+
+                                // Situações
+                                if (isset($situacoes)) {
+                                    $query->whereNotNull('situacao_id');
+
+                                    // With
+                                    $query->with([
+                                        'situacao' => function ($query) {
+                                            extract(request()->all());
+                                            if ($situacoes != '*') $query->whereIn('situacoes.id', explode(',', $situacoes));
+                                        }
+                                    ]);
+                                }
+
+                                // Marcações
+                                if (isset($marcacoes)) {
+                                    $query->whereNotNull('marcacao_id');
+
+                                    // With
+                                    $query->with([
+                                        'marcacao' => function ($query) {
+                                            extract(request()->all());
+                                            if ($marcacoes != '*') $query->whereIn('marcacoes.id', explode(',', $marcacoes));
+                                        }
+                                    ]);
+                                }
+
+                                // Pacotes
+                                if (isset($pacotes)) {
+                                    $query->whereNotNull('pacote_id');
+
+                                    // With
+                                    $query->with([
+                                        'pacote' => function ($query) {
+                                            extract(request()->all());
+                                            if ($pacotes != '*') $query->whereIn('pacotes.id', explode(',', $pacotes));
+
+                                            // Períodos
+                                            if (isset($periodos)) {
+                                                $query->whereNotNull('periodo_id');
+
+                                                // With
+                                                $query->with([
+                                                    'periodos' => function ($query) {
+                                                        extract(request()->all());
+                                                        if ($periodos != '*') $query->whereIn('periodos.id', explode(',', $periodos));
+                                                    }
+                                                ]);
+                                            }
+                                        }
+                                    ]);
+                                }
+
+                                // Turmas
+                                if (isset($turmas)) {
+                                    $query->whereNotNull('turma_id');
+
+                                    // With
+                                    $query->with([
+                                        'turma' => function ($query) {
+                                            extract(request()->all());
+                                            if ($turmas != '*') $query->whereIn('turmas.id', explode(',', $turmas));
+                                            // Tipos de aula e Dias vem por padrão da model
+
+                                            // Núcleos
+                                            if (isset($nucleos)) {
+                                                $query->whereNotNull('nucleo_id');
+
+                                                // With
+                                                $query->with([
+                                                    'nucleo' => function ($query) {
+                                                        extract(request()->all());
+                                                        if ($nucleos != '*') $query->whereIn('nucleos.id', explode(',', $nucleos));
+                                                        // Idades Mínimas e Máximas vem por padrão da Model
+                                                    }
+                                                ]);
+                                            }
+                                        }
+                                    ]);
+                                }
+                            }
+                        ]);
+                    }
                 }
             ]);
-            else if (isset($alunos)) $users = $users->with([
-                'alunos' => function ($aluno) use($request) {
-                    if ($request['alunos'] !== '*') $aluno = $aluno->whereIn('aluno_id', explode(',', $request['alunos']));
-                    if ($request['matriculas']) $aluno = Adiciona::matriculas($request, $aluno);
+            // Alunos do usuário
+            else if (isset($alunos)) $users->with([
+                'alunos' => function ($query) {
+                    extract(request()->all());
+                    if ($alunos != '*') $query->whereIn('alunos.id', explode(',', $alunos));
 
-                    return $aluno;
+                    // Matrículas
+                    if (isset($matriculas)) {
+                        $query->whereNotNull('matricula_id');
+
+                        // With
+                        $query->with([
+                            'matriculas' => function ($query) {
+                                extract(request()->all());
+                                if ($matriculas != '*') $query->whereIn('matriculas.id', explode(',', $matriculas));
+
+                                // Situações
+                                if (isset($situacoes)) {
+                                    $query->whereNotNull('situacao_id');
+
+                                    // With
+                                    $query->with([
+                                        'situacao' => function ($query) {
+                                            extract(request()->all());
+                                            if ($situacoes != '*') $query->whereIn('situacoes.id', explode(',', $situacoes));
+                                        }
+                                    ]);
+                                }
+
+                                // Marcações
+                                if (isset($marcacoes)) {
+                                    $query->whereNotNull('marcacao_id');
+
+                                    // With
+                                    $query->with([
+                                        'marcacao' => function ($query) {
+                                            extract(request()->all());
+                                            if ($marcacoes != '*') $query->whereIn('marcacoes.id', explode(',', $marcacoes));
+                                        }
+                                    ]);
+                                }
+
+                                // Pacotes
+                                if (isset($pacotes)) {
+                                    $query->whereNotNull('pacote_id');
+
+                                    // With
+                                    $query->with([
+                                        'pacote' => function ($query) {
+                                            extract(request()->all());
+                                            if ($pacotes != '*') $query->whereIn('pacotes.id', explode(',', $pacotes));
+
+                                            // Períodos
+                                            if (isset($periodos)) {
+                                                $query->whereNotNull('periodo_id');
+
+                                                // With
+                                                $query->with([
+                                                    'periodos' => function ($query) {
+                                                        extract(request()->all());
+                                                        if ($periodos != '*') $query->whereIn('periodos.id', explode(',', $periodos));
+                                                    }
+                                                ]);
+                                            }
+                                        }
+                                    ]);
+                                }
+
+                                // Turmas
+                                if (isset($turmas)) {
+                                    $query->whereNotNull('turma_id');
+
+                                    // With
+                                    $query->with([
+                                        'turma' => function ($query) {
+                                            extract(request()->all());
+                                            if ($turmas != '*') $query->whereIn('turmas.id', explode(',', $turmas));
+                                            // Tipos de aula e Dias vem por padrão da model
+
+                                            // Núcleos
+                                            if (isset($nucleos)) {
+                                                $query->whereNotNull('nucleo_id');
+
+                                                // With
+                                                $query->with([
+                                                    'nucleo' => function ($query) {
+                                                        extract(request()->all());
+                                                        if ($nucleos != '*') $query->whereIn('nucleos.id', explode(',', $nucleos));
+                                                        // Idades Mínimas e Máximas vem por padrão da Model
+                                                        // Pacotes do núcleo não adicionado
+                                                    }
+                                                ]);
+                                            }
+                                        }
+                                    ]);
+                                }
+
+                                // Transações
+                                if (isset($transacoes)) {
+                                    $query->whereNotNull('turma_id');
+
+                                    // With
+                                    $query->with([
+                                        'transacoes' => function ($query) {
+                                            extract(request()->all());
+                                            if ($transacoes != '*') $query->whereIn('transacoes.id', explode(',', $transacoes));
+                                            // Formas de pagamento vem por padrão da model
+                                        }
+                                    ]);
+                                }
+                            }
+                        ]);
+                    }
                 }
             ]);
 
-            
-            $users = isset($todos) ? $users->get() : $users->paginate(10);
+            $order = $order ?? 'asc'; // Ordenação por usuário e por transação (bem como por seu cupom, forma de pagamento ou matrícula) feitas pelo usuário.
+            $order_by = $order_by ?? 'users.nome';
+            $per_page = $per_page ?? 10;
 
-            return response()->json($users);
+            $users = $users->orderBy($order_by, $order)->paginate($per_page);
 
+            return $users;
         } catch(\Throwable $th) {
             return $th->getMessage();
         }

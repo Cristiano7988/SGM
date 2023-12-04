@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Filtra;
 use App\Models\Marcacao;
 use Illuminate\Http\Request;
 
@@ -15,7 +16,21 @@ class MarcacaoController extends Controller
     public function index()
     {
         try {
-            $marcacoes = Marcacao::paginate(10);
+            extract(request()->all());
+            $marcacoes = Marcacao::query();
+
+            $marcacoes
+                ->leftJoin('matriculas', 'marcacoes.id', 'matriculas.marcacao_id')
+                ->select(['marcacoes.*'])->groupBy('marcacoes.id');
+
+            if (isset($matriculas)) $marcacoes = Filtra::resultado($marcacoes, $matriculas, 'matricula_id')->with('matriculas');
+
+            $order_by = $order_by ?? 'observacao'; // Apenas por Marcação
+            $sort =  $sort ?? 'asc';
+            $per_page = $per_page ?? 10;
+
+            $marcacoes = $marcacoes->orderBy($order_by, $sort)->paginate($per_page);
+
             return $marcacoes;
         } catch (\Throwable $th) {
             return $th->getMessage();
@@ -41,8 +56,8 @@ class MarcacaoController extends Controller
     public function store(Request $request)
     {
         try {
-            $nucleo = Marcacao::create($request->all());
-            return $nucleo;
+            $marcacao = Marcacao::create($request->all());
+            return $marcacao;
         } catch (\Throwable $th) {
             return $th->getMessage();
         }

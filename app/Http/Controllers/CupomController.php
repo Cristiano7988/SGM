@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Filtra;
 use App\Models\Cupom;
 use Illuminate\Http\Request;
 
@@ -15,7 +16,22 @@ class CupomController extends Controller
     public function index()
     {
         try {
-            $cupons = Cupom::paginate(10);
+            extract(request()->all());
+            $cupons = Cupom::query();
+
+            $cupons
+                ->leftJoin('transacoes', 'transacoes.cupom_id', 'cupons.id')
+                ->select(['cupons.*'])->groupBy('cupons.id');
+
+            if (isset($medidas)) $cupons = Filtra::resultado($cupons, $medidas, 'medida_id'); // Cupom COM medida vem por padrão da model
+            if (isset($transacoes)) $cupons = Filtra::resultado($cupons, $transacoes, 'transacoes.id')->with('transacoes');
+
+            $order_by = $order_by ?? 'desconto'; // Apenas por Cupom
+            $sort =  $sort ?? 'asc';
+            $per_page = $per_page ?? 10;
+
+            $cupons = $cupons->orderBy($order_by, $sort)->paginate($per_page);
+
             return $cupons;
         } catch (\Throwable $th) {
             return $th->getMessage();

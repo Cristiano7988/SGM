@@ -16,7 +16,7 @@ class MedidaDeTempoController extends Controller
     {
         try {
             $medidas = MedidaDeTempo::all('tipo');
-            return response()->json($medidas);
+            return $medidas;
         } catch (\Throwable $th) {
             return response()->json($th->getMessage());
         }

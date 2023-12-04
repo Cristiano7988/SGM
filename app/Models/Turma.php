@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Turma extends Model
 {
     use HasFactory;
-
+    public $with = ['tipo_de_aula', 'dia'];
     protected $fillable = [
         'nome',
         'descricao',

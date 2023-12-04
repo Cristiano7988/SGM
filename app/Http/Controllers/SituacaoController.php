@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Filtra;
 use App\Models\Situacao;
 use Illuminate\Http\Request;
 
@@ -15,7 +16,21 @@ class SituacaoController extends Controller
     public function index()
     {
         try {
-            $situacoes = Situacao::all('esta');
+            extract(request()->all());
+            $situacoes = Situacao::query();
+
+            $situacoes
+                ->leftJoin('matriculas', 'situacoes.id', 'matriculas.situacao_id')
+                ->select(['situacoes.*'])->groupBy('situacoes.id');
+
+            if (isset($matriculas)) $situacoes = Filtra::resultado($situacoes, $matriculas, 'matriculas.id')->with('matriculas');
+
+            $order_by = $order_by ?? 'situacoes.esta'; // Ordenação por situações e matrículas
+            $sort =  $sort ?? 'asc';
+            $per_page = $per_page ?? 10;
+
+            $situacoes = $situacoes->orderBy($order_by, $sort)->paginate($per_page);
+
             return $situacoes;
         } catch (\Throwable $th) {
             return $th->getMessage();
