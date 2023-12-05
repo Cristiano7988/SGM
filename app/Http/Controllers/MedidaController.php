@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Trata;
 use App\Models\Medida;
+use Illuminate\Http\Response;
 
 class   MedidaController extends Controller
 {
@@ -12,11 +13,11 @@ class   MedidaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index():Response
     {
         try {
             $medidas = Medida::all('tipo');
-            return $medidas;
+            return response($medidas);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -29,10 +30,10 @@ class   MedidaController extends Controller
      * @param  \App\Models\Medida  $medida
      * @return \Illuminate\Http\Response
      */
-    public function show(Medida $medida)
+    public function show(Medida $medida):Response
     {
         try {
-            return $medida;
+            return response($medida);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;

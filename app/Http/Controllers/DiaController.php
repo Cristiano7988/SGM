@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\Filtra;
 use App\Helpers\Trata;
 use App\Models\Dia;
+use Illuminate\Http\Response;
 
 class DiaController extends Controller
 {
@@ -13,7 +14,7 @@ class DiaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index():Response
     {
         try {
             extract(request()->all());
@@ -23,7 +24,7 @@ class DiaController extends Controller
 
             $dias = $dias->get('nome');
 
-            return $dias;
+            return response($dias);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -36,10 +37,10 @@ class DiaController extends Controller
      * @param  \App\Models\Dia $dia
      * @return \Illuminate\Http\Response
      */
-    public function show(Dia $dia)
+    public function show(Dia $dia):Response
     {
         try {
-            return $dia;
+            return response($dia);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;

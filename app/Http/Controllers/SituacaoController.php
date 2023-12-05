@@ -6,6 +6,7 @@ use App\Helpers\Filtra;
 use App\Helpers\Trata;
 use App\Models\Situacao;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class SituacaoController extends Controller
 {
@@ -14,7 +15,7 @@ class SituacaoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index():Response
     {
         try {
             extract(request()->all());
@@ -28,7 +29,7 @@ class SituacaoController extends Controller
 
             $situacoes = Trata::resultado($situacoes, 'situacoes.esta'); // Ordenação por situação ou matrícula.
 
-            return $situacoes;
+            return response($situacoes);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -51,11 +52,11 @@ class SituacaoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request):Response
     {
         try {
             $situacoes = Situacao::create($request->all());
-            return $situacoes;
+            return response($situacoes);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -68,10 +69,10 @@ class SituacaoController extends Controller
      * @param  \App\Models\Situacao  $situacao
      * @return \Illuminate\Http\Response
      */
-    public function show(Situacao $situacao)
+    public function show(Situacao $situacao):Response
     {
         try {
-            return $situacao;
+            return response($situacao);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -96,11 +97,11 @@ class SituacaoController extends Controller
      * @param  \App\Models\Situacao  $situacao
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Situacao $situacao)
+    public function update(Request $request, Situacao $situacao):Response
     {
         try {
             $situacao->update($request->all());
-            return $situacao;
+            return response($situacao);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -113,11 +114,11 @@ class SituacaoController extends Controller
      * @param  \App\Models\Situacao  $situacao
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Situacao $situacao)
+    public function destroy(Situacao $situacao):Response
     {
         try {
-            $deleted = $situacao->delete();
-            return !!$deleted;
+            $situacao->delete();
+            return response("A situação de nº {$situacao->id}, {$situacao->esta},  foi deletada.");;
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;

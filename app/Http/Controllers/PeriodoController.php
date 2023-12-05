@@ -6,6 +6,7 @@ use App\Helpers\Filtra;
 use App\Helpers\Trata;
 use App\Models\Periodo;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class PeriodoController extends Controller
 {
@@ -14,7 +15,7 @@ class PeriodoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index():Response
     {
         try {
             extract(request()->all());
@@ -28,7 +29,7 @@ class PeriodoController extends Controller
 
             $periodos = Trata::resultado($periodos, 'periodos.inicio'); // Ordenação por período ou pacote.
 
-            return $periodos;
+            return response($periodos);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -51,11 +52,11 @@ class PeriodoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request):Response
     {
         try {
             $periodo = Periodo::create($request->all());
-            return $periodo;
+            return response($periodo);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -68,10 +69,10 @@ class PeriodoController extends Controller
      * @param  \App\Models\Periodo  $periodo
      * @return \Illuminate\Http\Response
      */
-    public function show(Periodo $periodo)
+    public function show(Periodo $periodo):Response
     {
         try {
-            return $periodo;
+            return response($periodo);
         } catch(\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -96,11 +97,11 @@ class PeriodoController extends Controller
      * @param  \App\Models\Periodo  $periodo
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Periodo $periodo)
+    public function update(Request $request, Periodo $periodo):Response
     {
         try {
             $periodo->update($request->all());
-            return $periodo;
+            return response($periodo);
         } catch(\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -113,11 +114,11 @@ class PeriodoController extends Controller
      * @param  \App\Models\Periodo  $periodo
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Periodo $periodo)
+    public function destroy(Periodo $periodo):Response
     {
         try {
-            $deleted = $periodo->delete();
-            return !!$deleted;
+            $periodo->delete();
+            return response("O período de nº {$periodo->id}, de {$periodo->inicio} à {$periodo->fim},  foi deletado.");;
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;

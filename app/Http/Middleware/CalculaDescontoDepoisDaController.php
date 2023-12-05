@@ -28,7 +28,7 @@ class CalculaDescontoDepoisDaController
             if ($temVariosPacotes) $response->data = $pacotes;
             else [$response] = $pacotes;
     
-            return response()->json($response);
+            return response($response);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\Trata;
 use App\Models\Tipo;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
 class TipoController extends Controller
@@ -14,11 +15,11 @@ class TipoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index():Response
     {
         try {
             $tipos = Tipo::all('nome');
-            return $tipos;
+            return response($tipos);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -41,14 +42,14 @@ class TipoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request):Response
     {
         try {
             DB::beginTransaction();
             $tipo = Tipo::create($request->all());
             DB::commit();
 
-            return $tipo;
+            return response($tipo);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -61,10 +62,10 @@ class TipoController extends Controller
      * @param  \App\Models\Tipo  $tipo
      * @return \Illuminate\Http\Response
      */
-    public function show(Tipo $tipo)
+    public function show(Tipo $tipo):Response
     {
         try {
-            return $tipo;
+            return response($tipo);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -89,11 +90,11 @@ class TipoController extends Controller
      * @param  \App\Models\Tipo  $tipo
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Tipo $tipo)
+    public function update(Request $request, Tipo $tipo):Response
     {
         try {
             $tipo->update($request->all());
-            return $tipo;
+            return response($tipo);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -106,12 +107,12 @@ class TipoController extends Controller
      * @param  \App\Models\Tipo  $tipo
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Tipo $tipo)
+    public function destroy(Tipo $tipo):Response
     {
         try {
             $tipo->users()->detach();
-            $deleted = $tipo->delete();
-            return !!$deleted;
+            $tipo->delete();
+            return response("O tipo de nº {$tipo->id}, {$tipo->nome},  foi deletado.");;
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;

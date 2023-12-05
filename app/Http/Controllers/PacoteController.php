@@ -6,6 +6,7 @@ use App\Helpers\Filtra;
 use App\Helpers\Trata;
 use App\Models\Pacote;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class PacoteController extends Controller
 {
@@ -14,7 +15,7 @@ class PacoteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index():Response
     {
         try {
             extract(request()->all());
@@ -33,7 +34,7 @@ class PacoteController extends Controller
 
             $pacotes = Trata::resultado($pacotes, 'pacotes.nome'); // Ordenação por pacote ou por núcleo.
 
-            return $pacotes;
+            return response($pacotes);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -56,11 +57,11 @@ class PacoteController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request):Response
     {
         try {
             $pacote = Pacote::create($request->all());
-            return $pacote;
+            return response($pacote);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -73,10 +74,10 @@ class PacoteController extends Controller
      * @param  \App\Models\Pacote  $pacote
      * @return \Illuminate\Http\Response
      */
-    public function show(Pacote $pacote)
+    public function show(Pacote $pacote):Response
     {
         try {
-            return $pacote;
+            return response($pacote);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -101,11 +102,11 @@ class PacoteController extends Controller
      * @param  \App\Models\Pacote  $pacote
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Pacote $pacote)
+    public function update(Request $request, Pacote $pacote):Response
     {
         try {
             $pacote->update($request->all());
-            return $pacote;
+            return response($pacote);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -118,11 +119,11 @@ class PacoteController extends Controller
      * @param  \App\Models\Pacote  $pacote
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Pacote $pacote)
+    public function destroy(Pacote $pacote):Response
     {
         try {
-            $deleted = $pacote->delete();
-            return $deleted;
+            $pacote->delete();
+            return response("O pacote de nº {$pacote->id}, {$pacote->nome},  foi deletado.");
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;

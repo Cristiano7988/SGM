@@ -6,6 +6,7 @@ use App\Helpers\Filtra;
 use App\Helpers\Trata;
 use App\Models\IdadeMaxima;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class IdadeMaximaController extends Controller
 {
@@ -14,7 +15,7 @@ class IdadeMaximaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index():Response
     {
         try {
             extract(request()->all());
@@ -33,7 +34,7 @@ class IdadeMaximaController extends Controller
 
             $idades = $idades->orderBy('medida_de_tempo_id', $sort)->orderBy($order_by, $sort)->paginate($per_page);
 
-            return $idades;
+            return response($idades);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -56,11 +57,11 @@ class IdadeMaximaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request):Response
     {
         try {
             $idadeMaxima = IdadeMaxima::create($request->all());
-            return response()->json($idadeMaxima);
+            return response($idadeMaxima);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -73,10 +74,10 @@ class IdadeMaximaController extends Controller
      * @param  \App\Models\IdadeMaxima  $idadeMaxima
      * @return \Illuminate\Http\Response
      */
-    public function show(IdadeMaxima $idadeMaxima)
+    public function show(IdadeMaxima $idadeMaxima):Response
     {
         try {
-            return $idadeMaxima;
+            return response($idadeMaxima);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -101,11 +102,11 @@ class IdadeMaximaController extends Controller
      * @param  \App\Models\IdadeMaxima  $idadeMaxima
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, IdadeMaxima $idadeMaxima)
+    public function update(Request $request, IdadeMaxima $idadeMaxima):Response
     {
         try {
             $idadeMaxima->update($request->all());
-            return response()->json($idadeMaxima);
+            return response($idadeMaxima);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -118,11 +119,11 @@ class IdadeMaximaController extends Controller
      * @param  \App\Models\IdadeMaxima  $idadeMaxima
      * @return \Illuminate\Http\Response
      */
-    public function destroy(IdadeMaxima $idadeMaxima)
+    public function destroy(IdadeMaxima $idadeMaxima):Response
     {
         try {
-            $deleted = $idadeMaxima->delete();
-            return response()->json(!!$deleted);
+            $idadeMaxima->delete();
+            return response("A idade máxima de nº {$idadeMaxima->id}, {$idadeMaxima->idade} {$idadeMaxima->medida_de_tempo->tipo},  foi deletada.");
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;

@@ -8,6 +8,7 @@ use App\Models\MedidaDeTempo;
 use App\Models\Nucleo;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -19,7 +20,7 @@ class NucleoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index():Response
     {
         try {
             extract(request()->all());
@@ -59,7 +60,7 @@ class NucleoController extends Controller
 
             $nucleos = Trata::resultado($nucleos, 'nome'); // Ordenação apenas por núcleo.
             
-            return $nucleos;
+            return response($nucleos);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -82,7 +83,7 @@ class NucleoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request):Response
     {
         try {
             DB::beginTransaction();
@@ -110,10 +111,10 @@ class NucleoController extends Controller
      * @param  \App\Models\Nucleo  $nucleo
      * @return \Illuminate\Http\Response
      */
-    public function show(Nucleo $nucleo)
+    public function show(Nucleo $nucleo):Response
     {
         try {
-            return $nucleo;
+            return response($nucleo);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -138,7 +139,7 @@ class NucleoController extends Controller
      * @param  \App\Models\Nucleo  $nucleo
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Nucleo $nucleo)
+    public function update(Request $request, Nucleo $nucleo):Response
     {
         try {
             DB::beginTransaction();
@@ -151,7 +152,7 @@ class NucleoController extends Controller
                 $nucleo->save();
             }
             DB::commit();
-            return $nucleo;
+            return response($nucleo);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -164,14 +165,15 @@ class NucleoController extends Controller
      * @param  \App\Models\Nucleo  $nucleo
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Nucleo $nucleo)
+    public function destroy(Nucleo $nucleo):Response
     {
         try {
             DB::beginTransaction();
             Storage::delete($nucleo->imagem);
-            $deleted = $nucleo->delete();
+            $nucleo->delete();
             DB::commit();
-            return !!$deleted;
+
+            return response("O núcleo de nº {$nucleo->id}, {$nucleo->nome},  foi deletado.");;
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;

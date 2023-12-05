@@ -6,6 +6,7 @@ use App\Helpers\Filtra;
 use App\Helpers\Trata;
 use App\Models\Transacao;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -16,7 +17,7 @@ class TransacaoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index():Response
     {
         try {
             extract(request()->all());
@@ -36,7 +37,7 @@ class TransacaoController extends Controller
 
             $transacoes = Trata::resultado($transacoes, 'transacoes.data_de_pagamento'); // Ordenação por transação, cupom, matrícula ou forma de pagamento.
 
-            return $transacoes;
+            return response($transacoes);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -59,7 +60,7 @@ class TransacaoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request):Response
     {
         try {
             DB::beginTransaction();
@@ -71,7 +72,7 @@ class TransacaoController extends Controller
             }
             DB::commit();
 
-            return $transacao;
+            return response($transacao);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -84,10 +85,10 @@ class TransacaoController extends Controller
      * @param  \App\Models\Transacao  $transacao
      * @return \Illuminate\Http\Response
      */
-    public function show(Transacao $transacao)
+    public function show(Transacao $transacao):Response
     {
         try {
-            return $transacao;
+            return response($transacao);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -112,7 +113,7 @@ class TransacaoController extends Controller
      * @param  \App\Models\Transacao  $transacao
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Transacao $transacao)
+    public function update(Request $request, Transacao $transacao):Response
     {
         try {
             DB::beginTransaction();
@@ -125,7 +126,7 @@ class TransacaoController extends Controller
             }
 
             DB::commit();
-            return $transacao;
+            return response($transacao);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -138,15 +139,15 @@ class TransacaoController extends Controller
      * @param  \App\Models\Transacao  $transacao
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Transacao $transacao)
+    public function destroy(Transacao $transacao):Response
     {
         try {
             DB::beginTransaction();
             Storage::delete($transacao->comprovante);
-            $deleted = $transacao->delete();
+            $transacao->delete();
             DB::commit();
     
-            return !!$deleted;
+            return response("A transação de nº {$transacao->id}, do usuário {$transacao->user->nome} feita no dia {$transacao->data_de_pagamento},  foi deletada.");;
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;

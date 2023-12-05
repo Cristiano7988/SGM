@@ -6,6 +6,7 @@ use App\Helpers\Filtra;
 use App\Helpers\Trata;
 use App\Models\Turma;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -16,7 +17,7 @@ class TurmaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index():Response
     {
         try {
             extract(request()->all());
@@ -36,7 +37,7 @@ class TurmaController extends Controller
             
             $turmas = Trata::resultado($turmas, 'turmas.nome'); // Ordenação por turma, dia ou tipo de aula.
 
-            return $turmas;
+            return response($turmas);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -59,7 +60,7 @@ class TurmaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request):Response
     {
         try {
             DB::beginTransaction();
@@ -72,7 +73,7 @@ class TurmaController extends Controller
             }
             DB::commit();
 
-            return $turma;
+            return response($turma);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -85,10 +86,10 @@ class TurmaController extends Controller
      * @param  \App\Models\Turma  $turma
      * @return \Illuminate\Http\Response
      */
-    public function show(Turma $turma)
+    public function show(Turma $turma):Response
     {
         try {
-            return $turma;
+            return response($turma);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -113,7 +114,7 @@ class TurmaController extends Controller
      * @param  \App\Models\Turma  $turma
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Turma $turma)
+    public function update(Request $request, Turma $turma):Response
     {
         try {
             DB::beginTransaction();
@@ -126,7 +127,8 @@ class TurmaController extends Controller
                 $turma->save();
             }
             DB::commit();
-            return $turma;
+
+            return response($turma);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -139,14 +141,15 @@ class TurmaController extends Controller
      * @param  \App\Models\Turma  $turma
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Turma $turma)
+    public function destroy(Turma $turma):Response
     {
         try {
             DB::beginTransaction();
             Storage::delete($turma->imagem);
-            $deleted = $turma->delete();
+            $turma->delete();
             DB::commit();
-            return !!$deleted;
+
+            return response("A turma de nº {$turma->id}, {$turma->nome},  foi deletada.");;
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;

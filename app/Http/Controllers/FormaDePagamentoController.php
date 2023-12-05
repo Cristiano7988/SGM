@@ -6,6 +6,7 @@ use App\Helpers\Filtra;
 use App\Helpers\Trata;
 use App\Models\FormaDePagamento;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class FormaDePagamentoController extends Controller
 {
@@ -14,7 +15,7 @@ class FormaDePagamentoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index():Response
     {
         try {
             extract(request()->all());
@@ -28,7 +29,7 @@ class FormaDePagamentoController extends Controller
 
             $formasDePagamento = $formasDePagamento->get('tipo');
 
-            return $formasDePagamento;
+            return response($formasDePagamento);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -51,11 +52,11 @@ class FormaDePagamentoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request):Response
     {
         try {
             $formaDePagamento = FormaDePagamento::create($request->all());
-            return $formaDePagamento;
+            return response($formaDePagamento);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -68,10 +69,10 @@ class FormaDePagamentoController extends Controller
      * @param  \App\Models\FormaDePagamento  $formaDePagamento
      * @return \Illuminate\Http\Response
      */
-    public function show(FormaDePagamento $formaDePagamento)
+    public function show(FormaDePagamento $formaDePagamento):Response
     {
         try {
-            return $formaDePagamento;
+            return response($formaDePagamento);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -96,11 +97,11 @@ class FormaDePagamentoController extends Controller
      * @param  \App\Models\FormaDePagamento  $formaDePagamento
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, FormaDePagamento $formaDePagamento)
+    public function update(Request $request, FormaDePagamento $formaDePagamento):Response
     {
         try {
             $formaDePagamento->update($request->all());
-            return $formaDePagamento;
+            return response($formaDePagamento);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -113,11 +114,11 @@ class FormaDePagamentoController extends Controller
      * @param  \App\Models\FormaDePagamento  $formaDePagamento
      * @return \Illuminate\Http\Response
      */
-    public function destroy(FormaDePagamento $formaDePagamento)
+    public function destroy(FormaDePagamento $formaDePagamento):Response
     {
         try {
-            $deleted = $formaDePagamento->delete();
-            return !!$deleted;
+            $formaDePagamento->delete();
+            return response("A forma de pagamento de nº {$formaDePagamento->id}, {$formaDePagamento->tipo},  foi deletada.");;
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;

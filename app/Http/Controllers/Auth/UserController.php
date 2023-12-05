@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -35,7 +36,8 @@ class UserController extends Controller
      *
      * @return \App\Models\User
      */
-    protected function index() {
+    protected function index():Response
+    {
         try {
 
             $user = Auth::user();
@@ -358,7 +360,7 @@ class UserController extends Controller
 
             $users = Trata::resultado($users, 'users.nome'); // Ordenação por usuário ou por transação (bem como por seu cupom, forma de pagamento ou matrícula) feitas pelo usuário.
 
-            return $users;
+            return response($users);
         } catch(\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -371,7 +373,7 @@ class UserController extends Controller
      * @param  Request  $request
      * @return \App\Models\User
      */
-    protected function store(Request $request)
+    protected function store(Request $request):Response
     {
         try {
             $user = Auth::user();
@@ -385,7 +387,7 @@ class UserController extends Controller
             $newUser->alunos()->attach($user->alunos);
             DB::commit();
     
-            return $newUser;
+            return response($newUser);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -398,10 +400,10 @@ class UserController extends Controller
      * @param  User  $user
      * @return \App\Models\User
      */
-    protected function show(User $user)
+    protected function show(User $user):Response
     {
         try {
-            return $user;
+            return response($user);
         } catch(\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -415,7 +417,8 @@ class UserController extends Controller
      * @param  Request  $request
      * @return \App\Models\User
      */
-    protected function update(User $user, Request $request) {
+    protected function update(User $user, Request $request):Response
+    {
         try {
             DB::beginTransaction();
             if (!!$request['password']) $request['password'] = Hash::make($request['password']);
@@ -431,7 +434,7 @@ class UserController extends Controller
             }
             DB::commit();
     
-            return $user;
+            return response($user);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -444,15 +447,16 @@ class UserController extends Controller
      * @param  User  $user
      * @return Boolean
      */
-    protected function delete(User $user) {
+    protected function delete(User $user):Response
+    {
         try {
             DB::beginTransaction();
             $user->tipos()->detach();
             $user->alunos()->detach();
-            $deleted = $user->delete();
+            $user->delete();
             DB::commit();
         
-            return !!$deleted;
+            return response("O usuário de nº {$user->id}, {$user->nome},  foi deletado.");
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;

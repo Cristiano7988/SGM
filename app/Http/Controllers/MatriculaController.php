@@ -6,6 +6,7 @@ use App\Helpers\Filtra;
 use App\Helpers\Trata;
 use App\Models\Matricula;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class MatriculaController extends Controller
@@ -15,7 +16,7 @@ class MatriculaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index():Response
     {
         try {
             extract(request()->all());
@@ -41,7 +42,7 @@ class MatriculaController extends Controller
 
             $matriculas = Trata::resultado($matriculas, 'alunos.nome'); // Ordenação por situação, marcação, aluno, turma ou pacote.
 
-            return $matriculas;
+            return response($matriculas);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -64,11 +65,11 @@ class MatriculaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request):Response
     {
         try {
             $matricula = Matricula::create($request->all());
-            return $matricula;
+            return response($matricula);
         } catch(\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -81,10 +82,10 @@ class MatriculaController extends Controller
      * @param  \App\Models\Matricula  $matricula
      * @return \Illuminate\Http\Response
      */
-    public function show(Matricula $matricula)
+    public function show(Matricula $matricula):Response
     {
         try {
-            return $matricula;
+            return response($matricula);
         } catch(\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -109,14 +110,14 @@ class MatriculaController extends Controller
      * @param  \App\Models\Matricula  $matricula
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Matricula $matricula)
+    public function update(Request $request, Matricula $matricula):Response
     {
         try {
             $matricula->update($request->all());
             $matricula->turma->vagas_preenchidas = $matricula->turma->matriculas()->count();
             $matricula->turma->save();
 
-            return $matricula;
+            return response($matricula);
         } catch(\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -129,11 +130,11 @@ class MatriculaController extends Controller
      * @param  \App\Models\Matricula  $matricula
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Matricula $matricula)
+    public function destroy(Matricula $matricula):Response
     {
         try {
-            $deleted = $matricula->delete();
-            return $deleted;
+            $matricula->delete();
+            return response("A matrícula de nº {$matricula->id}, de {$matricula->aluno->nome},  foi deletada.");
         } catch(\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;

@@ -6,6 +6,7 @@ use App\Helpers\Filtra;
 use App\Helpers\Trata;
 use App\Models\Cupom;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class CupomController extends Controller
 {
@@ -14,7 +15,7 @@ class CupomController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index():Response
     {
         try {
             extract(request()->all());
@@ -29,7 +30,7 @@ class CupomController extends Controller
 
             $cupons = Trata::resultado($cupons, 'desconto'); // Ordenação apenas por cupom.
 
-            return $cupons;
+            return response($cupons);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -52,11 +53,11 @@ class CupomController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request):Response
     {
         try {
             $cupom = Cupom::create($request->all());
-            return $cupom;
+            return response($cupom);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -69,7 +70,7 @@ class CupomController extends Controller
      * @param  \App\Models\Cupom  $cupom
      * @return \Illuminate\Http\Response
      */
-    public function show(Cupom $cupom)
+    public function show(Cupom $cupom):Response
     {
         try {
             $codigo = request()->codigo;
@@ -77,7 +78,7 @@ class CupomController extends Controller
             if ($codigo) $cupom = Cupom::where('codigo', '=', $codigo)->first();
             
             if (!$cupom) return response("Cupom não encontrado", 404);
-            else return $cupom;
+            else return response($cupom);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -102,11 +103,11 @@ class CupomController extends Controller
      * @param  \App\Models\Cupom  $cupom
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Cupom $cupom)
+    public function update(Request $request, Cupom $cupom):Response
     {
         try {
             $cupom->update($request->all());
-            return $cupom;
+            return response($cupom);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -118,11 +119,11 @@ class CupomController extends Controller
      * @param  \App\Models\Cupom  $cupom
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Cupom $cupom)
+    public function destroy(Cupom $cupom):Response
     {
         try {
-            $deleted = $cupom->delete();
-            return !!$deleted;
+            $cupom->delete();
+            return response("O cupom de nº {$cupom->id}, {$cupom->codigo},  foi deletado.");
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;

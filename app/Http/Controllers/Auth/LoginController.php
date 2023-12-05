@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Laravel\Sanctum\PersonalAccessToken;
@@ -34,7 +35,7 @@ class LoginController extends Controller
      */
     protected $redirectTo = RouteServiceProvider::HOME;
 
-    protected function login(Request $request)
+    protected function login(Request $request):Response
     {
         try {
             $request->validate([
@@ -44,35 +45,31 @@ class LoginController extends Controller
 
             $request->only('email', 'password');
 
-            $user = User::where('email', '=', $request->email)->first();
-            if (!$user) throw ValidationException::withMessages([
-                'email' => ['Email não cadastrado']
-            ]);
+            $user = User::where('email', $request->email)->first();
+            if (!$user) return response('Email não cadastrado', 403);
 
             $passwordChecked = Hash::check($request->password, $user->password);
-            if (!$passwordChecked) throw ValidationException::withMessages([
-                'password' => ['Senha inválida']
-            ]);
+            if (!$passwordChecked) return response('Senha inválida', 403);
 
             $user->tokens()->delete();
 
             $token = $user->createToken($request->email)->plainTextToken;
 
-            return $token;
+            return response($token);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
         }
     }
 
-    public function logout(Request $request)
+    public function logout(Request $request):Response
     {
         try {
             $accessToken = $request->bearerToken();
             $token = PersonalAccessToken::findToken($accessToken);
-            $loggedOut = $token->delete();
+            $token->delete();
 
-            return $loggedOut;
+            return response("Volte sempre!");
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;

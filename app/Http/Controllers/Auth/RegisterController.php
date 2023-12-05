@@ -8,6 +8,7 @@ use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -65,7 +66,7 @@ class RegisterController extends Controller
      * @param  Request  $request
      * @return \App\Models\User
      */
-    protected function store(Request $request)
+    protected function store(Request $request):Response
     {
         try {
             DB::beginTransaction();
@@ -76,7 +77,7 @@ class RegisterController extends Controller
             if (isset($request['alunos']) && !!count($request['alunos'])) $user->alunos()->attach($request['alunos']);
             DB::commit();
     
-            return $user;
+            return response($user);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;

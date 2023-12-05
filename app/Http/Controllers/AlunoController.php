@@ -6,6 +6,7 @@ use App\Helpers\Filtra;
 use App\Helpers\Trata;
 use App\Models\Aluno;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -16,7 +17,7 @@ class AlunoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index():Response
     {
         try {
             extract(request()->all());
@@ -38,7 +39,7 @@ class AlunoController extends Controller
 
             $alunos = Trata::resultado($alunos, 'nome'); // Ordenação apenas por aluno.
 
-            return $alunos;
+            return response($alunos);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -61,7 +62,7 @@ class AlunoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request):Response
     {
         try {
             $user = Auth::user();
@@ -71,7 +72,7 @@ class AlunoController extends Controller
             $aluno->users()->attach($user->id);
             DB::commit();
 
-            return $aluno;
+            return response($aluno);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -84,10 +85,10 @@ class AlunoController extends Controller
      * @param  \App\Models\Aluno  $aluno
      * @return \Illuminate\Http\Response
      */
-    public function show(Aluno $aluno)
+    public function show(Aluno $aluno):Response
     {
         try {
-            return $aluno;
+            return response($aluno);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -112,13 +113,13 @@ class AlunoController extends Controller
      * @param  \App\Models\Aluno  $aluno
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Aluno $aluno)
+    public function update(Request $request, Aluno $aluno):Response
     {
         try {
             $aluno->update($request->all());
             if (isset($request->users) && !!count($request->users)) $aluno->users()->sync($request->users);
 
-            return $aluno;
+            return response($aluno);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -131,12 +132,12 @@ class AlunoController extends Controller
      * @param  \App\Models\Aluno  $aluno
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Aluno $aluno)
+    public function destroy(Aluno $aluno):Response
     {
         try {
             $aluno->users()->detach();
-            $deleted = $aluno->delete();
-            return !!$deleted;
+            $aluno->delete();
+            return response("O aluno de nº {$aluno->id}, {$aluno->nome},  foi deletado.");
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;

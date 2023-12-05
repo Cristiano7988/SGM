@@ -6,6 +6,7 @@ use App\Helpers\Filtra;
 use App\Helpers\Trata;
 use App\Models\Marcacao;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class MarcacaoController extends Controller
 {
@@ -14,7 +15,7 @@ class MarcacaoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index():Response
     {
         try {
             extract(request()->all());
@@ -28,7 +29,7 @@ class MarcacaoController extends Controller
     
             $marcacoes = Trata::resultado($marcacoes, 'observacao'); // Ordenação apenas por marcação.
 
-            return $marcacoes;
+            return response($marcacoes);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -51,11 +52,11 @@ class MarcacaoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request):Response
     {
         try {
             $marcacao = Marcacao::create($request->all());
-            return $marcacao;
+            return response($marcacao);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -68,10 +69,10 @@ class MarcacaoController extends Controller
      * @param  \App\Models\Marcacao  $marcacao
      * @return \Illuminate\Http\Response
      */
-    public function show(Marcacao $marcacao)
+    public function show(Marcacao $marcacao):Response
     {
         try {
-            return $marcacao;
+            return response($marcacao);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -96,11 +97,11 @@ class MarcacaoController extends Controller
      * @param  \App\Models\Marcacao  $marcacao
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Marcacao $marcacao)
+    public function update(Request $request, Marcacao $marcacao):Response
     {
         try {
             $marcacao->update($request->all());
-            return $marcacao;
+            return response($marcacao);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -113,11 +114,11 @@ class MarcacaoController extends Controller
      * @param  \App\Models\Marcacao  $marcacao
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Marcacao $marcacao)
+    public function destroy(Marcacao $marcacao):Response
     {
         try {
-            $deleted = $marcacao->delete();
-            return !!$deleted;
+            $marcacao->delete();
+            return response("A marcação de nº {$marcacao->id}, {$marcacao->observacao},  foi deletada.");
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;

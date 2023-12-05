@@ -6,6 +6,7 @@ use App\Helpers\Filtra;
 use App\Helpers\Trata;
 use App\Models\IdadeMinima;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class IdadeMinimaController extends Controller
 {
@@ -14,7 +15,7 @@ class IdadeMinimaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index():Response
     {
         try {
             extract(request()->all());
@@ -33,7 +34,7 @@ class IdadeMinimaController extends Controller
 
             $idades = $idades->orderBy('medida_de_tempo_id', $sort)->orderBy($order_by, $sort)->paginate($per_page);
 
-            return $idades;
+            return response($idades);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -56,11 +57,11 @@ class IdadeMinimaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request):Response
     {
         try {
             $idadeMinima = IdadeMinima::create($request->all());
-            return response()->json($idadeMinima);
+            return response($idadeMinima);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -73,10 +74,10 @@ class IdadeMinimaController extends Controller
      * @param  \App\Models\IdadeMinima  $idadeMinima
      * @return \Illuminate\Http\Response
      */
-    public function show(IdadeMinima $idadeMinima)
+    public function show(IdadeMinima $idadeMinima):Response
     {
         try {
-            return $idadeMinima;
+            return response($idadeMinima);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -101,11 +102,11 @@ class IdadeMinimaController extends Controller
      * @param  \App\Models\IdadeMinima  $idadeMinima
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, IdadeMinima $idadeMinima)
+    public function update(Request $request, IdadeMinima $idadeMinima):Response
     {
         try {
             $idadeMinima->update($request->all());
-            return response()->json($idadeMinima);
+            return response($idadeMinima);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -118,11 +119,11 @@ class IdadeMinimaController extends Controller
      * @param  \App\Models\IdadeMinima  $idadeMinima
      * @return \Illuminate\Http\Response
      */
-    public function destroy(IdadeMinima $idadeMinima)
+    public function destroy(IdadeMinima $idadeMinima):Response
     {
         try {
-            $deleted = $idadeMinima->delete();
-            return response()->json(!!$deleted);
+            $idadeMinima->delete();
+            return response("A idade Mínima de nº {$idadeMinima->id}, {$idadeMinima->idade} {$idadeMinima->medida_de_tempo->tipo},  foi deletada.");
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;

@@ -10,6 +10,7 @@ use App\Mail\TodasTransacoes;
 use App\Models\Email;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -21,7 +22,7 @@ class EmailController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index():Response
     {
         try {
             extract(request()->all());
@@ -40,7 +41,7 @@ class EmailController extends Controller
 
             $emails = Trata::resultado($emails, 'emails.assunto'); // Ordenação por email e email_user.
 
-            return $emails;
+            return response($emails);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -63,7 +64,7 @@ class EmailController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request):Response
     {
         try {
             DB::beginTransaction();
@@ -76,7 +77,7 @@ class EmailController extends Controller
             }
             DB::commit();
 
-            return $email;
+            return response($email);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -89,10 +90,10 @@ class EmailController extends Controller
      * @param  \App\Models\Email  $email
      * @return \Illuminate\Http\Response
      */
-    public function show(Email $email)
+    public function show(Email $email):Response
     {
         try {
-            return $email;
+            return response($email);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -108,7 +109,7 @@ class EmailController extends Controller
      * @param  \App\Models\Email  $email
      * @return \Illuminate\Http\Response
      */
-    public function send(Request $request, Email $email)
+    public function send(Request $request, Email $email):Response
     {
         try {
             if (!$request->destinatarios) return response("Informe algum destinatário", 403);
@@ -132,7 +133,7 @@ class EmailController extends Controller
                 $user->emails()->attach($email);
             }
 
-            return $email;
+            return response($email);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -144,20 +145,20 @@ class EmailController extends Controller
      * @param  Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function send_transactions(Request $request)
+    public function send_transactions(Request $request):Response
     {
         try {
             $user = User::find($request->user_id);
 
             if (!$user) return response("Usuário não encontrado", 404);
-            if (!$request->ids) return response("Selecione as transações a serem enviadas");
+            if (!$request->ids) return response("Selecione as transações a serem enviadas", 403);
             
             $conteudo = new TodasTransacoes($request);
             $user->name = $user->nome;
 
             Mail::to($user)->send($conteudo);            
 
-            return response()->json($user);
+            return response($user);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -182,7 +183,7 @@ class EmailController extends Controller
      * @param  \App\Models\Email  $email
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Email $email)
+    public function update(Request $request, Email $email):Response
     {
         try {
             DB::beginTransaction();
@@ -196,7 +197,7 @@ class EmailController extends Controller
             }
             DB::commit();
             
-            return $email;
+            return response($email);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -209,14 +210,15 @@ class EmailController extends Controller
      * @param  \App\Models\Email  $email
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Email $email)
+    public function destroy(Email $email):Response
     {
         try {
             DB::beginTransaction();
             Storage::delete($email->anexo);
-            $deleted = $email->delete();
+            $email->delete();
             DB::commit();
-            return !!$deleted;
+
+            return response("O Email de nº {$email->id}, {$email->assunto},  foi deletado.");
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;

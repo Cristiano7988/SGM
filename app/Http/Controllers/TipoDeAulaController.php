@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\Trata;
 use App\Models\TipoDeAula;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class TipoDeAulaController extends Controller
 {
@@ -13,11 +14,11 @@ class TipoDeAulaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index():Response
     {
         try {
             $tipos_de_aula = TipoDeAula::all('tipo');
-            return $tipos_de_aula;
+            return response($tipos_de_aula);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -40,11 +41,11 @@ class TipoDeAulaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request):Response
     {
         try {
             $tipo_de_aula = TipoDeAula::create($request->all());
-            return $tipo_de_aula;
+            return response($tipo_de_aula);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -57,10 +58,10 @@ class TipoDeAulaController extends Controller
      * @param  \App\Models\TipoDeAula $tipo_de_aula
      * @return \Illuminate\Http\Response
      */
-    public function show(TipoDeAula $tipo_de_aula)
+    public function show(TipoDeAula $tipo_de_aula):Response
     {
         try {
-            return $tipo_de_aula;
+            return response($tipo_de_aula);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -85,11 +86,11 @@ class TipoDeAulaController extends Controller
      * @param  \App\Models\TipoDeAula $tipo_de_aula
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, TipoDeAula $tipo_de_aula)
+    public function update(Request $request, TipoDeAula $tipo_de_aula):Response
     {
         try {
             $tipo_de_aula->update($request->all());
-            return $tipo_de_aula;
+            return response($tipo_de_aula);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
@@ -102,11 +103,11 @@ class TipoDeAulaController extends Controller
      * @param  \App\Models\TipoDeAula $tipo_de_aula
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TipoDeAula $tipo_de_aula)
+    public function destroy(TipoDeAula $tipo_de_aula):Response
     {
         try {
-            $deleted = $tipo_de_aula->delete();
-            return !!$deleted;
+            $tipo_de_aula->delete();
+            return response("O tipo de aula de nº {$tipo_de_aula->id}, {$tipo_de_aula->nome},  foi deletado.");;
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return $mensagem;
