@@ -7,6 +7,7 @@ use App\Helpers\Trata;
 use App\Models\FormaDePagamento;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class FormaDePagamentoController extends Controller
 {
@@ -96,7 +97,10 @@ class FormaDePagamentoController extends Controller
     public function destroy(FormaDePagamento $formaDePagamento):Response
     {
         try {
-            $formaDePagamento->delete();
+            DB::beginTransaction();
+            $excluido = Trata::exclusao($formaDePagamento, 'Forma de Pagamento');
+            if ($excluido) DB::commit(); // Exclui somente se conseguir notificar o cliente
+
             return response("A forma de pagamento de nº {$formaDePagamento->id}, {$formaDePagamento->tipo},  foi deletada.");;
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);

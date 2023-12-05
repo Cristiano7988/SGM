@@ -24,8 +24,7 @@ class CreateTransacoesTable extends Migration
             $table->date('data_de_pagamento');
             $table->string('obs')->nullable();
             
-            // Informações de backup (caso haja algum aluno, usuário, pacote, forma de pagamento ou período deletado)
-            $table->string('forma_de_pagamento')->nullable();
+            // Informações de backup (caso haja algum pacote ou período deletado)
             $table->string('nome_do_pacote')->nullable();
             $table->string('vigencia_do_pacote')->nullable();
             $table->decimal('valor_do_pacote')->nullable();

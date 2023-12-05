@@ -40,7 +40,6 @@ class preparaBackupDaTransacao
                 $vigencia .= $separador . "De " . Formata::data($periodo->inicio) . " até " . Formata::data($periodo->fim);
             }
     
-            $request['forma_de_pagamento'] = $forma_de_pagamento->tipo;
             $request['valor_do_pacote'] = Formata::moeda($matricula->pacote->valor);
             $request['nome_do_pacote'] = $matricula->pacote->nome;
             $request['vigencia_do_pacote'] = $vigencia;

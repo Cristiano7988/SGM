@@ -127,7 +127,7 @@
                                                                                 <tr>
                                                                                     <td align="left" class="esd-block-text es-p5t es-p5b">
                                                                                         <p>
-                                                                                            @if ($transacao->forma_De_pagamento) <strong>Forma de pagamento</strong>: {{$transacao->forma_de_pagamento}}<br> @endif
+                                                                                            @if ($transacao->forma_de_pagamento) <strong>Forma de pagamento</strong>: {{$transacao->forma_de_pagamento->tipo}}<br> @endif
                                                                                             @if ($transacao->valor_pago) <strong>Valor</strong>: {{$transacao->valor_pago}}<br> @endif
                                                                                             @if ($transacao->data_de_pagamento) <strong>Data de pagamento</strong>: {{ App\Helpers\Formata::data($transacao->data_de_pagamento)}}<br> @endif
                                                                                             @if ($transacao->vigencia_do_pacote) <strong>Vigência</strong>: {{$transacao->vigencia_do_pacote}}<br> @endif
