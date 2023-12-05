@@ -26,16 +26,6 @@ class TipoDeAulaController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -66,17 +56,6 @@ class TipoDeAulaController extends Controller
             $mensagem = Trata::erro($th);
             return $mensagem;
         }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\TipoDeAula $tipo_de_aula
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(TipoDeAula $tipo_de_aula)
-    {
-        //
     }
 
     /**

@@ -37,16 +37,6 @@ class MarcacaoController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -77,17 +67,6 @@ class MarcacaoController extends Controller
             $mensagem = Trata::erro($th);
             return $mensagem;
         }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Marcacao  $marcacao
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Marcacao $marcacao)
-    {
-        //
     }
 
     /**

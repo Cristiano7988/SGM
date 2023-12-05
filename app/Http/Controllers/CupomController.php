@@ -38,16 +38,6 @@ class CupomController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -86,17 +76,6 @@ class CupomController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Cupom  $cupom
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Cupom $cupom)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -113,6 +92,7 @@ class CupomController extends Controller
             return $mensagem;
         }
     }
+
     /**
      * Remove the specified resource from storage.
      *
