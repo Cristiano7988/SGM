@@ -21,7 +21,6 @@ class Transacao extends Model
         'obs',
         'forma_de_pagamento',
         'nome_do_aluno',
-        'nome_do_usuario',
         'nome_do_pacote',
         'vigencia_do_pacote',
         'valor_do_pacote',

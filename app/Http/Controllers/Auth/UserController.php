@@ -453,8 +453,8 @@ class UserController extends Controller
             DB::beginTransaction();
             $user->tipos()->detach();
             $user->alunos()->detach();
-            $user->delete();
-            DB::commit();
+            $excluido = Trata::exclusao($user, 'Usuário');
+            if ($excluido) DB::commit(); // Exclui somente se conseguir notificar o cliente
         
             return response("O usuário de nº {$user->id}, {$user->nome},  foi deletado.");
         } catch (\Throwable $th) {

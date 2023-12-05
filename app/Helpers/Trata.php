@@ -59,8 +59,6 @@ class Trata
 
     public static function exclusao(Model $item, string $tipo)
     {
-        DB::beginTransaction();
-
         // Deleta o item
         $item->delete();
 
@@ -73,7 +71,7 @@ class Trata
             $email->subject = "Cópia de {$tipo} excluído(a)";
 
             Mail::to($cliente)->send($email);
-            DB::commit(); // Exclui somente se conseguir notificar o cliente
+            return true;
         } catch (\Throwable $th) {
             throw $th;
         }

@@ -7,6 +7,7 @@ use App\Helpers\Trata;
 use App\Models\Cupom;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class CupomController extends Controller
 {
@@ -104,7 +105,10 @@ class CupomController extends Controller
     public function destroy(Cupom $cupom):Response
     {
         try {
-            Trata::exclusao($cupom, 'Cupom');
+            DB::beginTransaction();
+            $excluido = Trata::exclusao($cupom, 'Cupom');
+            if ($excluido) DB::commit(); // Exclui somente se conseguir notificar o cliente
+
             return response("O cupom de nº {$cupom->id}, {$cupom->codigo},  foi deletado.");
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
