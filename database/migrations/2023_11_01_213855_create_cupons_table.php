@@ -17,6 +17,7 @@ class CreateCuponsTable extends Migration
             $table->id();
             $table->string('codigo')->unique();
             $table->decimal('desconto');
+            $table->boolean('ativo')->default(false);
             $table->foreignId('medida_id')->nullable();
             $table->timestamps();
         });

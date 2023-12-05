@@ -11,13 +11,12 @@ class Transacao extends Model
     protected $table = "transacoes";
     public $with = ['forma_de_pagamento'];
     protected $fillable = [
-        'user_id',
+        'user_id', // se for excluir o usuário verificar (no FE) se há transações ou alunos associadas à transação e pedir consentimento do usuário
         'matricula_id',
-        'cupom_id',
+        'cupom_id', // Desativar ao invés de excluir, se for excluir verificar (no FE) se há transações associadas ao cupom e pedir consentimento do usuário
         'forma_de_pagamento_id',
         'comprovante',
         'valor_pago',
-        'desconto_aplicado',
         'data_de_pagamento',
         'obs',
         'forma_de_pagamento',

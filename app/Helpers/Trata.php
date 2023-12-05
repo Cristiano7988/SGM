@@ -3,9 +3,11 @@
 namespace App\Helpers;
 
 use App\Mail\AvisoDeErro;
+use App\Mail\BackupDeExcluidos;
 use App\Models\Erro;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -53,5 +55,27 @@ class Trata
         Mail::to($desenvolvedor)->send($email);
 
         return response("Não foi possível prosseguir com esta ação!\n\nJá registramos essa ocorrência e nossa equipe de desenvolvimento já foi informada.\nEm breve entraremos em contato.\n\nObrigado pela compreensão!", 500);
+    }
+
+    public static function exclusao(Model $item, string $tipo)
+    {
+        DB::beginTransaction();
+
+        // Deleta o item
+        $item->delete();
+
+        try {
+            // Notifica o cliente
+            $cliente = User::find(2);
+            $cliente->name = $cliente->nome;
+
+            $email = new BackupDeExcluidos($item, $tipo);
+            $email->subject = "Cópia de {$tipo} excluído(a)";
+
+            Mail::to($cliente)->send($email);
+            DB::commit(); // Exclui somente se conseguir notificar o cliente
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

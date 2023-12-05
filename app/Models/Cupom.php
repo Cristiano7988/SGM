@@ -13,6 +13,7 @@ class Cupom extends Model
     protected $fillable = [
         'codigo',
         'desconto',
+        'ativo', // Desativar ao invés de excluir, se for excluir verificar (no FE) se há transações associadas ao cupom e pedir consentimento do cliente e mesmo assim enviar as informações do cupom excluído ao cliente
         'medida_id'
     ];
 

@@ -17,7 +17,7 @@ class Calcula
             $valor = $pacote->valor;
             if ($forma_de_pagamento && $forma_de_pagamento->tipo == 'paypal') $valor = Calcula::paypal($valor);
 
-            if ($cupom) {
+            if ($cupom && $cupom->ativo) {
                 request()['cupom_id'] = $cupom->id;
                 $pacote->desconto_aplicado = Formata::desconto($cupom);
     

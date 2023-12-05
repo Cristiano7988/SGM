@@ -27,6 +27,7 @@ class CupomController extends Controller
 
             if (isset($medidas)) $cupons = Filtra::resultado($cupons, $medidas, 'medida_id'); // Cupom COM medida vem por padrão da model
             if (isset($transacoes)) $cupons = Filtra::resultado($cupons, $transacoes, 'transacoes.id')->with('transacoes');
+            if (isset($ativo)) $cupons->where('ativo', true);
 
             $cupons = Trata::resultado($cupons, 'desconto'); // Ordenação apenas por cupom.
 
@@ -66,8 +67,9 @@ class CupomController extends Controller
             $codigo = request()->codigo;
 
             if ($codigo) $cupom = Cupom::where('codigo', '=', $codigo)->first();
+            if (!$cupom->ativo) return response('Este cupom não está mais ativo', 403);
             
-            if (!$cupom) return response("Cupom não encontrado", 404);
+            if (!$cupom) return response('Cupom não encontrado', 404);
             else return response($cupom);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
@@ -102,7 +104,7 @@ class CupomController extends Controller
     public function destroy(Cupom $cupom):Response
     {
         try {
-            $cupom->delete();
+            Trata::exclusao($cupom, 'Cupom');
             return response("O cupom de nº {$cupom->id}, {$cupom->codigo},  foi deletado.");
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
