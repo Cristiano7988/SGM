@@ -61,7 +61,8 @@ class NucleoController extends Controller
             
             return $nucleos;
         } catch (\Throwable $th) {
-            return response()->json($th->getMessage());
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -96,7 +97,8 @@ class NucleoController extends Controller
 
             return response($nucleo);
         } catch (\Throwable $th) {
-            return response($th->getMessage(), 500);
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -113,7 +115,8 @@ class NucleoController extends Controller
         try {
             return $nucleo;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -150,7 +153,8 @@ class NucleoController extends Controller
             DB::commit();
             return $nucleo;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -169,7 +173,8 @@ class NucleoController extends Controller
             DB::commit();
             return !!$deleted;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 }

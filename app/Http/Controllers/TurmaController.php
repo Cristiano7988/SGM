@@ -38,7 +38,8 @@ class TurmaController extends Controller
 
             return $turmas;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -73,7 +74,8 @@ class TurmaController extends Controller
 
             return $turma;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -88,7 +90,8 @@ class TurmaController extends Controller
         try {
             return $turma;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -125,7 +128,8 @@ class TurmaController extends Controller
             DB::commit();
             return $turma;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -144,7 +148,8 @@ class TurmaController extends Controller
             DB::commit();
             return !!$deleted;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 }

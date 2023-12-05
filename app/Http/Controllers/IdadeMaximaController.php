@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Filtra;
+use App\Helpers\Trata;
 use App\Models\IdadeMaxima;
 use Illuminate\Http\Request;
 
@@ -34,7 +35,8 @@ class IdadeMaximaController extends Controller
 
             return $idades;
         } catch (\Throwable $th) {
-            return response()->json($th->getMessage());
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -60,7 +62,8 @@ class IdadeMaximaController extends Controller
             $idadeMaxima = IdadeMaxima::create($request->all());
             return response()->json($idadeMaxima);
         } catch (\Throwable $th) {
-            return response()->json($th->getMessage());
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -72,7 +75,12 @@ class IdadeMaximaController extends Controller
      */
     public function show(IdadeMaxima $idadeMaxima)
     {
-        return response()->json($idadeMaxima);
+        try {
+            return $idadeMaxima;
+        } catch (\Throwable $th) {
+            $mensagem = Trata::erro($th);
+            return $mensagem;
+        }
     }
 
     /**
@@ -99,7 +107,8 @@ class IdadeMaximaController extends Controller
             $idadeMaxima->update($request->all());
             return response()->json($idadeMaxima);
         } catch (\Throwable $th) {
-            return response()->json($th->getMessage());
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -115,7 +124,8 @@ class IdadeMaximaController extends Controller
             $deleted = $idadeMaxima->delete();
             return response()->json(!!$deleted);
         } catch (\Throwable $th) {
-            return response()->json($th->getMessage());
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 }

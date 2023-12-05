@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Helpers\Trata;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,9 +18,14 @@ class ChecaSeEAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        $isAdmin = Auth::user()->is_admin;
-
-        if ($isAdmin) return $next($request);
-        else return response("Acesso negado", 403);
+        try {
+            $isAdmin = Auth::user()->is_admin;
+    
+            if ($isAdmin) return $next($request);
+            else return response("Acesso negado", 403);
+        } catch (\Throwable $th) {
+            $mensagem = Trata::erro($th);
+            return $mensagem;
+        }
     }
 }

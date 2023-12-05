@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Helpers\Trata;
 use App\Models\Aluno;
 use Carbon\Carbon;
 use Closure;
@@ -18,18 +19,23 @@ class calculaIdadeDoAluno
      */
     public function handle(Request $request, Closure $next)
     {
-        $id = $request->aluno_id;
+        try {
+            $id = $request->aluno_id;
 
-        if ($id) {
-            $aluno = Aluno::find($id);
-            $now = Carbon::now();
-
-            if (!$aluno) return response("Aluno não encontrado", 403);
-
-            $data_de_nascimento = Carbon::create($aluno->data_de_nascimento);
-            $request['meses'] = $data_de_nascimento->floatDiffInMonths($now);
-            $request['anos'] = $data_de_nascimento->floatDiffInYears($now);
+            if ($id) {
+                $aluno = Aluno::find($id);
+                $now = Carbon::now();
+    
+                if (!$aluno) return response("Aluno não encontrado", 403);
+    
+                $data_de_nascimento = Carbon::create($aluno->data_de_nascimento);
+                $request['meses'] = $data_de_nascimento->floatDiffInMonths($now);
+                $request['anos'] = $data_de_nascimento->floatDiffInYears($now);
+            }
+            return $next($request);
+        } catch (\Throwable $th) {
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
-        return $next($request);
     }
 }

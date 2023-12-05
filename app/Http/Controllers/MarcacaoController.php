@@ -30,7 +30,8 @@ class MarcacaoController extends Controller
 
             return $marcacoes;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -56,7 +57,8 @@ class MarcacaoController extends Controller
             $marcacao = Marcacao::create($request->all());
             return $marcacao;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -71,7 +73,8 @@ class MarcacaoController extends Controller
         try {
             return $marcacao;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -99,7 +102,8 @@ class MarcacaoController extends Controller
             $marcacao->update($request->all());
             return $marcacao;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -115,7 +119,8 @@ class MarcacaoController extends Controller
             $deleted = $marcacao->delete();
             return !!$deleted;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 }

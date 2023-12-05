@@ -40,7 +40,8 @@ class AlunoController extends Controller
 
             return $alunos;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -72,7 +73,8 @@ class AlunoController extends Controller
 
             return $aluno;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -87,7 +89,8 @@ class AlunoController extends Controller
         try {
             return $aluno;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -117,7 +120,8 @@ class AlunoController extends Controller
 
             return $aluno;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -134,7 +138,8 @@ class AlunoController extends Controller
             $deleted = $aluno->delete();
             return !!$deleted;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 }

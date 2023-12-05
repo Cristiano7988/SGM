@@ -30,7 +30,8 @@ class SituacaoController extends Controller
 
             return $situacoes;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -56,7 +57,8 @@ class SituacaoController extends Controller
             $situacoes = Situacao::create($request->all());
             return $situacoes;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -71,7 +73,8 @@ class SituacaoController extends Controller
         try {
             return $situacao;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -99,7 +102,8 @@ class SituacaoController extends Controller
             $situacao->update($request->all());
             return $situacao;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -115,7 +119,8 @@ class SituacaoController extends Controller
             $deleted = $situacao->delete();
             return !!$deleted;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 }

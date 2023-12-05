@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Trata;
 use App\Models\Medida;
 
 class   MedidaController extends Controller
@@ -17,7 +18,8 @@ class   MedidaController extends Controller
             $medidas = Medida::all('tipo');
             return $medidas;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -32,7 +34,8 @@ class   MedidaController extends Controller
         try {
             return $medida;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 

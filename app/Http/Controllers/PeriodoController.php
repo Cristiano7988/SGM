@@ -30,7 +30,8 @@ class PeriodoController extends Controller
 
             return $periodos;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -56,7 +57,8 @@ class PeriodoController extends Controller
             $periodo = Periodo::create($request->all());
             return $periodo;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -71,7 +73,8 @@ class PeriodoController extends Controller
         try {
             return $periodo;
         } catch(\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -99,7 +102,8 @@ class PeriodoController extends Controller
             $periodo->update($request->all());
             return $periodo;
         } catch(\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -115,7 +119,8 @@ class PeriodoController extends Controller
             $deleted = $periodo->delete();
             return !!$deleted;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 }

@@ -360,7 +360,8 @@ class UserController extends Controller
 
             return $users;
         } catch(\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -386,7 +387,8 @@ class UserController extends Controller
     
             return $newUser;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -401,7 +403,8 @@ class UserController extends Controller
         try {
             return $user;
         } catch(\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -430,7 +433,8 @@ class UserController extends Controller
     
             return $user;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -450,7 +454,8 @@ class UserController extends Controller
         
             return !!$deleted;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Filtra;
+use App\Helpers\Trata;
 use App\Models\FormaDePagamento;
 use Illuminate\Http\Request;
 
@@ -29,7 +30,8 @@ class FormaDePagamentoController extends Controller
 
             return $formasDePagamento;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -55,7 +57,8 @@ class FormaDePagamentoController extends Controller
             $formaDePagamento = FormaDePagamento::create($request->all());
             return $formaDePagamento;
         } catch (\Throwable $th) {
-            $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -70,7 +73,8 @@ class FormaDePagamentoController extends Controller
         try {
             return $formaDePagamento;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -98,7 +102,8 @@ class FormaDePagamentoController extends Controller
             $formaDePagamento->update($request->all());
             return $formaDePagamento;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -114,7 +119,8 @@ class FormaDePagamentoController extends Controller
             $deleted = $formaDePagamento->delete();
             return !!$deleted;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 }

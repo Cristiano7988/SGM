@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Helpers\Trata;
 use App\Models\Pacote;
 use Closure;
 use Illuminate\Http\Request;
@@ -17,12 +18,17 @@ class checaDisponibilidadeDoPacote
      */
     public function handle(Request $request, Closure $next)
     {
-        $pacote = $request->route('pacote') ?? Pacote::find($request->pacote_id);
-        $matricula = $request->server('REQUEST_URI') == '/api/matricula';
-        $checaDisponibilidade =  $matricula || !!$request->ativo; // Checa disponibilidade na matricula ou quando requisitado
-        if (!$pacote) return response('Pacote não encontrado', 404);
-        if ($checaDisponibilidade && !$pacote->ativo) return response("Pacote inativo.", 403);
-
-        return $next($request);
+        try {
+            $pacote = $request->route('pacote') ?? Pacote::find($request->pacote_id);
+            $matricula = $request->server('REQUEST_URI') == '/api/matricula';
+            $checaDisponibilidade =  $matricula || !!$request->ativo; // Checa disponibilidade na matricula ou quando requisitado
+            if (!$pacote) return response('Pacote não encontrado', 404);
+            if ($checaDisponibilidade && !$pacote->ativo) return response("Pacote inativo.", 403);
+    
+            return $next($request);
+        } catch (\Throwable $th) {
+            $mensagem = Trata::erro($th);
+            return $mensagem;
+        }
     }
 }

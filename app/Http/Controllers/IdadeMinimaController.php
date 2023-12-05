@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Filtra;
+use App\Helpers\Trata;
 use App\Models\IdadeMinima;
 use Illuminate\Http\Request;
 
@@ -34,7 +35,8 @@ class IdadeMinimaController extends Controller
 
             return $idades;
         } catch (\Throwable $th) {
-            return response()->json($th->getMessage());
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -60,7 +62,8 @@ class IdadeMinimaController extends Controller
             $idadeMinima = IdadeMinima::create($request->all());
             return response()->json($idadeMinima);
         } catch (\Throwable $th) {
-            return response()->json($th->getMessage());
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -72,7 +75,12 @@ class IdadeMinimaController extends Controller
      */
     public function show(IdadeMinima $idadeMinima)
     {
-        return response()->json($idadeMinima);
+        try {
+            return $idadeMinima;
+        } catch (\Throwable $th) {
+            $mensagem = Trata::erro($th);
+            return $mensagem;
+        }
     }
 
     /**
@@ -99,7 +107,8 @@ class IdadeMinimaController extends Controller
             $idadeMinima->update($request->all());
             return response()->json($idadeMinima);
         } catch (\Throwable $th) {
-            return response()->json($th->getMessage());
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -115,7 +124,8 @@ class IdadeMinimaController extends Controller
             $deleted = $idadeMinima->delete();
             return response()->json(!!$deleted);
         } catch (\Throwable $th) {
-            return response()->json($th->getMessage());
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 }

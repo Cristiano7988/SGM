@@ -43,7 +43,8 @@ class MatriculaController extends Controller
 
             return $matriculas;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -69,7 +70,8 @@ class MatriculaController extends Controller
             $matricula = Matricula::create($request->all());
             return $matricula;
         } catch(\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -84,7 +86,8 @@ class MatriculaController extends Controller
         try {
             return $matricula;
         } catch(\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -115,7 +118,8 @@ class MatriculaController extends Controller
 
             return $matricula;
         } catch(\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -131,7 +135,8 @@ class MatriculaController extends Controller
             $deleted = $matricula->delete();
             return $deleted;
         } catch(\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 }

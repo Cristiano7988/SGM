@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Filtra;
+use App\Helpers\Trata;
 use App\Models\Dia;
 
 class DiaController extends Controller
@@ -24,7 +25,8 @@ class DiaController extends Controller
 
             return $dias;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -39,7 +41,8 @@ class DiaController extends Controller
         try {
             return $dia;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 }

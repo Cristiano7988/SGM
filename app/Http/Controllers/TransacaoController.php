@@ -38,7 +38,8 @@ class TransacaoController extends Controller
 
             return $transacoes;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -72,7 +73,8 @@ class TransacaoController extends Controller
 
             return $transacao;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -87,7 +89,8 @@ class TransacaoController extends Controller
         try {
             return $transacao;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -124,7 +127,8 @@ class TransacaoController extends Controller
             DB::commit();
             return $transacao;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -144,7 +148,8 @@ class TransacaoController extends Controller
     
             return !!$deleted;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 }

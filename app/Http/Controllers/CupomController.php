@@ -31,7 +31,8 @@ class CupomController extends Controller
 
             return $cupons;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -57,7 +58,8 @@ class CupomController extends Controller
             $cupom = Cupom::create($request->all());
             return $cupom;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -77,7 +79,8 @@ class CupomController extends Controller
             if (!$cupom) return response("Cupom não encontrado", 404);
             else return $cupom;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -105,7 +108,8 @@ class CupomController extends Controller
             $cupom->update($request->all());
             return $cupom;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
     /**
@@ -120,7 +124,8 @@ class CupomController extends Controller
             $deleted = $cupom->delete();
             return !!$deleted;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 }

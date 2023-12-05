@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Trata;
 use App\Models\MedidaDeTempo;
-use Illuminate\Http\Request;
 
 class MedidaDeTempoController extends Controller
 {
@@ -18,7 +18,8 @@ class MedidaDeTempoController extends Controller
             $medidas = MedidaDeTempo::all('tipo');
             return $medidas;
         } catch (\Throwable $th) {
-            return response()->json($th->getMessage());
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -30,6 +31,11 @@ class MedidaDeTempoController extends Controller
      */
     public function show(MedidaDeTempo $medidaDeTempo)
     {
-        return $medidaDeTempo;
+        try {
+            return $medidaDeTempo;
+        } catch (\Throwable $th) {
+            $mensagem = Trata::erro($th);
+            return $mensagem;
+        }
     }
 }

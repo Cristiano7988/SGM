@@ -42,7 +42,8 @@ class EmailController extends Controller
 
             return $emails;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -77,7 +78,8 @@ class EmailController extends Controller
 
             return $email;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -92,7 +94,8 @@ class EmailController extends Controller
         try {
             return $email;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -131,7 +134,8 @@ class EmailController extends Controller
 
             return $email;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -155,7 +159,8 @@ class EmailController extends Controller
 
             return response()->json($user);
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -193,7 +198,8 @@ class EmailController extends Controller
             
             return $email;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -212,7 +218,8 @@ class EmailController extends Controller
             DB::commit();
             return !!$deleted;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 }

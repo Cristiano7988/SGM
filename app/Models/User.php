@@ -78,4 +78,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Email::class)->withTimestamps();
     }
+
+    public function erros()
+    {
+        return $this->hasMany(Erro::class);
+    }
 }

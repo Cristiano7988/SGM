@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Helpers\Calcula;
+use App\Helpers\Trata;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -16,16 +17,21 @@ class CalculaDescontoDepoisDaController
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function handle(Request $request, Closure $next)
-    {      
-        $response = $next($request)->getData();
-        $temVariosPacotes = isset($response->data);
-        $pacotes = $temVariosPacotes ? $response->data : [$response];
-
-        $pacotes = Calcula::desconto($pacotes);
-        
-        if ($temVariosPacotes) $response->data = $pacotes;
-        else [$response] = $pacotes;
-
-        return response()->json($response);
+    {
+        try {
+            $response = $next($request)->getData();
+            $temVariosPacotes = isset($response->data);
+            $pacotes = $temVariosPacotes ? $response->data : [$response];
+    
+            $pacotes = Calcula::desconto($pacotes);
+            
+            if ($temVariosPacotes) $response->data = $pacotes;
+            else [$response] = $pacotes;
+    
+            return response()->json($response);
+        } catch (\Throwable $th) {
+            $mensagem = Trata::erro($th);
+            return $mensagem;
+        }
     }
 }

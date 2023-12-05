@@ -35,7 +35,8 @@ class PacoteController extends Controller
 
             return $pacotes;
         } catch (\Throwable $th) {
-            return response($th->getMessage(), 500);
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -61,7 +62,8 @@ class PacoteController extends Controller
             $pacote = Pacote::create($request->all());
             return $pacote;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -76,7 +78,8 @@ class PacoteController extends Controller
         try {
             return $pacote;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -104,7 +107,8 @@ class PacoteController extends Controller
             $pacote->update($request->all());
             return $pacote;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -120,7 +124,8 @@ class PacoteController extends Controller
             $deleted = $pacote->delete();
             return $deleted;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 }

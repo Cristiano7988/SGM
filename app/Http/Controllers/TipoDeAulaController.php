@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Trata;
 use App\Models\TipoDeAula;
 use Illuminate\Http\Request;
 
@@ -18,7 +19,8 @@ class TipoDeAulaController extends Controller
             $tipos_de_aula = TipoDeAula::all('tipo');
             return $tipos_de_aula;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -44,7 +46,8 @@ class TipoDeAulaController extends Controller
             $tipo_de_aula = TipoDeAula::create($request->all());
             return $tipo_de_aula;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -59,7 +62,8 @@ class TipoDeAulaController extends Controller
         try {
             return $tipo_de_aula;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -87,7 +91,8 @@ class TipoDeAulaController extends Controller
             $tipo_de_aula->update($request->all());
             return $tipo_de_aula;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 
@@ -103,7 +108,8 @@ class TipoDeAulaController extends Controller
             $deleted = $tipo_de_aula->delete();
             return !!$deleted;
         } catch (\Throwable $th) {
-            return $th->getMessage();
+            $mensagem = Trata::erro($th);
+            return $mensagem;
         }
     }
 }
