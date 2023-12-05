@@ -8,6 +8,7 @@ use App\Models\Matricula;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class MatriculaController extends Controller
 {
@@ -112,7 +113,10 @@ class MatriculaController extends Controller
     public function destroy(Matricula $matricula):Response
     {
         try {
-            $matricula->delete();
+            DB::beginTransaction();
+            $excluido = Trata::exclusao($matricula, 'Matrícula');
+            if ($excluido) DB::commit(); // Exclui somente se conseguir notificar o cliente
+
             return response("A matrícula de nº {$matricula->id}, de {$matricula->aluno->nome},  foi deletada.");
         } catch(\Throwable $th) {
             $mensagem = Trata::erro($th);
