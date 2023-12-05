@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Filtra;
+use App\Helpers\Trata;
 use App\Models\Transacao;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -33,11 +34,7 @@ class TransacaoController extends Controller
             if (isset($cupons)) $transacoes = Filtra::resultado($transacoes, $cupons, 'cupons.id')->with('cupom');
             if (isset($formas_de_pagamento)) $transacoes = Filtra::resultado($transacoes, $formas_de_pagamento, 'formas_de_pagamento.id'); // Transação COM forma de pagamento vem por padrão da model.
 
-            $order_by = $order_by ?? 'transacoes.data_de_pagamento';
-            $sort =  $sort ?? 'asc';
-            $per_page = $per_page ?? 10;
-
-            $transacoes = $transacoes->orderBy($order_by, $sort)->paginate($per_page);
+            $transacoes = Trata::resultado($transacoes, 'transacoes.data_de_pagamento'); // Ordenação por transação, cupom, matrícula ou forma de pagamento.
 
             return $transacoes;
         } catch (\Throwable $th) {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Filtra;
+use App\Helpers\Trata;
 use App\Models\Marcacao;
 use Illuminate\Http\Request;
 
@@ -24,12 +25,8 @@ class MarcacaoController extends Controller
                 ->select(['marcacoes.*'])->groupBy('marcacoes.id');
 
             if (isset($matriculas)) $marcacoes = Filtra::resultado($marcacoes, $matriculas, 'matricula_id')->with('matriculas');
-
-            $order_by = $order_by ?? 'observacao'; // Apenas por Marcação
-            $sort =  $sort ?? 'asc';
-            $per_page = $per_page ?? 10;
-
-            $marcacoes = $marcacoes->orderBy($order_by, $sort)->paginate($per_page);
+    
+            $marcacoes = Trata::resultado($marcacoes, 'observacao'); // Ordenação apenas por marcação.
 
             return $marcacoes;
         } catch (\Throwable $th) {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Filtra;
+use App\Helpers\Trata;
 use App\Models\Matricula;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -38,11 +39,7 @@ class MatriculaController extends Controller
             if (isset($turmas)) $matriculas = Filtra::resultado($matriculas, $turmas, 'turmas.id')->with('turma');
             if (isset($pacotes)) $matriculas = Filtra::resultado($matriculas, $pacotes, 'pacotes.id')->with('pacote');
 
-            $order_by = $order_by ?? 'alunos.nome'; // Ordenação por situação, marcação, aluno, turma e pacote.
-            $sort =  $sort ?? 'asc';
-            $per_page = $per_page ?? 10;
-
-            $matriculas = $matriculas->orderBy($order_by, $sort)->paginate($per_page);
+            $matriculas = Trata::resultado($matriculas, 'alunos.nome'); // Ordenação por situação, marcação, aluno, turma ou pacote.
 
             return $matriculas;
         } catch (\Throwable $th) {

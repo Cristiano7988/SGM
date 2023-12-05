@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Filtra;
+use App\Helpers\Trata;
 use App\Models\Periodo;
 use Illuminate\Http\Request;
 
@@ -25,11 +26,7 @@ class PeriodoController extends Controller
 
             if (isset($pacotes)) $periodos = Filtra::resultado($periodos, $pacotes, 'pacotes.id')->with('pacote');
 
-            $order_by = $order_by ?? 'periodos.inicio'; // Ordenação por períodos e pacotes.
-            $sort = $sort ?? 'asc';
-            $per_page = $per_page ?? 10;
-
-            $periodos = $periodos->orderBy($order_by, $sort)->paginate($per_page);
+            $periodos = Trata::resultado($periodos, 'periodos.inicio'); // Ordenação por período ou pacote.
 
             return $periodos;
         } catch (\Throwable $th) {

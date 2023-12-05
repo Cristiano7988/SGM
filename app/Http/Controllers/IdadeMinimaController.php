@@ -57,7 +57,6 @@ class IdadeMinimaController extends Controller
     public function store(Request $request)
     {
         try {
-            // $request->idade = intval($request->idade);
             $idadeMinima = IdadeMinima::create($request->all());
             return response()->json($idadeMinima);
         } catch (\Throwable $th) {

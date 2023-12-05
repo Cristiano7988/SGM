@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Filtra;
 use App\Helpers\Substitui;
+use App\Helpers\Trata;
 use App\Mail\EmailGenerico;
 use App\Mail\TodasTransacoes;
 use App\Models\Email;
@@ -37,11 +38,7 @@ class EmailController extends Controller
                 }
             ]);
 
-            $order_by = $order_by ?? "emails.assunto";
-            $sort = $sort ?? "asc";
-            $per_page = $per_page ?? 10;
-
-            $emails = $emails->orderBy($order_by, $sort)->paginate($per_page);
+            $emails = Trata::resultado($emails, 'emails.assunto'); // Ordenação por email e email_user.
 
             return $emails;
         } catch (\Throwable $th) {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Filtra;
+use App\Helpers\Trata;
 use App\Models\Pacote;
 use Illuminate\Http\Request;
 
@@ -30,11 +31,7 @@ class PacoteController extends Controller
             if (isset($nucleos)) $pacotes = Filtra::resultado($pacotes, $nucleos, 'nucleos.id')->with('nucleo');
             if (isset($ativo)) $pacotes = $pacotes->where('ativo', true);
 
-            $order_by = $order_by ?? 'pacotes.nome'; // Ordenação por pacote ou por núcleo
-            $sort = $sort ?? 'asc';
-            $per_page = $per_page ?? 10;
-
-            $pacotes = $pacotes->orderBy($order_by, $sort)->paginate($per_page);
+            $pacotes = Trata::resultado($pacotes, 'pacotes.nome'); // Ordenação por pacote ou por núcleo.
 
             return $pacotes;
         } catch (\Throwable $th) {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Filtra;
+use App\Helpers\Trata;
 use App\Models\Situacao;
 use Illuminate\Http\Request;
 
@@ -25,11 +26,7 @@ class SituacaoController extends Controller
 
             if (isset($matriculas)) $situacoes = Filtra::resultado($situacoes, $matriculas, 'matriculas.id')->with('matriculas');
 
-            $order_by = $order_by ?? 'situacoes.esta'; // Ordenação por situações e matrículas
-            $sort =  $sort ?? 'asc';
-            $per_page = $per_page ?? 10;
-
-            $situacoes = $situacoes->orderBy($order_by, $sort)->paginate($per_page);
+            $situacoes = Trata::resultado($situacoes, 'situacoes.esta'); // Ordenação por situação ou matrícula.
 
             return $situacoes;
         } catch (\Throwable $th) {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Filtra;
+use App\Helpers\Trata;
 use App\Models\MedidaDeTempo;
 use App\Models\Nucleo;
 use Carbon\Carbon;
@@ -56,11 +57,7 @@ class NucleoController extends Controller
             if (isset($turmas)) $nucleos = Filtra::resultado($nucleos, $turmas, 'turmas.id')->with('turmas');
             if (isset($pacotes)) $nucleos = Filtra::resultado($nucleos, $pacotes, 'pacotes.id')->with('pacotes');
 
-            $order_by = $order_by ?? 'nome'; // Apenas por núcleo
-            $sort = $sort ?? 'asc';
-            $per_page = $per_page ?? 10;
-
-            $nucleos = $nucleos->orderBy($order_by, $sort)->paginate($per_page);
+            $nucleos = Trata::resultado($nucleos, 'nome'); // Ordenação apenas por núcleo.
             
             return $nucleos;
         } catch (\Throwable $th) {

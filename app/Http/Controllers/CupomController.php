@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Filtra;
+use App\Helpers\Trata;
 use App\Models\Cupom;
 use Illuminate\Http\Request;
 
@@ -26,11 +27,7 @@ class CupomController extends Controller
             if (isset($medidas)) $cupons = Filtra::resultado($cupons, $medidas, 'medida_id'); // Cupom COM medida vem por padrão da model
             if (isset($transacoes)) $cupons = Filtra::resultado($cupons, $transacoes, 'transacoes.id')->with('transacoes');
 
-            $order_by = $order_by ?? 'desconto'; // Apenas por Cupom
-            $sort =  $sort ?? 'asc';
-            $per_page = $per_page ?? 10;
-
-            $cupons = $cupons->orderBy($order_by, $sort)->paginate($per_page);
+            $cupons = Trata::resultado($cupons, 'desconto'); // Ordenação apenas por cupom.
 
             return $cupons;
         } catch (\Throwable $th) {

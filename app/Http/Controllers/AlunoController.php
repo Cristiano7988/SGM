@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Filtra;
+use App\Helpers\Trata;
 use App\Models\Aluno;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -35,11 +36,7 @@ class AlunoController extends Controller
                 $alunos->with('users');
             }
 
-            $order_by = $order_by ?? 'nome'; // Apenas por alunos
-            $sort = $sort ?? 'asc';
-            $per_page = $per_page ?? 10;
-
-            $alunos = $alunos->orderBy($order_by, $sort)->paginate($per_page);
+            $alunos = Trata::resultado($alunos, 'nome'); // Ordenação apenas por aluno.
 
             return $alunos;
         } catch (\Throwable $th) {

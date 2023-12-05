@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Filtra;
+use App\Helpers\Trata;
 use App\Models\Turma;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -33,10 +34,7 @@ class TurmaController extends Controller
             
             if (isset($disponivel)) $turmas = $turmas->where('disponivel', '=', true);
             
-            $order_by = $order_by ?? 'turmas.nome'; // Ordenação por turma, dia e tipo de aula
-            $sort = $sort ?? 'asc';
-            $per_page = $per_page ?? 10;
-            $turmas = $turmas->orderBy($order_by, $sort)->paginate($per_page);
+            $turmas = Trata::resultado($turmas, 'turmas.nome'); // Ordenação por turma, dia ou tipo de aula.
 
             return $turmas;
         } catch (\Throwable $th) {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Helpers\Filtra;
+use App\Helpers\Trata;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Str;
@@ -355,11 +356,7 @@ class UserController extends Controller
                 }
             ]);
 
-            $order = $order ?? 'asc'; // Ordenação por usuário e por transação (bem como por seu cupom, forma de pagamento ou matrícula) feitas pelo usuário.
-            $order_by = $order_by ?? 'users.nome';
-            $per_page = $per_page ?? 10;
-
-            $users = $users->orderBy($order_by, $order)->paginate($per_page);
+            $users = Trata::resultado($users, 'users.nome'); // Ordenação por usuário ou por transação (bem como por seu cupom, forma de pagamento ou matrícula) feitas pelo usuário.
 
             return $users;
         } catch(\Throwable $th) {
