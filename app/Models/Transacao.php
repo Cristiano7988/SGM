@@ -16,6 +16,7 @@ class Transacao extends Model
         'cupom_id', // Desativar ao invés de excluir, se for excluir verificar (no FE) se há transações associadas ao cupom e pedir consentimento do usuário
         'forma_de_pagamento_id',
         'comprovante',
+        'enviada_para_contadora',
         'valor_pago',
         'data_de_pagamento',
         'obs',

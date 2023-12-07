@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Filtra;
+use App\Helpers\Formata;
 use App\Helpers\Substitui;
 use App\Helpers\Trata;
 use App\Mail\EmailGenerico;
 use App\Mail\TodasTransacoes;
 use App\Models\Email;
+use App\Models\Transacao;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -121,6 +123,12 @@ class EmailController extends Controller
                 $user->name = $user->nome;
                 Mail::to($user)->send($conteudo);
                 $user->emails()->attach($email);
+
+                $id_da_contadora = env('ACCOUNTANT_ID');
+                if (($user->id == $id_da_contadora) && $request->transacao_id) {
+                    $transacao = Transacao::find($request->transacao_id);
+                    $transacao->update(['enviada_para_contadora' => true]);
+                }
             }
 
             return response($email);
@@ -135,18 +143,35 @@ class EmailController extends Controller
      * @param  Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function send_transactions(Request $request):Response
+    public function sendTransactions(Request $request):Response
     {
         try {
-            $user = User::find($request->user_id);
+            $id_da_contadora = env('ACCOUNTANT_ID');
+            $user = User::find($id_da_contadora);
 
             if (!$user) return response("Usuário não encontrado", 404);
-            if (!$request->ids) return response("Selecione as transações a serem enviadas", 403);
+            if (!$request->transacoes) return response("Selecione as transações a serem enviadas", 403);
             
-            $conteudo = new TodasTransacoes($request);
+            $transacoes = Transacao::all()->whereIn('id', explode(',', $request->transacoes));
+
+            if (!$transacoes->count()) return response("Transações não encontradas", 404);
+    
+            foreach($transacoes as $index => $transacao) {
+                foreach($transacao->matricula->pacote->periodos as $key => $periodo) {
+                    $separador = $key ? " - " : "";
+                    $transacoes[$index]['vigencia_do_pacote'] .= $separador . "De " . Formata::data($periodo->inicio) . " até " . Formata::data($periodo->fim);
+                }
+            }
+
+            $conteudo = new TodasTransacoes($transacoes);
             $user->name = $user->nome;
 
             Mail::to($user)->send($conteudo);            
+
+            foreach($transacoes as $index => $transacao) {
+                unset($transacoes[$index]['vigencia_do_pacote']);
+                $transacao->update(['enviada_para_contadora' => true]);
+            }
 
             return response($user);
         } catch (\Throwable $th) {

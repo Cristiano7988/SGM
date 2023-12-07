@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('users')->insert(
+        DB::table('users')->insert([
             [
                 'nome' => env('DEV_NAME'),
                 'email' => env('DEV_EMAIL'),
@@ -28,6 +28,12 @@ class UserSeeder extends Seeder
                 'is_admin' => true,
                 'password' => Hash::make(env('CLIENT_PASSWORD'))
             ],
-        );
+            [
+                'nome' => env('ACCOUNTANT_NAME'),
+                'email' => env('ACCOUNTANT_EMAIL'),
+                'is_admin' => true,
+                'password' => Hash::make(env('ACCOUNTANT_PASSWORD'))
+            ]
+        ]);
     }
 }

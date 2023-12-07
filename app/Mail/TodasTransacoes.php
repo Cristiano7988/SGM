@@ -2,10 +2,8 @@
 
 namespace App\Mail;
 
-use App\Models\Transacao;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Http\Request;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -20,9 +18,8 @@ class TodasTransacoes extends Mailable
      *
      * @return void
      */
-    public function __construct($request)
+    public function __construct($transacoes)
     {
-        $transacoes = Transacao::all()->whereIn('id', explode(',', $request->ids));
         $this->transacoes = $transacoes;
     }
 

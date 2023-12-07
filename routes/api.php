@@ -155,7 +155,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::delete('/{cupom}', [CupomController::class, 'destroy']);
         });
 
-        Route::post('/enviar/emails/transacoes', [EmailController::class, 'send_transactions']);
+        Route::post('/enviar/emails/transacoes', [EmailController::class, 'sendTransactions']);
 
         Route::prefix('/emails')->group(function () {            
             Route::get('/', [EmailController::class, 'index']);
