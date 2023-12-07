@@ -7,6 +7,7 @@ use App\Helpers\Trata;
 use App\Models\Pacote;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class PacoteController extends Controller
 {
@@ -111,7 +112,10 @@ class PacoteController extends Controller
     public function destroy(Pacote $pacote):Response
     {
         try {
-            $pacote->delete();
+            DB::beginTransaction();
+            $excluido = Trata::exclusao($pacote, 'Pacote');
+            if ($excluido) DB::commit(); // Exclui somente se conseguir notificar o cliente
+
             return response("O pacote de nº {$pacote->id}, {$pacote->nome},  foi deletado.");
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);

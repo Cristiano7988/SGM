@@ -19,9 +19,6 @@ class Transacao extends Model
         'valor_pago',
         'data_de_pagamento',
         'obs',
-        'nome_do_pacote',
-        'vigencia_do_pacote',
-        'valor_do_pacote',
     ];
 
     public function forma_de_pagamento()

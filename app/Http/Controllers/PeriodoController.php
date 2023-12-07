@@ -7,6 +7,7 @@ use App\Helpers\Trata;
 use App\Models\Periodo;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class PeriodoController extends Controller
 {
@@ -96,7 +97,10 @@ class PeriodoController extends Controller
     public function destroy(Periodo $periodo):Response
     {
         try {
-            $periodo->delete();
+            DB::beginTransaction();
+            $excluido = Trata::exclusao($periodo, 'Período');
+            if ($excluido) DB::commit(); // Exclui somente se conseguir notificar o cliente
+
             return response("O período de nº {$periodo->id}, de {$periodo->inicio} à {$periodo->fim},  foi deletado.");;
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
