@@ -20,7 +20,13 @@ class checaDisponibilidadeDoNucleo
     public function handle(Request $request, Closure $next)
     {
         try {
-            $nucleo = $request->route('nucleo') ?? Turma::find($request->turma_id)->nucleo; // Pega o núcleo definido na rota ou pega o núcleo definido no corpo da requisição
+            $turma = Turma::find($request->turma_id);
+            $nucleo = $request->route('nucleo');
+            
+            if (!$nucleo) {
+                if (!$turma) return response('Turma não encontrada.', 404);
+                $nucleo = $turma->nucleo; // Pega o núcleo definido na rota ou pega o núcleo definido no corpo da requisição
+            }
             $matricular = !!$request->matricular; // Para checar se é possível se matricular no Núcleo (quando requisitado)
             $matricula = $request->server('REQUEST_URI')  == "/api/matricula";
             $checaDisponibilidade = $matricula || ($request->meses && $request->anos); // Considera a disponibilidade do núcleo no ato da matrícula ou caso seja requisitado

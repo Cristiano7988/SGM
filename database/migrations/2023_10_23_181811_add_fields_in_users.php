@@ -15,11 +15,11 @@ class AddFieldsInUsers extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('email_nf')->nullable();
-            $table->string('cpf')->nullable();
-            $table->string('cnpj')->nullable();
+            $table->string('cpf')->unique()->nullable();
+            $table->string('cnpj')->unique()->nullable();
             $table->string('vinculo')->nullable();
-            $table->string('whatsapp')->nullable();
-            $table->string('instagram')->nullable();
+            $table->string('whatsapp')->unique()->nullable();
+            $table->string('instagram')->unique()->nullable();
             $table->string('cep')->nullable();
             $table->string('caixa_postal')->nullable();
             $table->string('pais')->nullable();
