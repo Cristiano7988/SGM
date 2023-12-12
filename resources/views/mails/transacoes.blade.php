@@ -137,7 +137,6 @@
                                                                                                 @if ($transacao->user->numero) <strong>Número</strong>: {{$transacao->user->numero}}<br> @endif
                                                                                                 @if ($transacao->user->complemento) <strong>Complemento</strong>: {{$transacao->user->complemento}}<br> @endif
                                                                                                 @if ($transacao->user->cep) <strong>CEP</strong>: {{$transacao->user->cep}}<br> @endif
-                                                                                                @if ($transacao->user->caixa_postal) <strong>Caixa Postal</strong>: {{$transacao->user->caixa_postal}}<br> @endif
                                                                                                 @if ($transacao->user->cidade) <strong>Bairro</strong>: {{$transacao->user->cidade}}<br> @endif
                                                                                                 @if ($transacao->user->bairro) <strong>Cidade</strong>: {{$transacao->user->bairro}}<br> @endif
                                                                                                 @if ($transacao->user->estado) <strong>Estado</strong>: {{$transacao->user->estado}}<br> @endif
