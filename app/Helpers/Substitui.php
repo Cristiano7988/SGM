@@ -33,7 +33,7 @@ class Substitui
 
                 $child = implode('_', $nome_composto_por);
                 $childTag = implode('-', [$parent, $child]);
-                $conteudo = Substitui::comDados($childTag, $model->$child, $conteudo);
+                if ($model->$child) $conteudo = Substitui::comDados($childTag, $model->$child, $conteudo);
             }
     
             $tag = '{{' . $parent . '-' . $propriedade . '}}';
