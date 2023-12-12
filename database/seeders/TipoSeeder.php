@@ -15,9 +15,9 @@ class TipoSeeder extends Seeder
     public function run()
     {
         DB::table('tipos')->insert([
-            ['nome' => 'responsável'],
+            ['nome' => 'acompanhante'],
+            ['nome' => 'acompanhante reserva'],
             ['nome' => 'pagante'],
-            ['nome' => 'acompanhante']
         ]);
     }
 }
