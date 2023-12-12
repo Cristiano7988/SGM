@@ -30,7 +30,6 @@ class User extends Authenticatable
         'whatsapp',
         'instagram',
         'cep',
-        'caixa_postal', // Rever formatação
         'pais',
         'estado',
         'cidade',

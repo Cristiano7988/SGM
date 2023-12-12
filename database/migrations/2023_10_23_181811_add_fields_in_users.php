@@ -21,7 +21,6 @@ class AddFieldsInUsers extends Migration
             $table->string('whatsapp')->unique()->nullable();
             $table->string('instagram')->unique()->nullable();
             $table->string('cep')->nullable();
-            $table->string('caixa_postal')->nullable();
             $table->string('pais')->nullable();
             $table->string('estado')->nullable();
             $table->string('cidade')->nullable();

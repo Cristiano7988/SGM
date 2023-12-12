@@ -25,7 +25,9 @@ class CalculaDescontoAntesDaController
             [$pacote] = Calcula::desconto([$matricula->pacote]);
         
             $request['desconto_aplicado'] = $pacote->desconto_aplicado;
-            $request['valor_pago'] = $pacote->desconto_aplicado
+
+            if ($request['valor_pago']) $request['valor_pago'] = Formata::moeda($request['valor_pago']); // Para transações de valor especial
+            else $request['valor_pago'] = $pacote->desconto_aplicado
                 ? $pacote->valor_a_pagar
                 :  Formata::moeda($pacote->valor);
     
