@@ -54,7 +54,12 @@ class Trata
         $email->subject = "O usuário {$user->nome} registrou o erro de nº {$erro->id}!";
         Mail::to($desenvolvedor)->send($email);
 
-        return response("Não foi possível prosseguir com esta ação!\n\nJá registramos essa ocorrência e nossa equipe de desenvolvimento já foi informada.\nEm breve entraremos em contato.\n\nObrigado pela compreensão!", 500);
+        $web = in_array('web', request()->route()->middleware());
+        $message = "Não foi possível prosseguir com esta ação!\n\nJá registramos essa ocorrência e nossa equipe de desenvolvimento já foi informada.\nEm breve entraremos em contato.\n\nObrigado pela compreensão!";
+
+        return $web
+            ? redirect()->back()->with('failure', $message)
+            : response($message, 500);
     }
 
     public static function exclusao(Model $item, string $tipo)
