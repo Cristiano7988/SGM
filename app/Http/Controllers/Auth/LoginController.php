@@ -73,7 +73,7 @@ class LoginController extends Controller
         }
     }
 
-    public function logout(Request $request):Response
+    public function logoutViaApi(Request $request)
     {
         try {
             $accessToken = $request->bearerToken();
