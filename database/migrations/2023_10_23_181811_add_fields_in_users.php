@@ -47,7 +47,6 @@ class AddFieldsInUsers extends Migration
                 'whatsapp',
                 'instagram',
                 'cep',
-                'caixa_postal',
                 'pais',
                 'estado',
                 'cidade',
