@@ -49,7 +49,7 @@ class LoginController extends Controller
      */
     protected $redirectTo = RouteServiceProvider::HOME;
 
-    protected function login(Request $request):Response
+    protected function loginViaAPI(Request $request):Response
     {
         try {
             // Aqui validamos os dados da requisição
