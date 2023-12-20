@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -22,12 +23,56 @@ class UserController extends Controller
      * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function validator(array $data)
+    protected function validator(array $data, $user)
+    {
+        return $user
+            ? Validator::make($data, [
+                'cpf' => ['string', 'min:11', 'max:14', Rule::unique('users')->ignore($user->id)],
+                'cnpj' => ['string', 'min:14', 'max:18', Rule::unique('users')->ignore($user->id)],
+                'whatsapp' => ['string', 'min:3', 'max:100', Rule::unique('users')->ignore($user->id)],
+                'instagram' => ['string', 'url', 'min:5', 'max:255', Rule::unique('users')->ignore($user->id)],
+                'cep' => ['string', 'min:8', 'max:9'],
+                'vinculo' => ['string', 'min:2', 'max:30'],
+                'pais' => ['string', 'min:2', 'max:50'],
+                'estado' => ['string', 'min:2', 'max:70'],
+                'cidade' => ['string', 'min:2', 'max:255'],
+                'bairro' => ['string', 'min:2', 'max:255'],
+                'logradouro' => ['string', 'min:2', 'max:255'],
+                'numero' => ['numeric', 'min:1', 'max:999999'],
+                'complemento' => ['numeric', 'min:1', 'max:999999']
+            ])
+            : Validator::make($data, [
+                'nome' => ['required', 'string', 'min:2', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+                'password' => ['required', 'string', 'min:8', 'confirmed']
+            ]);
+    }
+
+    /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validatorForRelatedUser(array $data)
     {
         return Validator::make($data, [
-            'nome' => ['required', 'string', 'max:255'],
+            'nome' => ['required', 'string', 'min:2', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'cpf' => ['string', 'min:11', 'max:14', 'unique:users'],
+            'cnpj' => ['string', 'min:14', 'max:18', 'unique:users'],
+            'whatsapp' => ['string', 'min:3', 'max:100', 'unique:users'],
+            'instagram' => ['string', 'url', 'min:5', 'max:255', 'unique:users'],
+            'cep' => ['string', 'min:8', 'max:9'],
+            'vinculo' => ['string', 'min:2', 'max:30'],
+            'pais' => ['string', 'min:2', 'max:50'],
+            'estado' => ['string', 'min:2', 'max:70'],
+            'cidade' => ['string', 'min:2', 'max:255'],
+            'bairro' => ['string', 'min:2', 'max:255'],
+            'logradouro' => ['string', 'min:2', 'max:255'],
+            'numero' => ['numeric', 'min:1', 'max:999999'],
+            'complemento' => ['numeric', 'min:1', 'max:999999'],
+            'tipos' => ['array', 'min:1', 'max:2'],
         ]);
     }
 
@@ -376,6 +421,16 @@ class UserController extends Controller
     protected function store(Request $request):Response
     {
         try {
+            $authUser = Auth::user();
+
+            // Aqui validamos os dados da requisição
+            $validator = $this->validatorForRelatedUser($request->all());
+            if ($validator->fails()) return response($validator->errors(), 422);
+
+            // Aqui validamos se o usuário a ser atualizado tem relação com o usuário logado
+            if (!$authUser->is_admin) {
+                if (!$authUser->alunos->count()) return response('Adicione um aluno antes de prosseguir', 403); // Validação necessária pois são os alunos que ligam usuários a outros usuários!
+            }
             $user = Auth::user();
             $senhaAleatoria = Str::random(8);
             $senhaCriptografada = $request['password'] || $senhaAleatoria;
@@ -420,6 +475,20 @@ class UserController extends Controller
     protected function update(User $user, Request $request):Response
     {
         try {
+            // Aqui validamos os dados da requisição
+            $validator = $this->validator($request->all(), $user);
+            if ($validator->fails()) return response($validator->errors(), 422);
+
+            // Aqui validamos se o usuário a ser atualizado tem relação com o usuário logado
+            $authUser = Auth::user();
+            if (!$authUser->is_admin) {
+                if (!$user->alunos->count()) return response('Adicione um aluno antes de prosseguir', 403); // Validação necessária pois são os alunos que ligam usuários a outros usuários!
+                
+                $usuariosRelacionados = false;
+                foreach($user->alunos as $aluno) if (in_array($authUser->id, $aluno->users->pluck('id')->toArray())) $usuariosRelacionados = true;
+                if (!$usuariosRelacionados) return response('Você não tem permissão para editar esse usuário', 403);
+            }
+
             DB::beginTransaction();
             if (!!$request['password']) $request['password'] = Hash::make($request['password']);
             $user->update($request->all());

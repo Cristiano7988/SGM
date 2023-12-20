@@ -9,9 +9,33 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class AlunoController extends Controller
 {
+    /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validator(array $data, $aluno = false)
+    {
+        return Validator::make($data, [
+            'nome' => [
+                $aluno ? 'nullable' : 'required',
+                'string',
+                'min:2',
+                'max:255'],
+            'data_de_nascimento' => [
+                $aluno ? 'nullable' : 'required',
+                'date',
+                'date_format:Y-m-d',
+                'before:'.date('d/m/Y', strtotime('-30 days')) // Deve ter no mínimo 1 mês de idade
+            ]
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -55,8 +79,13 @@ class AlunoController extends Controller
     public function store(Request $request):Response
     {
         try {
+            // Aqui validamos os dados
+            $validator = $this->validator($request->all());
+            if ($validator->fails()) return response($validator->errors(), 422);
+
             $user = Auth::user();
 
+            // Aqui criamos o aluno
             DB::beginTransaction();
             $aluno = Aluno::create($request->all());
             $aluno->users()->attach($user->id);
@@ -95,6 +124,19 @@ class AlunoController extends Controller
     public function update(Request $request, Aluno $aluno):Response
     {
         try {
+            // Aqui validamos os dados
+            $validator = $this->validator($request->all(), $aluno);
+            if ($validator->fails()) return response($validator->errors(), 422);
+
+            // Aqui validamos se o aluno a ser atualizado tem relação com o usuário logado
+            $authUser = Auth::user();
+            if (!$authUser->is_admin) {                
+                $usuariosRelacionados = false;
+                if (in_array($authUser->id, $aluno->users->pluck('id')->toArray())) $usuariosRelacionados = true;
+                if (!$usuariosRelacionados) return response('Você não tem permissão para editar esse aluno', 403);
+            }
+
+            // Aqui atualizamos os dados
             $aluno->update($request->all());
             if (isset($request->users) && !!count($request->users)) $aluno->users()->sync($request->users);
 

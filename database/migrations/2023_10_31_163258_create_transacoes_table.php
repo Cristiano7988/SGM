@@ -15,11 +15,11 @@ class CreateTransacoesTable extends Migration
     {
         Schema::create('transacoes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable();
+            $table->foreignId('user_id');
             $table->foreignId('matricula_id')->nullable();
             $table->foreignId('cupom_id')->nullable();
-            $table->foreignId('forma_de_pagamento_id')->nullable();
-            $table->string('comprovante')->nullable();
+            $table->foreignId('forma_de_pagamento_id');
+            $table->string('comprovante');
             $table->boolean('enviada_para_contadora')->default(false);
             $table->string('valor_pago');
             $table->date('data_de_pagamento');

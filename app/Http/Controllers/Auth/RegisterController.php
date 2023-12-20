@@ -54,7 +54,7 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'nome' => ['required', 'string', 'max:255'],
+            'nome' => ['required', 'string', 'min:2', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
@@ -69,6 +69,10 @@ class RegisterController extends Controller
     protected function store(Request $request):Response
     {
         try {
+            // Aqui validamos os dados da requisição
+            $validator = $this->validator($request->all());
+            if ($validator->fails()) return response($validator->errors(), 422);
+            
             DB::beginTransaction();
             if (!!$request['password']) $request['password'] = Hash::make($request['password']);
             $user = User::create($request->all());

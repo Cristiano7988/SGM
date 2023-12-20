@@ -10,11 +10,25 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Laravel\Sanctum\PersonalAccessToken;
 
 class LoginController extends Controller
 {
+        /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+            'email' => ['required'],
+            'password' => ['required'],
+        ]);
+    }
     /*
     |--------------------------------------------------------------------------
     | Login Controller
@@ -38,12 +52,9 @@ class LoginController extends Controller
     protected function login(Request $request):Response
     {
         try {
-            $request->validate([
-                'email' => ['required', 'email'],
-                'password' => ['required']
-            ]);
-
-            $request->only('email', 'password');
+            // Aqui validamos os dados da requisição
+            $validator = $this->validator($request->only('email', 'password'));
+            if ($validator->fails()) return response($validator->errors(), 422);
 
             $user = User::where('email', $request->email)->first();
             if (!$user) return response('Email não cadastrado', 403);

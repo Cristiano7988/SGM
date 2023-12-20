@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Filtra;
 use App\Helpers\Trata;
+use App\Models\Aluno;
 use App\Models\Matricula;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -59,7 +60,30 @@ class MatriculaController extends Controller
     public function store(Request $request):Response
     {
         try {
-            $matricula = Matricula::create($request->all());
+            $authUser = Auth::user();
+            
+            // Aqui validamos se o aluno a ser matrículado tem relação com o usuário logado
+            $aluno = Aluno::find($request->aluno_id);
+            if (!$authUser->is_admin) {                
+                $usuariosRelacionados = false;
+                if (in_array($authUser->id, $aluno->users->pluck('id')->toArray())) $usuariosRelacionados = true;
+                if (!$usuariosRelacionados) return response('Você não tem permissão para matricular esse aluno', 403);
+            }
+
+            // Aqui validamos se o usuário logado possui algum tipo de responsabilidade pelo aluno a ser matriculado
+            if (!$authUser->tipos->count()) return response("Atualize as suas informações de usuário para sabermos qual será sua participação na vida letiva de {$aluno->nome} dentro da Toca.");
+            
+            $temAcompanhante = false;
+            $temAcompananhteReserva = false;
+            foreach ($aluno->users as $user) {
+                if (count($user->tipos->where('nome', 'acompanhante'))) $temAcompanhante = true;
+                if (count($user->tipos->where('nome', 'acompanhante reserva'))) $temAcompananhteReserva = true;
+            }
+
+            if (!$temAcompanhante) return response("Informe quem acompanhará {$aluno->nome} nas aulas.", 403);
+            if (!$temAcompananhteReserva) return response("Informe quem acompanhará {$aluno->nome} nas aulas quando o principal acompanhante não puder.", 403);
+
+            $matricula = Matricula::create($request->except('situacao_id', 'marcacao_id'));
             return response($matricula);
         } catch(\Throwable $th) {
             $mensagem = Trata::erro($th);
