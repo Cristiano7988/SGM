@@ -34,6 +34,7 @@ class RegisterController extends Controller
      * @var string
      */
     protected $redirectTo = RouteServiceProvider::HOME;
+    protected $mensagem = "";
 
     /**
      * Create a new controller instance.
@@ -64,9 +65,8 @@ class RegisterController extends Controller
      * Create a new user instance after a valid registration.
      *
      * @param  Request  $request
-     * @return \App\Models\User
      */
-    protected function store(Request $request):Response
+    protected function create(Request $request)
     {
         try {
             // Aqui validamos os dados da requisição
@@ -74,17 +74,17 @@ class RegisterController extends Controller
             if ($validator->fails()) return response($validator->errors(), 422);
             
             DB::beginTransaction();
-            if (!!$request['password']) $request['password'] = Hash::make($request['password']);
+            $request['password'] = Hash::make($request['password']);
             $user = User::create($request->all());
-            
-            if (isset($request['tipos']) && !!count($request['tipos'])) $user->tipos()->attach($request['tipos']);
-            if (isset($request['alunos']) && !!count($request['alunos'])) $user->alunos()->attach($request['alunos']);
             DB::commit();
-    
-            return response($user);
+
+            return $user;
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+            
+            $api = in_array('api', request()->route()->middleware());
+            $this->mensagem = $mensagem;
+            if ($api) return $mensagem;
         }
     }
 }

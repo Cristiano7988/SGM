@@ -43,7 +43,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/register', [RegisterController::class, 'store']);
+Route::post('/register', [RegisterController::class, 'create']);
 Route::post('/login', [LoginController::class, 'loginViaAPI']);
 
 Route::middleware('auth:sanctum')->group(function () {

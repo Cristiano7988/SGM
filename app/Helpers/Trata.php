@@ -34,7 +34,7 @@ class Trata
 
         DB::beginTransaction();
         $erro = Erro::create([
-            'user_id' => $user->id,
+            'user_id' => $user ? $user->id : 'Ainda não cadastrado',
             'rota' => $_SERVER['REQUEST_URI'],
             'metodo' => $_SERVER['REQUEST_METHOD'],
             'acessado_via' => request()->userAgent(),
@@ -51,15 +51,14 @@ class Trata
         $desenvolvedor->name = $desenvolvedor->nome;
 
         $email = new AvisoDeErro($user, $erro);
-        $email->subject = "O usuário {$user->nome} registrou o erro de nº {$erro->id}!";
+        $usuario = $user ? $user->nome : "Novo";
+        $email->subject = "O usuário {$usuario} registrou o erro de nº {$erro->id}!";
         Mail::to($desenvolvedor)->send($email);
 
         $web = in_array('web', request()->route()->middleware());
         $message = "Não foi possível prosseguir com esta ação!\n\nJá registramos essa ocorrência e nossa equipe de desenvolvimento já foi informada.\nEm breve entraremos em contato.\n\nObrigado pela compreensão!";
 
-        return $web
-            ? redirect()->back()->with('failure', $message)
-            : response($message, 500);
+        return response($message, 500);
     }
 
     public static function exclusao(Model $item, string $tipo)
