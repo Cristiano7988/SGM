@@ -45,16 +45,22 @@ class IdadeMinimaController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request):Response
+    public function store(Request $request)
     {
         try {
             $idadeMinima = IdadeMinima::create($request->all());
-            return response($idadeMinima);
+            $mensagem = "Idade mínima de {$idadeMinima->idade} {$idadeMinima->medida_de_tempo->tipo} adicionada!";
+            
+            return web()
+                ? redirect()->back()->with('success', $mensagem)
+                : response($mensagem);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+            return web()
+                ? redirect()->back()->with('failure', $mensagem)
+                : response($mensagem);
         }
     }
 

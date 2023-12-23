@@ -7,6 +7,7 @@ use App\Models\Aluno;
 use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class calculaIdadeDoAluno
 {
@@ -21,12 +22,21 @@ class calculaIdadeDoAluno
     {
         try {
             $id = $request->aluno_id;
+            $mensagem = "Você está buscando núcleos disponíveis para qual aluno? Informe antes de acessar esta página.";
+
+            if (!$id && !Auth::user()->is_admin) return web()
+                ? redirect()->back()->with('failure', $mensagem)
+                : response($mensagem, 403);
 
             if ($id) {
                 $aluno = Aluno::find($id);
                 $now = Carbon::now();
+                
+                $mensagem = "Aluno não encontrado";
     
-                if (!$aluno) return response("Aluno não encontrado", 403);
+                if (!$aluno) return web()
+                    ? redirect()->back()->with('failure', $mensagem)
+                    : response($mensagem, 403);
     
                 $data_de_nascimento = Carbon::create($aluno->data_de_nascimento);
                 $request['meses'] = $data_de_nascimento->floatDiffInMonths($now);
@@ -35,7 +45,9 @@ class calculaIdadeDoAluno
             return $next($request);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+            return web()
+                ? redirect()->back()->with('failure', $mensagem)
+                : response($mensagem, 500);
         }
     }
 }

@@ -55,7 +55,6 @@ class Trata
         $email->subject = "O usuário {$usuario} registrou o erro de nº {$erro->id}!";
         Mail::to($desenvolvedor)->send($email);
 
-        $web = in_array('web', request()->route()->middleware());
         $message = "Não foi possível prosseguir com esta ação!\n\nJá registramos essa ocorrência e nossa equipe de desenvolvimento já foi informada.\nEm breve entraremos em contato.\n\nObrigado pela compreensão!";
 
         return response($message, 500);

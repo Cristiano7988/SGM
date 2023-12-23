@@ -24,7 +24,12 @@ class checaDisponibilidadeDoNucleo
             $nucleo = $request->route('nucleo');
             
             if (!$nucleo) {
-                if (!$turma) return response('Turma não encontrada.', 404);
+                if (!$turma) {
+                    $mensagem = 'turma não encontrada';
+                    return web()
+                        ? redirect()->back()->with($mensagem)
+                        : response($mensagem, 404);
+                }
                 $nucleo = $turma->nucleo; // Pega o núcleo definido na rota ou pega o núcleo definido no corpo da requisição
             }
             $matricular = !!$request->matricular; // Para checar se é possível se matricular no Núcleo (quando requisitado)
@@ -40,13 +45,24 @@ class checaDisponibilidadeDoNucleo
                 $nucleo->idade_maxima->medida_de_tempo_id == 1 && $nucleo->idade_maxima->idade <= $request->meses ||
                 $nucleo->idade_maxima->medida_de_tempo_id == 2 && $nucleo->idade_maxima->idade <= $request->anos;
             
-            if ($checaDisponibilidade && !$escopoDaIdade) return response("Faixa etária incompatível", 403);
-            if ($matricular && !$noPeriodoDeRematricula) return response ("Núcleo fechado para matrículas ou rematrículas", 403);
-            
+            if ($checaDisponibilidade && !$escopoDaIdade) {
+                $mensagem = 'Faixa etária incompatível';
+                return web()
+                    ? redirect()->back()->with('failure', $mensagem)
+                    : response($mensagem, 403);
+            }
+            if ($matricular && !$noPeriodoDeRematricula) {
+                $mensagem = 'Núcleo fechado para matrículas ou rematrículas';
+                return web()
+                    ? redirect()->back()->with('failure', $mensagem)
+                    : response ($mensagem, 403);
+            }
             return $next($request);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+            return web()
+                ? redirect()->back()->with('failure', $mensagem)
+                : response($mensagem, 500);
         }
     }
 }
