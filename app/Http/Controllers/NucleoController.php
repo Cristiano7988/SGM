@@ -107,7 +107,7 @@ class NucleoController extends Controller
             }
 
             $now = Carbon::now();
-            if (isset($matricular)) $nucleos->where('fim_rematricula', '>=', $now)->where('inicio_rematricula', '<=', $now);
+            if (isset($matricular) && $matricular) $nucleos->where('fim_rematricula', '>=', $now)->where('inicio_rematricula', '<=', $now);
             
             if (isset($turmas)) $nucleos = Filtra::resultado($nucleos, $turmas, 'turmas.id')->with('turmas');
             if (isset($pacotes)) $nucleos = Filtra::resultado($nucleos, $pacotes, 'pacotes.id')->with('pacotes');

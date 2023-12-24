@@ -22,11 +22,6 @@ class calculaIdadeDoAluno
     {
         try {
             $id = $request->aluno_id;
-            $mensagem = "Você está buscando núcleos disponíveis para qual aluno? Informe antes de acessar esta página.";
-
-            if (!$id && !Auth::user()->is_admin) return web()
-                ? redirect()->back()->with('failure', $mensagem)
-                : response($mensagem, 403);
 
             if ($id) {
                 $aluno = Aluno::find($id);
@@ -39,8 +34,8 @@ class calculaIdadeDoAluno
                     : response($mensagem, 403);
     
                 $data_de_nascimento = Carbon::create($aluno->data_de_nascimento);
-                $request['meses'] = $data_de_nascimento->floatDiffInMonths($now);
-                $request['anos'] = $data_de_nascimento->floatDiffInYears($now);
+                $request['meses'] = str_replace('.00', '', number_format($data_de_nascimento->floatDiffInMonths($now), 2, '.', ''));
+                $request['anos'] = str_replace('.00', '', number_format($data_de_nascimento->floatDiffInYears($now), 2, '.', ''));
             }
             return $next($request);
         } catch (\Throwable $th) {

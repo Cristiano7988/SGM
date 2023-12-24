@@ -94,6 +94,9 @@
             </div>
         </nav>
 
+        @if (!in_array(metodo(), ['edit', 'home']))
+            <div id="filtro" data-request="{{ json_encode(request()->all()) }}" data-alunos="{{ json_encode(alunos()) }}"></div>
+        @endif    
         @if (session('failure'))
             <div class="alert alert-danger sticky-top" role="alert">
                 {{ session('failure') }}

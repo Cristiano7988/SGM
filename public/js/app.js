@@ -5084,7 +5084,7 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-__webpack_require__(/*! ./components/Example */ "./resources/js/components/Example.js");
+__webpack_require__(/*! ./components/Filtro */ "./resources/js/components/Filtro.jsx");
 
 /***/ }),
 
@@ -5127,9 +5127,9 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /***/ }),
 
-/***/ "./resources/js/components/Example.js":
+/***/ "./resources/js/components/Filtro.jsx":
 /*!********************************************!*\
-  !*** ./resources/js/components/Example.js ***!
+  !*** ./resources/js/components/Filtro.jsx ***!
   \********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -5141,35 +5141,169 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
 
-function Example() {
+
+var Filtro = function Filtro(_ref) {
+  var props = _ref.props;
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    _useState2 = _slicedToArray(_useState, 2),
+    filtro = _useState2[0],
+    setFiltro = _useState2[1];
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState4 = _slicedToArray(_useState3, 2),
+    focus = _useState4[0],
+    setFocus = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(JSON.parse(props.request)),
+    _useState6 = _slicedToArray(_useState5, 2),
+    request = _useState6[0],
+    setRequest = _useState6[1];
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(JSON.parse(props.alunos)),
+    _useState8 = _slicedToArray(_useState7, 2),
+    alunos = _useState8[0],
+    setAlunos = _useState8[1];
+  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+      matricular: {
+        type: 'checkbox',
+        value: 0,
+        "class": 'form-check-input m-0'
+      },
+      aluno: {
+        query: 'aluno_id',
+        type: 'select',
+        value: alunos,
+        "class": 'form-select'
+      },
+      meses: {
+        type: 'number',
+        value: 0,
+        "class": 'form-control',
+        props: {
+          min: 0
+        }
+      },
+      anos: {
+        type: 'number',
+        value: 0,
+        "class": 'form-control',
+        props: {
+          min: 0
+        }
+      }
+    }),
+    _useState10 = _slicedToArray(_useState9, 2),
+    inputs = _useState10[0],
+    setInputs = _useState10[1];
+  var updateRequest = function updateRequest(e) {
+    var _inputs$name$query;
+    var _e$target = e.target,
+      name = _e$target.name,
+      checked = _e$target.checked,
+      value = _e$target.value;
+
+    // Aqui tratamos os valores dos inputs ou de inputs relacionados
+    if (inputs[name].type == 'checkbox') value = !checked ? 0 : 1;else if (name == 'meses') request['anos'] = (value / 12).toFixed(2).replace('.00', '');else if (name == 'anos') request['meses'] = (value * 12).toFixed(2).replace('.00', '');else if (name == 'aluno' && !request['aluno']) {
+      delete request['meses'];
+      delete request['anos'];
+    }
+
+    // Aqui atribuímos o valor ao request
+    request[(_inputs$name$query = inputs[name].query) !== null && _inputs$name$query !== void 0 ? _inputs$name$query : name] = value;
+
+    // // Aqui removemos filtros não utilizados
+    Object.entries(request).map(function (_ref2) {
+      var _ref3 = _slicedToArray(_ref2, 2),
+        name = _ref3[0],
+        value = _ref3[1];
+      if (!parseFloat(value)) delete request[name];
+    });
+
+    // Aqui salvamos o estado
+    setFocus(name);
+    setRequest(_objectSpread({}, request));
+  };
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    if (!request) return;
+    setFiltro('?' + Object.entries(request).map(function (item) {
+      return item.join('=');
+    }).join('&'));
+  }, [request]);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-    className: "container",
+    className: "card",
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-      className: "row justify-content-center",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-        className: "col-md-8",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-          className: "card",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-            className: "card-header",
-            children: "Example Component"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-            className: "card-body",
-            children: "I'm an example component!"
-          })]
-        })
+      className: "card-body",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        className: "d-flex gap-5 justify-content-end",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+          className: "d-flex gap-3 justify-content-end",
+          children: Object.keys(inputs).map(function (name, key) {
+            var _request$name, _request, _inputs$name$query2;
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+              className: "d-flex align-items-center gap-2 justify-content-center",
+              children: [['checkbox', 'number'].includes(inputs[name].type) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
+                  className: "form-check-label text-capitalize",
+                  children: name
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", _objectSpread(_objectSpread({}, inputs[name].props), {}, {
+                  defaultChecked: request.matricular == 1 ? true : false,
+                  className: inputs[name]["class"],
+                  type: inputs[name].type,
+                  autoFocus: focus == name,
+                  value: (_request$name = request[name]) !== null && _request$name !== void 0 ? _request$name : inputs[name].value,
+                  name: name,
+                  onChange: updateRequest
+                }))]
+              }), ['select'].includes(inputs[name].type) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
+                  className: "form-check-label text-capitalize",
+                  children: name
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("select", {
+                  className: inputs[name]["class"],
+                  autoFocus: focus == name,
+                  name: name,
+                  onChange: updateRequest,
+                  value: (_request = request[(_inputs$name$query2 = inputs[name].query) !== null && _inputs$name$query2 !== void 0 ? _inputs$name$query2 : name]) !== null && _request !== void 0 ? _request : '',
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                    value: "",
+                    children: "Selecione"
+                  }), inputs[name].value.map(function (option) {
+                    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                      value: option.id,
+                      children: option.nome
+                    }, option.id);
+                  })]
+                })]
+              })]
+            }, key);
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("a", {
+          href: location.pathname + filtro,
+          className: "btn btn-primary",
+          children: "Filtrar"
+        })]
       })
     })
   });
-}
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Example);
-if (document.getElementById('example')) {
-  react_dom__WEBPACK_IMPORTED_MODULE_1__.render( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Example, {}), document.getElementById('example'));
-}
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Filtro);
+var filtro = document.getElementById('filtro');
+if (filtro) react_dom__WEBPACK_IMPORTED_MODULE_1__.render( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(Filtro, {
+  props: filtro.dataset
+}), filtro);
 
 /***/ }),
 
