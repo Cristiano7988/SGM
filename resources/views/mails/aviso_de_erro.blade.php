@@ -6,7 +6,7 @@
     <h2 style="font-size: 14px;">Erro nº {{$erro->id}}</h2>
     <p>Ocorreu um erro na Linha <b>{{$erro->linha}}</b> do arquivo <b>{{$erro->arquivo}}</b>
     <p>A mensagem de erro obtida foi: <b>{{$erro->mensagem}}</b></p>
-    <p>Este erro ocorreu com o usuário <b>{{$user->nome}}</b> (ID: <b>#{{$user->id}}</b>) enquanto acessava a rota <b>{{$erro->rota}}</b> utilizando o método <b>{{$erro->metodo}}</b></p>
+    <p>Este erro ocorreu com o usuário <b>{{$user->nome ?? "visitante" }}</b> (ID: <b>#{{$user->id ?? ""}}</b>) enquanto acessava a rota <b>{{$erro->rota}}</b> utilizando o método <b>{{$erro->metodo}}</b></p>
     <p>O usuário parecia estar acessando através do <b>{{$erro->acessado_via}}</b></p>
     @if ($erro->corpo_da_requisicao)
         <p>Foi enviado no corpo da requisição o seguinte:</p>

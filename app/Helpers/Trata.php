@@ -34,7 +34,7 @@ class Trata
 
         DB::beginTransaction();
         $erro = Erro::create([
-            'user_id' => $user->id,
+            'user_id' => $user->id ?? null,
             'rota' => $_SERVER['REQUEST_URI'],
             'metodo' => $_SERVER['REQUEST_METHOD'],
             'acessado_via' => request()->userAgent(),
@@ -51,7 +51,8 @@ class Trata
         $desenvolvedor->name = $desenvolvedor->nome;
 
         $email = new AvisoDeErro($user, $erro);
-        $email->subject = "O usuário {$user->nome} registrou o erro de nº {$erro->id}!";
+        $usuario = $user->nome ?? "visitante";
+        $email->subject = "Usuário {$usuario} registrou o erro de nº {$erro->id}!";
         Mail::to($desenvolvedor)->send($email);
 
         return response("Não foi possível prosseguir com esta ação!\n\nJá registramos essa ocorrência e nossa equipe de desenvolvimento já foi informada.\nEm breve entraremos em contato.\n\nObrigado pela compreensão!", 500);

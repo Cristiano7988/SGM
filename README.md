@@ -1,5 +1,34 @@
 ## Sistema de Gerenciamento de Matrículas [API]
 
+# Inicializando o projeto - 1ª vez
+
+1) Clonar repositório
+    git clone https://github.com/Cristiano7988/SGM.git
+2) Instalar dependências
+    * composer install
+    * npm install
+3) Renomer arquivo .env.example para .env
+4) Criar a chave encriptada do laravel
+    * php artisan key:generate
+5) configurar banco de dados:
+    * Criar pasta database.sqlite
+    * Alterar a variável de ambiente DB_CONNECTION para sqlite
+    * Comentar a variável DB_DATABASE
+6) Rodar migrations:
+    * php artisan migrate
+7) Definir as variáveis de ambientes customizadas
+    * DEV_NAME, DEV_EMAIL, DEV_PASSWORD
+    * CLIENT_NAME, CLIENT_EMAIL, CLIENT_PASSWORD
+    * ACCOUNTANT_NAME, ACCOUNTANT_EMAIL, ACCOUNTANT_PASSWORD
+8) Configure o mailtrap para ajudar na depuração
+    * MAIL_MAILER=smtp
+    * MAIL_HOST=smtp.mailtrap.io
+    * MAIL_PORT=2525
+    * MAIL_USERNAME= <!-- Verificar no Mailtrap em Inboxes na aba Access Rights --> 
+    * MAIL_PASSWORD= <!-- Verificar no Mailtrap em Inboxes na aba Access Rights --> 
+    * MAIL_ENCRYPTION=tls
+
+
 # Usuários:
 
 [index]:  

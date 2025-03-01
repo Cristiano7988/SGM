@@ -21,7 +21,7 @@ class AvisoDeErro extends Mailable
      *
      * @return void
      */
-    public function __construct(User $user, Erro $erro)
+    public function __construct(?User $user=null, Erro $erro)
     {
         $this->user = $user;
         $this->erro = $erro;
