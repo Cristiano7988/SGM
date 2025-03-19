@@ -1,0 +1,46 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # container_name: laravel-php
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - C:/Users/DarkC/.ssh:/root/.ssh
+      - C:/Users/DarkC/.ssh:/www-data/.ssh
+      - .:/var/www/html
+    networks:
+      - laravel
+
+  nginx:
+    image: nginx:latest
+    container_name: laravel-nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - laravel
+
+  vite:
+    image: node:22-alpine  # Usando Node.js como base para o Vite
+    container_name: laravel-vite
+    restart: unless-stopped
+    working_dir: /var/www/html
+    ports:
+      - "5173:5173"  # Porta do Vite
+    volumes:
+      - .:/var/www/html
+    command: /bin/sh -c "npm install -g npm@11.2.0 && npm run dev"  # Instala as dependências e executa o Vite
+    depends_on:
+      - app
+    networks:
+      - laravel
+
+networks:
+  laravel:
