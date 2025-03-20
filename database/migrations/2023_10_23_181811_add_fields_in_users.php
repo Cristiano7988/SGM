@@ -39,22 +39,7 @@ class AddFieldsInUsers extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn([
-                'email_nf',
-                'cpf',
-                'cnpj',
-                'vinculo',
-                'whatsapp',
-                'instagram',
-                'cep',
-                'pais',
-                'estado',
-                'cidade',
-                'bairro',
-                'logradouro',
-                'numero',
-                'complemento'
-            ]);
+            //
         });
     }
 }
