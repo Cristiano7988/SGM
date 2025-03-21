@@ -22,10 +22,20 @@ class ChecaSeEAdmin
             $isAdmin = Auth::user()->is_admin;
     
             if ($isAdmin) return $next($request);
-            else return response("Acesso negado", 403);
+            else {
+                $mensagem = "Acesso negado";
+                session(['error' => $mensagem]);
+
+                return isWeb()
+                    ? redirect()->route('dashboard')
+                    : response($mensagem, 403);
+            }
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+
+            return isWeb()
+                ? redirect()->route('dashboard')
+                : response($mensagem, 500);
         }
     }
 }

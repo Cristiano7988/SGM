@@ -21,6 +21,11 @@ const mainNavItems: NavItem[] = [
         url: '/dashboard',
         icon: LayoutGrid,
     },
+    {
+        title: 'Núcleos',
+        url: '/nucleos',
+        icon: LayoutGrid,
+    },
 ];
 
 const rightNavItems: NavItem[] = [

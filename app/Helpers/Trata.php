@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class Trata
@@ -27,11 +28,16 @@ class Trata
         return $table;
     }
 
-    public static function erro($th)
+    public static function erro($th):string
     {
+        // Salva erro na sessão para que o usuário visualize na hora
+        $message = "Não foi possível prosseguir com esta ação!\n\nJá registramos essa ocorrência e nossa equipe de desenvolvimento já foi informada.\nEm breve entraremos em contato.\n\nObrigado pela compreensão!";
+        session(['error' => $message]); 
+
         DB::rollBack();
         $user = Auth::user();
 
+        // Salva no banco para consultas
         DB::beginTransaction();
         $erro = Erro::create([
             'user_id' => $user->id ?? null,
@@ -47,6 +53,10 @@ class Trata
         ]);
         DB::commit();
 
+        // Salva no log para análise
+        Log::error($th->getMessage());
+
+        // Notifica por email o desenvolvedor
         $desenvolvedor = User::find(1);
         $desenvolvedor->name = $desenvolvedor->nome;
 
@@ -55,7 +65,7 @@ class Trata
         $email->subject = "Usuário {$usuario} registrou o erro de nº {$erro->id}!";
         Mail::to($desenvolvedor)->send($email);
 
-        return response("Não foi possível prosseguir com esta ação!\n\nJá registramos essa ocorrência e nossa equipe de desenvolvimento já foi informada.\nEm breve entraremos em contato.\n\nObrigado pela compreensão!", 500);
+        return $message;
     }
 
     public static function exclusao(Model $item, string $tipo)

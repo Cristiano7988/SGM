@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\Formata;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,6 +20,24 @@ class Nucleo extends Model
         'inicio_rematricula',
         'fim_rematricula'
     ];
+
+    /**
+     * Mutators
+     */
+
+    function getInicioRematriculaAttribute($value)
+    {
+        return Formata::data($value);
+    } 
+
+    function getFimRematriculaAttribute($value)
+    {
+        return Formata::data($value);
+    } 
+
+    /**
+     * Relacionamentos
+     */
 
     public function turmas()
     {

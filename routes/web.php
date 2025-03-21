@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\NucleoController;
+use App\Http\Middleware\ChecaSeEAdmin;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -9,8 +11,16 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
+        return Inertia::render('dashboard', [
+            'session' => viteSession()
+        ]);
     })->name('dashboard');
+
+    Route::middleware(ChecaSeEAdmin::class)->group(function () {
+        Route::prefix('/nucleos')->group(function () {    
+            Route::get('/', [NucleoController::class, 'index'])->name('nucleos.index');
+        });
+    });
 });
 
 require __DIR__.'/settings.php';

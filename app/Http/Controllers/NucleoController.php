@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class NucleoController extends Controller
 {
@@ -18,9 +19,8 @@ class NucleoController extends Controller
      * Exibe os núcleos registrados.
      * Se o id do aluno é passado na requisição então retorna somente os núcleos disponíveis para essa faixa etária
      *
-     * @return \Illuminate\Http\Response
      */
-    public function index():Response
+    public function index()
     {
         try {
             extract(request()->all());
@@ -58,12 +58,19 @@ class NucleoController extends Controller
             if (isset($turmas)) $nucleos = Filtra::resultado($nucleos, $turmas, 'turmas.id')->with('turmas');
             if (isset($pacotes)) $nucleos = Filtra::resultado($nucleos, $pacotes, 'pacotes.id')->with('pacotes');
 
-            $nucleos = Trata::resultado($nucleos, 'nome'); // Ordenação apenas por núcleo.
-            
-            return response($nucleos);
+            $pagination = Trata::resultado($nucleos, 'nome'); // Ordenação apenas por núcleo.
+
+            return isWeb()
+                ? Inertia::render('nucleos/index', [
+                    'pagination' => $pagination
+                ])
+                : response($pagination);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+
+            return isWeb()
+                ? redirect()->route('dashboard')
+                : response($mensagem);
         }
     }
 
