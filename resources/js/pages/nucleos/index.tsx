@@ -23,16 +23,25 @@ export default function Index({ pagination, ...props }: Props<Nucleo>) {
                             {pagination.data.map((nucleo: Nucleo) => <div key={nucleo.id.toString()} className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
                                 <div className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20 p-4 flex justify-center gap-4">
                                     <div className='flex flex-col m-auto gap-4'>
-                                        <figure className='m-auto max-w-[90px] rounded-full border overflow-hidden'>
-                                            <img src={nucleo.imagem} alt={nucleo.nome} />
+                                        <figure className='m-auto w-24 h-24 rounded-full overflow-hidden border border-gray-300'>
+                                            <img src={nucleo.imagem} alt={nucleo.nome} className="w-full h-full object-cover" />
                                         </figure>
                                         <b>{nucleo.nome}</b>
                                     </div>
-                                    <div className='flex flex-col m-auto gap-4'>
-                                        <p><strong>Período de matrícula:</strong></p>
-                                        <div>
-                                            <p><strong>De:</strong> {nucleo.inicio_rematricula}</p>
-                                            <p><strong>Até:</strong> {nucleo.fim_rematricula}</p>
+                                    <div className='flex flex-col m-auto gap-6'>
+                                        <div className='flex flex-col gap-1'>
+                                            <p><strong>Público alvo:</strong></p>
+                                            <div>
+                                                <p><strong>De:</strong> {nucleo.idade_minima.idade} {nucleo.idade_minima.medida_de_tempo.tipo}</p>
+                                                <p><strong>Até:</strong> {nucleo.idade_maxima.idade} {nucleo.idade_maxima.medida_de_tempo.tipo}</p>
+                                            </div>
+                                        </div>
+                                        <div className='flex flex-col gap-1 bg-secondary p-2 rounded-md'>
+                                            <p><strong>Período de matrícula:</strong></p>
+                                            <div>
+                                                <p><strong>De:</strong> {nucleo.inicio_rematricula}</p>
+                                                <p><strong>Até:</strong> {nucleo.fim_rematricula}</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

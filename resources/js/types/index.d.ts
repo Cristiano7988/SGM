@@ -72,5 +72,26 @@ export interface Nucleo {
     fim_rematricula: string;
     created_at: string;
     updated_at: string;
+    idade_maxima: IdadeMinima;
+    idade_minima: IdadeMaxima;
     [key: string]: unknown; // This allows for additional properties...
+}
+
+export interface IdadeMinima {
+    id: number;
+    idade: number;
+    medida_de_tempo_id: number;
+    medida_de_tempo: MedidaDeTempo
+}
+
+export interface IdadeMaxima {
+    id: number;
+    idade: number;
+    medida_de_tempo_id: number;
+    medida_de_tempo: MedidaDeTempo
+}
+
+export interface MedidaDeTempo {
+    id: number;
+    tipo: string;
 }

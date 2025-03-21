@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\IdadeMaxima;
+use App\Models\IdadeMinima;
+use App\Models\Medida;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Http;
 
@@ -22,12 +25,16 @@ class NucleoFactory extends Factory
             $imageName = $http->body();
         } while (preg_match('/\.(mp4|webm)$/', $imageName));
 
+        $medidaId = Medida::inRandomOrder()->first()->id;
+
+        $idadeMinima = IdadeMinima::factory()->withMedida($medidaId)->create();
+        $idadeMaxima = IdadeMaxima::factory()->withMedida($medidaId)->withIdadeMaxima($idadeMinima->idade)->create();
         return [
             'nome' => $this->faker->name(),
             'imagem' => 'https://random.dog/' . $imageName,
             'descricao' => $this->faker->paragraph(),
-            'idade_minima_id' => $this->faker->numberBetween(1, 18),
-            'idade_maxima_id' => $this->faker->numberBetween(19, 100),
+            'idade_minima_id' => $idadeMinima->id,
+            'idade_maxima_id' => $idadeMaxima->id,
             'inicio_rematricula' => $inicio_rematricula,
             'fim_rematricula' => $fim_rematricula,
         ];
