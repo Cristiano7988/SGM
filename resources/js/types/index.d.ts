@@ -65,7 +65,7 @@ export interface Nucleo {
     id: number;
     nome: string;
     imagem: string;
-    descricao: string;
+    descricao: Array;
     idade_minima_id: BigInt;
     idade_maxima_id: BigInt;
     inicio_rematricula: string;

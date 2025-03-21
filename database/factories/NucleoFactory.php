@@ -32,7 +32,7 @@ class NucleoFactory extends Factory
         return [
             'nome' => $this->faker->name(),
             'imagem' => 'https://random.dog/' . $imageName,
-            'descricao' => $this->faker->paragraph(),
+            'descricao' => implode("\n\n", $this->faker->paragraphs(3)),
             'idade_minima_id' => $idadeMinima->id,
             'idade_maxima_id' => $idadeMaxima->id,
             'inicio_rematricula' => $inicio_rematricula,

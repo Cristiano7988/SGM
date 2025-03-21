@@ -33,7 +33,12 @@ class Nucleo extends Model
     function getFimRematriculaAttribute($value)
     {
         return Formata::data($value);
-    } 
+    }
+
+    function getDescricaoAttribute(string $value): array
+    {
+        return explode("\n\n", $value);
+    }
 
     /**
      * Relacionamentos
