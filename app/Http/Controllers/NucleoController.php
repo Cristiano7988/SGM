@@ -9,12 +9,59 @@ use App\Models\Nucleo;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
 class NucleoController extends Controller
 {
+    /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+                'nome' => 'string|required|min:3|max:30',
+                'descricao' => 'string|required|min:10|max:1500',
+                'imagem' => ['required', function ($attribute, $value, $fail) {
+                    $isUrl = filter_var($value, FILTER_VALIDATE_URL);
+                    $isFile = is_file($value);
+
+                    // Lista de extensões permitidas
+                    $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+                    // Se for um arquivo, verificar a extensão
+                    if ($isFile) {
+                        $extension = $value->getClientOriginalExtension();
+                        
+                        if (!in_array(strtolower($extension), $allowedExtensions)) {
+                            $fail($attribute . ' deve ser uma imagem válida (jpg, jpeg, png, gif, webp).');
+                        }
+                    }
+
+                    // Se for uma URL, garantir que termina com uma extensão permitida
+                    if ($isUrl) {
+                        $path = parse_url($value, PHP_URL_PATH);
+                        $extension = pathinfo($path, PATHINFO_EXTENSION);
+                        if (!in_array(strtolower($extension), $allowedExtensions)) {
+                            $fail($attribute . ' deve ser uma URL de imagem válida (jpg, jpeg, png, gif, webp).');
+                        }
+                    }
+
+                    if (!$isUrl && !$isFile) $fail($attribute.' deve ser uma URL válida ou um arquivo válido.');
+                }],
+                'idade_minima_id' => 'required',
+                'idade_maxima_id' => 'required',
+                'inicio_rematricula' => "date|date_format:Y-m-d|before_or_equal:fim_rematricula",
+                'fim_rematricula' => "date|date_format:Y-m-d|after_or_equal:inicio_rematricula",
+            ]);   
+    } 
+
     /**
      * Exibe os núcleos registrados.
      * Se o id do aluno é passado na requisição então retorna somente os núcleos disponíveis para essa faixa etária
@@ -62,7 +109,8 @@ class NucleoController extends Controller
 
             return isWeb()
                 ? Inertia::render('nucleos/index', [
-                    'pagination' => $pagination
+                    'pagination' => $pagination,
+                    'session' => viteSession()
                 ])
                 : response($pagination);
         } catch (\Throwable $th) {
@@ -119,29 +167,81 @@ class NucleoController extends Controller
     }
 
     /**
+     * Exibe formulário para a atualização do núcleo.
+     *
+     * @param  \App\Models\Nucleo  $nucleo
+     */
+    public function edit(Nucleo $nucleo)
+    {
+        try {
+            return isWeb()
+                ? Inertia::render('nucleos/edit', [
+                    'nucleo' => $nucleo,
+                    'session' => viteSession()
+                ])
+                : response($nucleo);
+        } catch (\Throwable $th) {
+            $mensagem = Trata::erro($th);
+    
+            return isWeb()
+                ? redirect()->route('dashboard')
+                : response($mensagem);
+        }
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Nucleo  $nucleo
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Nucleo $nucleo):Response
+    public function update(Request $request, Nucleo $nucleo)
     {
         try {
-            DB::beginTransaction();
-            $nucleo->update($request->except('imagem'));
+            $validator = $this->validator($request->all());
+            if ($validator->fails()) {
+                session(['error' => "Há alguma informação incorreta, revise o formulário. "]);
+        
+                return isWeb()
+                    ? redirect()->back()->withErrors($validator)
+                    : response($validator->errors(), 422);
+            }
 
-            if ($request->imagem) {
-                Storage::delete($nucleo->imagem);
-                $path = $request->imagem->store('nucleos');
-                $nucleo->imagem = $path;
+            // dd();
+
+            DB::beginTransaction();
+            $isAStorageFile = Str::contains($nucleo->imagem, 'storage');
+            if ($nucleo->imagem && $isAStorageFile) {
+                [$url, $storagePath] = explode('/storage/', $nucleo->imagem);
+                $isInOurEnd = Storage::disk('public')->exists($storagePath);
+                $isTheSameFile = $request->imagem == $nucleo->imagem;
+                if ($isInOurEnd && !$isTheSameFile) Storage::disk('public')->delete($storagePath);
+            }
+
+            $data = $request->hasFile('imagem')
+                ? $request->except('imagem')
+                : $request->all();
+            $nucleo->update($data);
+
+            if ($request->hasFile('imagem')) {
+                $path = $request->imagem->store('nucleos', 'public');
+                $nucleo->imagem = env('APP_URL') . "/storage/" . $path;
                 $nucleo->save();
             }
             DB::commit();
-            return response($nucleo);
+
+            session(['success' => "Núcleo {$nucleo->nome} editado."]);
+
+            return isWeb()
+                ? redirect()->route('nucleos.index')
+                : response($nucleo);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+        
+            return isWeb()
+                ? redirect()->back()
+                : response($mensagem);
         }
     }
 

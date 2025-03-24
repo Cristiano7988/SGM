@@ -45,9 +45,20 @@ export interface Pagination<T> {
     to: string|null;
     total: number
 }
+export interface SessionType {
+    error: string | null,
+    success: string | null
+}
+
+export interface IndexProps<T> {
+    session: Session, 
+    pagination: Pagination<T>;
+}
 
 export interface Props<T> {
-    pagination: Pagination<T>;
+    errors: any,
+    session: Session,
+    [key: string]: T; // This allows for additional model
 }
 
 export interface User {

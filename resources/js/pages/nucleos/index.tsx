@@ -1,7 +1,7 @@
 import FlipCardNucleo from '@/components/flip-card-nucleo';
 import Session from '@/components/session';
 import AppLayout from '@/layouts/app-layout';
-import { Nucleo, Props, type BreadcrumbItem } from '@/types';
+import { Nucleo, IndexProps, type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -11,12 +11,13 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Index({ pagination, ...props }: Props<Nucleo>) {
+export default function Index(props: IndexProps<Nucleo>) {
+    const { pagination, session } = props;
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
 
-            <Session {...props}  />
+            <Session session={session}  />
 
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 {pagination.data.length

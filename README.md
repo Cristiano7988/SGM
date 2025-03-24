@@ -27,6 +27,7 @@
     * MAIL_USERNAME= <!-- Verificar no Mailtrap em Inboxes na aba Access Rights --> 
     * MAIL_PASSWORD= <!-- Verificar no Mailtrap em Inboxes na aba Access Rights --> 
     * MAIL_ENCRYPTION=tls
+9) Rodar php artisan storage:link
 
 
 # Usuários:

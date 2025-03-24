@@ -40,6 +40,13 @@ class Nucleo extends Model
         return explode("\n\n", $value);
     }
 
+    function setDescricaoAttribute(array|string $value)
+    {
+        if (is_string($value)) return $this->attributes['descricao'] = $value;
+    
+        // return $this->attributes['descricao'] = implode("\n\n", $value);
+    }
+
     /**
      * Relacionamentos
      */
