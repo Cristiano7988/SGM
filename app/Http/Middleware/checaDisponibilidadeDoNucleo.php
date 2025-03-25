@@ -32,11 +32,11 @@ class checaDisponibilidadeDoNucleo
             $checaDisponibilidade = $matricula || ($request->meses && $request->anos); // Considera a disponibilidade do núcleo no ato da matrícula ou caso seja requisitado
             $now = Carbon::now();
     
-            $noPeriodoDeRematricula =  $nucleo->fim_rematricula >= $now && $nucleo->inicio_rematricula <= $now;
+            $noPeriodoDeMatricula =  $nucleo->fim_matricula >= $now && $nucleo->inicio_matricula <= $now;
             $escopoDaIdade = $nucleo->idade_minima <= $request->meses && $request->meses <= $nucleo->idade_maxima;
             
             if ($checaDisponibilidade && !$escopoDaIdade) return response("Faixa etária incompatível", 403);
-            if ($matricular && !$noPeriodoDeRematricula) return response ("Núcleo fechado para matrículas ou rematrículas", 403);
+            if ($matricular && !$noPeriodoDeMatricula) return response ("Núcleo fechado para matrículas ou rematrículas", 403);
             
             return $next($request);
         } catch (\Throwable $th) {

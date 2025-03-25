@@ -43,8 +43,8 @@ export default function FlipCardNucleo({ nucleo }: { nucleo: Nucleo }) {
               <div className="flex flex-col gap-1 bg-gray-100 dark:bg-gray-900 p-4 rounded-md">
                 <p><strong>Matrículas:</strong></p>
                 <div>
-                  <p><strong>De:</strong> {nucleo.inicio_rematricula}</p>
-                  <p><strong>Até:</strong> {nucleo.fim_rematricula}</p>
+                  <p><strong>De:</strong> {nucleo.inicio_matricula}</p>
+                  <p><strong>Até:</strong> {nucleo.fim_matricula}</p>
                 </div>
               </div>
             </div>

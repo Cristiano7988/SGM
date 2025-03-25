@@ -27,8 +27,8 @@ export default function Edit(props: Props<Nucleo>) {
         nome: nucleo.nome,
         imagem: nucleo.imagem,
         descricao: nucleo.descricao.join('\n\n'),
-        inicio_rematricula: formatDate(nucleo.inicio_rematricula),
-        fim_rematricula: formatDate(nucleo.fim_rematricula),
+        inicio_matricula: formatDate(nucleo.inicio_matricula),
+        fim_matricula: formatDate(nucleo.fim_matricula),
         idade_minima: Number(nucleo.idade_minima),
         idade_maxima: Number(nucleo.idade_maxima)
     });
@@ -85,27 +85,27 @@ export default function Edit(props: Props<Nucleo>) {
                                     style={{
                                         colorScheme: 'light', // Corrige problema do modo escuro
                                     }}
-                                    value={formatDate(formData.inicio_rematricula)}
-                                    onChange={(e) => setData('inicio_rematricula', e.target.value)}
+                                    value={formatDate(formData.inicio_matricula)}
+                                    onChange={(e) => setData('inicio_matricula', e.target.value)}
                                 />
                                 <CalendarIcon className="absolute right-3 top-1/2 transform pointer-events-none" />
-                                <ErrorLabel error={errors.inicio_rematricula} />
+                                <ErrorLabel error={errors.inicio_matricula} />
                             </div>
 
                             <div className="relative w-full">
                                 <label className="block font-medium text-white mb-2">Fim</label>
                                 <input
                                     type="date"
-                                    min={formatDate(formData.inicio_rematricula)}
+                                    min={formatDate(formData.inicio_matricula)}
                                     className="w-full p-3 border rounded-lg bg-wheat focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                     style={{
                                         colorScheme: 'light', // Corrige problema do modo escuro
                                     }}
-                                    value={formatDate(formData.fim_rematricula)}
-                                    onChange={(e) => setData('fim_rematricula', e.target.value)}
+                                    value={formatDate(formData.fim_matricula)}
+                                    onChange={(e) => setData('fim_matricula', e.target.value)}
                                 />
                                 <CalendarIcon className="absolute right-3 top-1/2 transform pointer-events-none" />
-                                <ErrorLabel error={errors.fim_rematricula} />
+                                <ErrorLabel error={errors.fim_matricula} />
                             </div>
                         </div>
                     </div>

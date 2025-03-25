@@ -16,8 +16,8 @@ class Nucleo extends Model
         'descricao',
         'idade_minima',
         'idade_maxima',
-        'inicio_rematricula',
-        'fim_rematricula'
+        'inicio_matricula',
+        'fim_matricula'
     ];
 
     /**
@@ -36,12 +36,12 @@ class Nucleo extends Model
         return $this->attributes['idade_maxima'] > 12 ? 'anos' : 'meses';
     }
 
-    function getInicioRematriculaAttribute($value)
+    function getInicioMatriculaAttribute($value)
     {
         return Formata::data($value);
     } 
 
-    function getFimRematriculaAttribute($value)
+    function getFimMatriculaAttribute($value)
     {
         return Formata::data($value);
     }

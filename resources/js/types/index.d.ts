@@ -81,8 +81,8 @@ export interface Nucleo {
     unidade_de_tempo_minima: string;
     unidade_de_tempo_maxima: string;
     idade_maxima: number;
-    inicio_rematricula: string;
-    fim_rematricula: string;
+    inicio_matricula: string;
+    fim_matricula: string;
     created_at: string;
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...

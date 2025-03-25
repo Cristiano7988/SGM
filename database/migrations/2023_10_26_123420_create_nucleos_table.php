@@ -20,8 +20,8 @@ class CreateNucleosTable extends Migration
             $table->longText('descricao');
             $table->integer('idade_minima');
             $table->integer('idade_maxima');
-            $table->date('inicio_rematricula');
-            $table->date('fim_rematricula');
+            $table->date('inicio_matricula');
+            $table->date('fim_matricula');
             $table->timestamps();
         });
     }

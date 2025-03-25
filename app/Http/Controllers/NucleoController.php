@@ -56,8 +56,8 @@ class NucleoController extends Controller
                 }],
                 'idade_minima' => 'required|numeric|min:1|max:720',
                 'idade_maxima' => "required|numeric|min:{$data['idade_minima']}|max:720",
-                'inicio_rematricula' => "date|date_format:Y-m-d|before_or_equal:fim_rematricula",
-                'fim_rematricula' => "date|date_format:Y-m-d|after_or_equal:inicio_rematricula",
+                'inicio_matricula' => "date|date_format:Y-m-d|before_or_equal:fim_matricula",
+                'fim_matricula' => "date|date_format:Y-m-d|after_or_equal:inicio_matricula",
             ]);   
     } 
 
@@ -84,7 +84,7 @@ class NucleoController extends Controller
             if (isset($meses)) $nucleos->where('idade_minima', '<=', $meses)->where('idade_maxima', '>=', $meses);
 
             $now = Carbon::now();
-            if (isset($matricular)) $nucleos->where('fim_rematricula', '>=', $now)->where('inicio_rematricula', '<=', $now);
+            if (isset($matricular)) $nucleos->where('fim_matricula', '>=', $now)->where('inicio_matricula', '<=', $now);
             
             if (isset($turmas)) $nucleos = Filtra::resultado($nucleos, $turmas, 'turmas.id')->with('turmas');
             if (isset($pacotes)) $nucleos = Filtra::resultado($nucleos, $pacotes, 'pacotes.id')->with('pacotes');

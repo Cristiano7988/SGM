@@ -48,8 +48,8 @@ class Formata
         ];
 
         $datas = [
-            'inicio_rematricula', // núcleo
-            'fim_rematricula', // núcleo
+            'inicio_matricula', // núcleo
+            'fim_matricula', // núcleo
             'data_de_nascimento', // aluno
             'inicio', // periodo
             'fim', // periodo

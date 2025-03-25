@@ -14,8 +14,8 @@ class NucleoFactory extends Factory
      */
     public function definition()
     {
-        $inicio_rematricula = $this->faker->dateTimeBetween('-1 year', 'now')->format('Y-m-d');
-        $fim_rematricula = $this->faker->dateTimeBetween($inicio_rematricula, '+1 year')->format('Y-m-d');
+        $inicio_matricula = $this->faker->dateTimeBetween('-1 year', 'now')->format('Y-m-d');
+        $fim_matricula = $this->faker->dateTimeBetween($inicio_matricula, '+1 year')->format('Y-m-d');
 
         do {
             $http = Http::get('https://random.dog/woof');
@@ -34,8 +34,8 @@ class NucleoFactory extends Factory
             'descricao' => implode("\n\n", $this->faker->paragraphs(3)),
             'idade_minima' => $idadeMinima,
             'idade_maxima' => $idadeMaxima,
-            'inicio_rematricula' => $inicio_rematricula,
-            'fim_rematricula' => $fim_rematricula,
+            'inicio_matricula' => $inicio_matricula,
+            'fim_matricula' => $fim_matricula,
         ];
     }
 }
