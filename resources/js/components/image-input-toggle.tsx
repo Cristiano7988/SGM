@@ -57,7 +57,7 @@ const ImageInputToggle: React.FC<ImageInputToggleProps> = ({ value, setData, err
           <div className='w-full'>
             <label className="block font-medium">Imagem (URL)</label>
             <input
-              type="text"
+              type="url"
               required
               value={typeof value === 'string' ? value : ''}
               onChange={handleUrlChange}

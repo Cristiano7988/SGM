@@ -19,6 +19,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(ChecaSeEAdmin::class)->group(function () {
         Route::prefix('/nucleos')->group(function () {    
             Route::get('/', [NucleoController::class, 'index'])->name('nucleos.index');
+            Route::get('/create', [NucleoController::class, 'create'])->name('nucleos.create');
+            Route::post('/', [NucleoController::class, 'store'])->name('nucleos.store');
             Route::get('/{nucleo}/edit', [NucleoController::class, 'edit'])->name('nucleos.edit');
             Route::post('/{nucleo}', [NucleoController::class, 'update'])->name('nucleos.update');
         });

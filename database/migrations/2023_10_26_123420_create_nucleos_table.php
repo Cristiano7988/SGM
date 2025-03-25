@@ -16,12 +16,12 @@ class CreateNucleosTable extends Migration
         Schema::create('nucleos', function (Blueprint $table) {
             $table->id();
             $table->string('nome')->unique();
-            $table->string('imagem');
+            $table->string('imagem')->nullable();
             $table->longText('descricao');
             $table->integer('idade_minima');
             $table->integer('idade_maxima');
-            $table->date('inicio_matricula');
-            $table->date('fim_matricula');
+            $table->date('inicio_matricula')->nullable();
+            $table->date('fim_matricula')->nullable();
             $table->timestamps();
         });
     }

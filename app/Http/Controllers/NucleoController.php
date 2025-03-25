@@ -25,7 +25,7 @@ class NucleoController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-                'nome' => 'string|required|min:3|max:30',
+                'nome' => 'string|required|min:3|max:30|unique:nucleos',
                 'descricao' => 'string|required|min:10|max:1500',
                 'imagem' => ['required', function ($attribute, $value, $fail) {
                     $isUrl = filter_var($value, FILTER_VALIDATE_URL);
@@ -56,8 +56,8 @@ class NucleoController extends Controller
                 }],
                 'idade_minima' => 'required|numeric|min:1|max:720',
                 'idade_maxima' => "required|numeric|min:{$data['idade_minima']}|max:720",
-                'inicio_matricula' => "date|date_format:Y-m-d|before_or_equal:fim_matricula",
-                'fim_matricula' => "date|date_format:Y-m-d|after_or_equal:inicio_matricula",
+                'inicio_matricula' => "required|date|date_format:Y-m-d|before_or_equal:fim_matricula",
+                'fim_matricula' => "required|date|date_format:Y-m-d|after_or_equal:inicio_matricula",
             ]);   
     } 
 
@@ -106,29 +106,60 @@ class NucleoController extends Controller
         }
     }
 
+     /**
+     * Exibe formulário para a criação do núcleo.
+     *
+     */
+    public function create()
+    {
+        return Inertia::render('nucleos/create', [
+            'session' => viteSession()
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
-    public function store(Request $request):Response
+    public function store(Request $request)
     {
         try {
+            $validator = $this->validator($request->all());
+            if ($validator->fails()) {
+                session(['error' => "Há alguma informação incorreta, revise o formulário. "]);
+        
+                return isWeb()
+                    ? redirect()->back()->withErrors($validator)
+                    : response($validator->errors(), 422);
+            }
+
             DB::beginTransaction();
-            $nucleo = Nucleo::create($request->except('imagem'));
+
+            $data = $request->hasFile('imagem')
+                ? $request->except('imagem')
+                : $request->all();
+
+            $nucleo = Nucleo::create($data);
             
-            if ($request->imagem) {
-                $path = $request->imagem->store('nucleos');
-                $nucleo->imagem = $path;
+            if ($request->hasFile('imagem')) {
+                $path = $request->imagem->store('nucleos', 'public');
+                $nucleo->imagem = env('APP_URL') . "/storage/" . $path;
                 $nucleo->save();
             }
             DB::commit();
 
-            return response($nucleo);
+            session(['success' => "Núcleo {$nucleo->nome} criado."]);
+
+            return isWeb()
+                ? redirect()->route('nucleos.index')
+                : response($nucleo);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+
+            return isWeb()
+                ? redirect()->route('nucleos.index')
+                : response($mensagem);
         }
     }
 
