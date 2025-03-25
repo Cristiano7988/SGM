@@ -175,15 +175,20 @@ class NucleoController extends Controller
 
      *
      * @param  \App\Models\Nucleo  $nucleo
-     * @return \Illuminate\Http\Response
      */
-    public function show(Nucleo $nucleo):Response
+    public function show(Nucleo $nucleo)
     {
         try {
-            return response($nucleo);
+            return isWeb()
+                ? Inertia::render('nucleos/show', [
+                    'nucleo' => $nucleo
+                ])
+                : response($nucleo);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+            return isWeb()
+                ? redirect()->route('dashboard')
+                : response($mensagem);
         }
     }
 

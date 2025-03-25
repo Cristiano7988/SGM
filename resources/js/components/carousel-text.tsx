@@ -9,7 +9,7 @@ export default function CarouselText({ paragraphs }: { paragraphs: Array<string>
   };
 
   return (
-    <div className="flex flex-col justify-between p-4 h-full items-center">
+    <div className="flex flex-col justify-between gap-4 p-4 h-full items-center">
       <motion.p
         className="text-sm text-gray-700 dark:text-gray-300"
         key={currentIndex}

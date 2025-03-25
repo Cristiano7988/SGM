@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\NucleoController;
+use App\Http\Middleware\calculaIdadeDoAluno;
 use App\Http\Middleware\ChecaSeEAdmin;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -16,9 +17,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
     })->name('dashboard');
 
+    Route::prefix('/nucleos')->group(function () {  
+        Route::get('/{nucleo}', [NucleoController::class, 'show'])->name('nucleos.show');
+        Route::get('/', [NucleoController::class, 'index'])->name('nucleos.index');
+    })->middleware(calculaIdadeDoAluno::class);
+
     Route::middleware(ChecaSeEAdmin::class)->group(function () {
-        Route::prefix('/nucleos')->group(function () {    
-            Route::get('/', [NucleoController::class, 'index'])->name('nucleos.index');
+        Route::prefix('/nucleos')->group(function () {
             Route::get('/create', [NucleoController::class, 'create'])->name('nucleos.create');
             Route::post('/', [NucleoController::class, 'store'])->name('nucleos.store');
             Route::get('/{nucleo}/edit', [NucleoController::class, 'edit'])->name('nucleos.edit');

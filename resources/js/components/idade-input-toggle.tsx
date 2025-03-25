@@ -49,7 +49,7 @@ const IdadeInputToggle: React.FC<IdadeInputToggleProps> = ({
         <Switch
           checked={isYears}
           onChange={toggleInputMode}
-          className={`${isYears ? 'bg-gray-300' : 'bg-blue-500'} relative inline-flex items-center h-6 rounded-full w-11`}
+          className={`${isYears ? 'bg-gray-300' : 'bg-blue-500'} cursor-pointer relative inline-flex items-center h-6 rounded-full w-11`}
         >
           <span
             className={`${isYears ? 'translate-x-1' : 'translate-x-6'} inline-block w-4 h-4 transform bg-white rounded-full transition`}
