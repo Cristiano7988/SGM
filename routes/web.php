@@ -23,6 +23,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/', [NucleoController::class, 'store'])->name('nucleos.store');
             Route::get('/{nucleo}/edit', [NucleoController::class, 'edit'])->name('nucleos.edit');
             Route::post('/{nucleo}', [NucleoController::class, 'update'])->name('nucleos.update');
+            Route::delete('/{nucleo}', [NucleoController::class, 'destroy'])->name('nucleos.destroy');
         });
     });
 });

@@ -22,10 +22,16 @@ class NucleoController extends Controller
      * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function validator(array $data)
+    protected function validator(array $data, $nucleoId = false)
     {
         return Validator::make($data, [
-                'nome' => 'string|required|min:3|max:30|unique:nucleos',
+                'nome' => [
+                    'string',
+                    'required',
+                    'min:3',
+                    'max:30',
+                    $nucleoId ? "unique:nucleos,nome,{$nucleoId}" : ''
+                ],
                 'descricao' => 'string|required|min:10|max:1500',
                 'imagem' => ['required', function ($attribute, $value, $fail) {
                     $isUrl = filter_var($value, FILTER_VALIDATE_URL);
@@ -199,7 +205,7 @@ class NucleoController extends Controller
             $mensagem = Trata::erro($th);
     
             return isWeb()
-                ? redirect()->route('dashboard')
+                ? redirect()->route('nucleos.index')
                 : response($mensagem);
         }
     }
@@ -253,7 +259,7 @@ class NucleoController extends Controller
             $mensagem = Trata::erro($th);
         
             return isWeb()
-                ? redirect()->back()
+                ? redirect()->route('nucleos.index')
                 : response($mensagem);
         }
     }
@@ -262,9 +268,8 @@ class NucleoController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Nucleo  $nucleo
-     * @return \Illuminate\Http\Response
      */
-    public function destroy(Nucleo $nucleo):Response
+    public function destroy(Nucleo $nucleo)
     {
         try {
             DB::beginTransaction();
@@ -272,10 +277,18 @@ class NucleoController extends Controller
             $nucleo->delete();
             DB::commit();
 
-            return response("O núcleo de nº {$nucleo->id}, {$nucleo->nome},  foi deletado.");;
+            $mensagem = "O núcleo de nº {$nucleo->id}, {$nucleo->nome},  foi deletado.";
+            session(['success' => $mensagem]);
+
+            return isWeb()
+                ? redirect()->route('nucleos.index')
+                : response($mensagem);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+
+            return isWeb()
+                ? redirect()->route('nucleos.index')
+                : response($mensagem);
         }
     }
 }

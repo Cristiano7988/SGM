@@ -33,9 +33,16 @@ export default function Edit(props: Props<Nucleo>) {
         idade_maxima: Number(nucleo.idade_maxima)
     });
 
+    const { processing: processingDeletion, delete: deleteNucleo } = useForm();
+
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
         post(route('nucleos.update', nucleo.id)); // Envia a atualização para o backend
+    };
+
+    const submitDeletion = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (confirm('Tem certeza que deseja excluir este núcleo?')) deleteNucleo(route('nucleos.destroy', nucleo.id));
     };
 
     return (
@@ -136,10 +143,21 @@ export default function Edit(props: Props<Nucleo>) {
                     <div className="flex justify-end">
                         <button
                             type="submit"
-                            className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                            className="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-md"
                             disabled={processing}
                         >
                             {processing ? 'Salvando...' : 'Salvar Alterações'}
+                        </button>
+                    </div>
+                </form>
+                <form onSubmit={submitDeletion} >
+                    <div className="flex justify-end mt-4">
+                        <button
+                            type="submit"
+                            className="cursor-pointer bg-red-500 text-white px-4 py-2 rounded-md"
+                            disabled={processing}
+                        >
+                            {processingDeletion ? "Excluindo..." : "Excluir"}
                         </button>
                     </div>
                 </form>
