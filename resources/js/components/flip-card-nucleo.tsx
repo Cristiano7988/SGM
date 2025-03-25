@@ -36,8 +36,8 @@ export default function FlipCardNucleo({ nucleo }: { nucleo: Nucleo }) {
               <div className="flex flex-col gap-1">
                 <p><strong>Público alvo:</strong></p>
                 <div>
-                  <p><strong>De:</strong> {nucleo.idade_minima.idade} {nucleo.idade_minima.medida_de_tempo.tipo}</p>
-                  <p><strong>Até:</strong> {nucleo.idade_maxima.idade} {nucleo.idade_maxima.medida_de_tempo.tipo}</p>
+                  <p><strong>De:</strong> {nucleo.idade_minima > 12 ? (nucleo.idade_minima / 12).toFixed(1) : nucleo.idade_minima} {nucleo.unidade_de_tempo_minima}</p>
+                  <p><strong>Até:</strong> {nucleo.idade_maxima > 12 ? (nucleo.idade_maxima / 12).toFixed(1) : nucleo.idade_maxima} {nucleo.unidade_de_tempo_maxima}</p>
                 </div>
               </div>
               <div className="flex flex-col gap-1 bg-gray-100 dark:bg-gray-900 p-4 rounded-md">

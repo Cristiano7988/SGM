@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Filtra;
 use App\Helpers\Trata;
-use App\Models\MedidaDeTempo;
 use App\Models\Nucleo;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -55,8 +54,8 @@ class NucleoController extends Controller
 
                     if (!$isUrl && !$isFile) $fail($attribute.' deve ser uma URL válida ou um arquivo válido.');
                 }],
-                'idade_minima_id' => 'required',
-                'idade_maxima_id' => 'required',
+                'idade_minima' => 'required|numeric|min:1|max:720',
+                'idade_maxima' => "required|numeric|min:{$data['idade_minima']}|max:720",
                 'inicio_rematricula' => "date|date_format:Y-m-d|before_or_equal:fim_rematricula",
                 'fim_rematricula' => "date|date_format:Y-m-d|after_or_equal:inicio_rematricula",
             ]);   
@@ -72,13 +71,8 @@ class NucleoController extends Controller
         try {
             extract(request()->all());
             $nucleos = Nucleo::query();
-            $medidas = MedidaDeTempo::all();
 
             $nucleos
-                ->leftJoin('idades_minimas', 'idade_minima_id', 'idades_minimas.id')
-                ->leftJoin('idades_maximas', 'idade_maxima_id', 'idades_maximas.id')
-                ->leftJoin('medidas_de_tempo as m_min', 'idades_minimas.medida_de_tempo_id', 'm_min.id')
-                ->leftJoin('medidas_de_tempo as m_max', 'idades_maximas.medida_de_tempo_id', 'm_max.id')
                 ->leftJoin('turmas', 'nucleos.id', 'turmas.nucleo_id')
                 ->leftJoin('pacotes', 'nucleos.id', 'pacotes.nucleo_id')
                 ->select(['nucleos.*'])->groupBy('nucleos.id');
@@ -87,17 +81,7 @@ class NucleoController extends Controller
              * Seleciona todos os núcleos dentro da faixa etária especificada
              * Tenham sido eles definidos em meses ou em anos
              */
-            if (isset($meses) && isset($anos)) {
-                $nucleos->where(function ($query) use ($medidas, $meses, $anos) {
-                    $query->where('idades_minimas.medida_de_tempo_id', $medidas->first()->id)->where('idades_minimas.idade', '<=', $meses);
-                    $query->orWhere('idades_minimas.medida_de_tempo_id', $medidas->last()->id)->where('idades_minimas.idade', '<=', $anos);
-                });
-
-                $nucleos->where(function ($query) use ($medidas, $meses, $anos) {
-                    $query->where('idades_maximas.medida_de_tempo_id', $medidas->first()->id)->where('idades_maximas.idade', '>=', $meses);
-                    $query->orWhere('idades_maximas.medida_de_tempo_id', $medidas->last()->id)->where('idades_maximas.idade', '>=', $anos);
-                 });
-            }
+            if (isset($meses)) $nucleos->where('idade_minima', '<=', $meses)->where('idade_maxima', '>=', $meses);
 
             $now = Carbon::now();
             if (isset($matricular)) $nucleos->where('fim_rematricula', '>=', $now)->where('inicio_rematricula', '<=', $now);
@@ -207,8 +191,6 @@ class NucleoController extends Controller
                     ? redirect()->back()->withErrors($validator)
                     : response($validator->errors(), 422);
             }
-
-            // dd();
 
             DB::beginTransaction();
             $isAStorageFile = Str::contains($nucleo->imagem, 'storage');

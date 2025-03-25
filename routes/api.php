@@ -8,12 +8,9 @@ use App\Http\Controllers\CupomController;
 use App\Http\Controllers\DiaController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\FormaDePagamentoController;
-use App\Http\Controllers\IdadeMaximaController;
-use App\Http\Controllers\IdadeMinimaController;
 use App\Http\Controllers\MarcacaoController;
 use App\Http\Controllers\MatriculaController;
 use App\Http\Controllers\MedidaController;
-use App\Http\Controllers\MedidaDeTempoController;
 use App\Http\Controllers\NucleoController;
 use App\Http\Controllers\PacoteController;
 use App\Http\Controllers\PeriodoController;
@@ -67,18 +64,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('/formas-de-pagamento')->group(function () {
         Route::get('/', [FormaDePagamentoController::class, 'index']);
         Route::get('/{forma-de-pagamento}', [FormaDePagamentoController::class, 'show']);
-    });
-
-    Route::prefix('/idades')->group(function () {
-        Route::prefix('/minimas')->group(function () {
-            Route::get('/', [IdadeMinimaController::class, 'index']);
-            Route::get('/{idade_minima}', [IdadeMinimaController::class, 'show']);
-        });
-
-        Route::prefix('/maximas')->group(function () {
-            Route::get('/', [IdadeMaximaController::class, 'index']);
-            Route::get('/{idade_maxima}', [IdadeMaximaController::class, 'show']);
-        });
     });
 
     Route::get('/logout', [LoginController::class, 'logout']);
@@ -175,20 +160,6 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::delete('/{forma-de-pagamento}', [FormaDePagamentoController::class, 'destroy']);
         });
 
-        Route::prefix('/idades')->group(function () {
-            Route::prefix('/minimas')->group(function () {
-                Route::post('/', [IdadeMinimaController::class, 'store']);
-                Route::patch('/{idade_minima}', [IdadeMinimaController::class, 'update']);
-                Route::delete('/{idade_minima}', [IdadeMinimaController::class, 'destroy']);
-            });
-
-            Route::prefix('/maximas')->group(function () {
-                Route::post('/', [IdadeMaximaController::class, 'store']);
-                Route::patch('/{idade_maxima}', [IdadeMaximaController::class, 'update']);
-                Route::delete('/{idade_maxima}', [IdadeMaximaController::class, 'destroy']);
-            });
-        });
-
         Route::prefix('/marcacoes')->group(function () {
             Route::get('/', [MarcacaoController::class, 'index']);
             Route::post('/', [MarcacaoController::class, 'store']);
@@ -200,11 +171,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::prefix('/matriculas')->group(function () {
             Route::patch('/{matricula}', [MatriculaController::class, 'update'])->middleware(checaDisponibilidadeDaTurma::class);
             Route::delete('/{matricula}', [MatriculaController::class, 'destroy']);
-        });
-
-        Route::prefix('/medidas_de_tempo')->group(function () {
-            Route::get('/', [MedidaDeTempoController::class, 'index']);
-            Route::get('/{medida_de_tempo}', [MedidaDeTempoController::class, 'show']);
         });
 
         Route::prefix('/nucleos')->group(function () {    

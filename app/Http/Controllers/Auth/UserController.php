@@ -125,10 +125,6 @@ class UserController extends Controller
                 ->leftJoin('dias', 'turmas.dia_id', 'dias.id')
                 // Núcleos
                 ->leftJoin('nucleos', 'turmas.nucleo_id', 'nucleos.id')
-                ->leftJoin('idades_minimas', 'nucleos.idade_minima_id', 'idades_minimas.id')
-                ->leftJoin('medidas_de_tempo as m_min', 'idades_minimas.medida_de_tempo_id', 'm_min.id')
-                ->leftJoin('idades_maximas', 'nucleos.idade_maxima_id', 'idades_maximas.id')
-                ->leftJoin('medidas_de_tempo as m_max', 'idades_maximas.medida_de_tempo_id', 'm_max.id')
                 ->select(['users.*'])->groupBy('users.id');
 
             // Aqui é estabelecido que o usuário poderá acessar apenas informações relacionadas ao aluno ao qual está associado
@@ -153,10 +149,6 @@ class UserController extends Controller
             if (isset($dias))                           $users = Filtra::resultado($users, $dias, 'dias.id');
             if (isset($nucleos))                        $users = Filtra::resultado($users, $nucleos, 'nucleos.id');
             if (isset($alunos))                         $users = Filtra::resultado($users, $alunos, 'alunos.id');
-            if (isset($idades_minimas))                 $users = Filtra::resultado($users, $idades_minimas, 'idades_minimas.id');
-            if (isset($idades_maximas))                 $users = Filtra::resultado($users, $idades_maximas, 'idades_maximas.id');
-            if (isset($medidas_minimas_de_tempo))       $users = Filtra::resultado($users, $medidas_minimas_de_tempo, 'm_min.id');
-            if (isset($medidas_maximas_de_tempo))       $users = Filtra::resultado($users, $medidas_maximas_de_tempo, 'm_max.id');
 
             // Aqui retornamos as informações requisitadas no formato de eager Loading
             // Tabelas renomeadas não tem efeito a partir daqui
@@ -375,7 +367,6 @@ class UserController extends Controller
                                                     'nucleo' => function ($query) {
                                                         extract(request()->all());
                                                         if ($nucleos != '*') $query->whereIn('nucleos.id', explode(',', $nucleos));
-                                                        // Idades Mínimas e Máximas vem por padrão da Model
                                                         // Pacotes do núcleo não adicionado
                                                     }
                                                 ]);

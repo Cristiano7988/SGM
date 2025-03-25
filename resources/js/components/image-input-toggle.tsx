@@ -3,11 +3,11 @@ import ErrorLabel from './error-label';
 
 interface ImageInputToggleProps {
   value: string | File | null;
-  setImage: (value: any) => void;
+  setData: (key: string, value: any) => void;
   errors: any
 }
 
-const ImageInputToggle: React.FC<ImageInputToggleProps> = ({ value, setImage, errors }) => {
+const ImageInputToggle: React.FC<ImageInputToggleProps> = ({ value, setData, errors }) => {
   const [isUrl, setIsUrl] = useState(true);
   const [preview, setPreview] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -15,19 +15,19 @@ const ImageInputToggle: React.FC<ImageInputToggleProps> = ({ value, setImage, er
 
   const toggleInputMode = () => {
     setIsUrl(!isUrl);
-    setImage(null);
+    setData('imagem', null);
     setPreview(null);
   };
 
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setImage(e.target.value);
+    setData('imagem', e.target.value);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const [file] = e.target.files;
 
-      setImage(file);
+      setData('imagem', file);
       if (labelRef.current) labelRef.current.textContent = file.name;
     }
   };

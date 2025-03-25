@@ -10,13 +10,12 @@ class Nucleo extends Model
 {
     use HasFactory;
 
-    public $with = ['idade_minima', 'idade_maxima'];
     protected $fillable = [
         'nome',
         'imagem',
         'descricao',
-        'idade_minima_id',
-        'idade_maxima_id',
+        'idade_minima',
+        'idade_maxima',
         'inicio_rematricula',
         'fim_rematricula'
     ];
@@ -24,6 +23,18 @@ class Nucleo extends Model
     /**
      * Mutators
      */
+
+    protected $appends = ['unidade_de_tempo_minima', 'unidade_de_tempo_maxima'];
+
+    function getUnidadeDeTempoMinimaAttribute()
+    {
+        return $this->attributes['idade_minima'] > 12 ? 'anos' : 'meses';
+    }
+
+    function getUnidadeDeTempoMaximaAttribute()
+    {
+        return $this->attributes['idade_maxima'] > 12 ? 'anos' : 'meses';
+    }
 
     function getInicioRematriculaAttribute($value)
     {
@@ -40,11 +51,9 @@ class Nucleo extends Model
         return explode("\n\n", $value);
     }
 
-    function setDescricaoAttribute(array|string $value)
+    function setDescricaoAttribute(string $value)
     {
-        if (is_string($value)) return $this->attributes['descricao'] = $value;
-    
-        // return $this->attributes['descricao'] = implode("\n\n", $value);
+        return $this->attributes['descricao'] = $value;
     }
 
     /**
@@ -59,15 +68,5 @@ class Nucleo extends Model
     public function pacotes()
     {
         return $this->hasMany(Pacote::class);
-    }
-
-    public function idade_minima()
-    {
-        return $this->belongsTo(IdadeMinima::class);
-    }
-
-    public function idade_maxima()
-    {
-        return $this->belongsTo(IdadeMaxima::class);
     }
 }

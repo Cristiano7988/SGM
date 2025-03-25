@@ -16,10 +16,10 @@ class CreateNucleosTable extends Migration
         Schema::create('nucleos', function (Blueprint $table) {
             $table->id();
             $table->string('nome')->unique();
-            $table->string('imagem')->nullable();
-            $table->longText('descricao')->nullable();
-            $table->foreignId('idade_minima_id')->nullable();
-            $table->foreignId('idade_maxima_id')->nullable();
+            $table->string('imagem');
+            $table->longText('descricao');
+            $table->integer('idade_minima');
+            $table->integer('idade_maxima');
             $table->date('inicio_rematricula');
             $table->date('fim_rematricula');
             $table->timestamps();

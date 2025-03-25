@@ -5,8 +5,6 @@ namespace App\Helpers;
 use App\Models\Aluno;
 use App\Models\Cupom;
 use App\Models\FormaDePagamento;
-use App\Models\IdadeMaxima;
-use App\Models\IdadeMinima;
 use App\Models\Matricula;
 use App\Models\Nucleo;
 use App\Models\Pacote;
@@ -51,8 +49,6 @@ class Substitui
         $forma_de_pagamento = FormaDePagamento::find($request->forma_de_pagamento_id) ?? null;
         $matricula = Matricula::find($request->matricula_id) ?? null;
         $nucleo = Nucleo::find($request->nucleo_id) ?? null;
-        $idade_minima = IdadeMinima::find($request->idade_minima_id) ?? null;
-        $idade_maxima = IdadeMaxima::find($request->idade_maxima_id) ?? null;
         $pacote = Pacote::find($request->pacote_id) ?? null;
         $periodo = Periodo::find($request->periodo_id) ?? null;
         $transacao = Transacao::find($request->transacao_id) ?? null;
@@ -64,8 +60,6 @@ class Substitui
         if ($forma_de_pagamento) $conteudo = Substitui::comDados('forma_de_pagamento', $forma_de_pagamento, $conteudo);
         if ($matricula) $conteudo = Substitui::comDados('matricula', $matricula, $conteudo);
         if ($nucleo) $conteudo = Substitui::comDados('nucleo', $nucleo, $conteudo);
-        if ($idade_minima) $conteudo = Substitui::comDados('idade_minima', $idade_minima, $conteudo);
-        if ($idade_maxima) $conteudo = Substitui::comDados('idade_maxima', $idade_maxima, $conteudo);
         if ($pacote) $conteudo = Substitui::comDados('pacote', $pacote, $conteudo);
         if ($periodo) $conteudo = Substitui::comDados('periodo', $periodo, $conteudo);
         if ($transacao) $conteudo = Substitui::comDados('transacao', $transacao, $conteudo);

@@ -2,9 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\FormaDePagamento;
-use App\Models\MedidaDeTempo;
-use App\Models\TipoDeAula;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -20,7 +17,6 @@ class DatabaseSeeder extends Seeder
             DiaSeeder::class,
             FormaDePagamentoSeeder::class,
             MarcacaoSeeder::class,
-            MedidaDeTempoSeeder::class,
             MedidaSeeder::class,
             SituacaoSeeder::class,
             TipoDeAulaSeeder::class,

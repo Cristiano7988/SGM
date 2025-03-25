@@ -33,20 +33,16 @@ class checaDisponibilidadeDoNucleo
             $now = Carbon::now();
     
             $noPeriodoDeRematricula =  $nucleo->fim_rematricula >= $now && $nucleo->inicio_rematricula <= $now;
-            $escopoDaIdade =
-                $nucleo->idade_minima->medida_de_tempo_id == 1 && $nucleo->idade_minima->idade <= $request->meses ||
-                $nucleo->idade_minima->medida_de_tempo_id == 2 && $nucleo->idade_minima->idade <= $request->anos
-                &&
-                $nucleo->idade_maxima->medida_de_tempo_id == 1 && $nucleo->idade_maxima->idade <= $request->meses ||
-                $nucleo->idade_maxima->medida_de_tempo_id == 2 && $nucleo->idade_maxima->idade <= $request->anos;
+            $escopoDaIdade = $nucleo->idade_minima <= $request->meses && $request->meses <= $nucleo->idade_maxima;
             
             if ($checaDisponibilidade && !$escopoDaIdade) return response("Faixa etária incompatível", 403);
             if ($matricular && !$noPeriodoDeRematricula) return response ("Núcleo fechado para matrículas ou rematrículas", 403);
             
             return $next($request);
         } catch (\Throwable $th) {
-            $mensagem = Trata::erro($th);
-            return $mensagem;
+            Trata::erro($th);
+
+            return redirect()->route('dashboard');
         }
     }
 }

@@ -5,6 +5,7 @@ import ImageInputToggle from '@/components/image-input-toggle';
 import { CalendarIcon } from 'lucide-react';
 import Session from '@/components/session';
 import ErrorLabel from '@/components/error-label';
+import IdadeInputToggle from '@/components/idade-input-toggle';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Núcleos', href: '/nucleos' },
@@ -28,11 +29,9 @@ export default function Edit(props: Props<Nucleo>) {
         descricao: nucleo.descricao.join('\n\n'),
         inicio_rematricula: formatDate(nucleo.inicio_rematricula),
         fim_rematricula: formatDate(nucleo.fim_rematricula),
-        idade_minima_id: Number(nucleo.idade_minima_id),
-        idade_maxima_id: Number(nucleo.idade_maxima_id)
+        idade_minima: Number(nucleo.idade_minima),
+        idade_maxima: Number(nucleo.idade_maxima)
     });
-
-    const setImage = (value: string) => setData('imagem', value);
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -49,7 +48,7 @@ export default function Edit(props: Props<Nucleo>) {
 
                 <form onSubmit={submit} className="flex flex-col gap-6 space-y-4">
                     
-                    <ImageInputToggle value={formData.imagem} setImage={setImage} errors={errors} />
+                    <ImageInputToggle value={formData.imagem} setData={setData} errors={errors} />
 
                     <div>
                         <label className="block font-medium">Nome</label>
@@ -82,7 +81,7 @@ export default function Edit(props: Props<Nucleo>) {
                                 <label className="block font-medium text-white mb-2">Início</label>
                                 <input
                                     type="date"
-                                    className="w-full p-3 border border-gray-300 rounded-lg bg-wheat focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    className="w-full p-3 border rounded-lg bg-wheat focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                     style={{
                                         colorScheme: 'light', // Corrige problema do modo escuro
                                     }}
@@ -98,7 +97,7 @@ export default function Edit(props: Props<Nucleo>) {
                                 <input
                                     type="date"
                                     min={formatDate(formData.inicio_rematricula)}
-                                    className="w-full p-3 border border-gray-300 rounded-lg bg-wheat focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    className="w-full p-3 border rounded-lg bg-wheat focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                     style={{
                                         colorScheme: 'light', // Corrige problema do modo escuro
                                     }}
@@ -114,31 +113,23 @@ export default function Edit(props: Props<Nucleo>) {
                     <div className='flex flex-col gap-4'>
                         <p><b>Público alvo</b></p>
                         <div className="inline-flex gap-4">
-                            <div className="relative w-full">
-                                <label className="block font-medium text-white mb-2">Idade mínima</label>
-                                <input
-                                    type="number"
-                                    min={0}
-                                    required
-                                    className="w-full p-3 border border-gray-300 rounded-lg bg-wheat focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                    value={formData.idade_minima_id}
-                                    onChange={(e) => setData('idade_minima_id', Number(e.target.value))}
-                                />
-                                <ErrorLabel error={errors.idade_minima_id} />
-                            </div>
+                            <IdadeInputToggle
+                                label='Idade mínima'
+                                column="idade_minima"
+                                value={formData.idade_minima}
+                                limite={0}
+                                setData={setData}
+                                error={errors.idade_minima}
+                            />
 
-                            <div className="relative w-full">
-                                <label className="block font-medium text-white mb-2">Idade máxima</label>
-                                <input
-                                    type="number"
-                                    min={formData.idade_minima_id}
-                                    required
-                                    className="w-full p-3 border border-gray-300 rounded-lg bg-wheat focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                    value={formData.idade_maxima_id}
-                                    onChange={(e) => setData('idade_maxima_id', Number(e.target.value))}
-                                />
-                                <ErrorLabel error={errors.idade_maxima_id} />
-                            </div>
+                            <IdadeInputToggle
+                                label='Idade máxima'
+                                column="idade_maxima"
+                                value={formData.idade_maxima}
+                                limite={formData.idade_minima}
+                                setData={setData}
+                                error={errors.idade_maxima}
+                            />
                         </div>
                     </div>
 
