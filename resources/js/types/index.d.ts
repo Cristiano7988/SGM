@@ -87,3 +87,35 @@ export interface Nucleo {
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+export interface Dia {
+    id: number,
+    nome: string
+}
+
+export interface TipoDeAula {
+    id: number,
+    tipo: string
+}
+
+export interface Turma {
+    id: number;
+    nome: string;
+    imagem: string;
+    descricao: Array;
+    vagas_preenchidas: number,
+    vagas_fora_do_site: number,
+    vagas_ofertadas: number,
+    horario: string,
+    disponivel: boolean,
+    zoom: string,
+    zoom_id: string,
+    zoom_senha: string,
+    whatsapp: string,
+    spotify: string,
+    nucleo_id: number,
+    dia_id: number,
+    dia: Dia,
+    tipo_de_aula_id: number,
+    tipo_de_aula: Tipo
+}

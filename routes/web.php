@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\NucleoController;
+use App\Http\Controllers\TurmaController;
 use App\Http\Middleware\calculaIdadeDoAluno;
 use App\Http\Middleware\ChecaSeEAdmin;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/{nucleo}/edit', [NucleoController::class, 'edit'])->name('nucleos.edit');
             Route::post('/{nucleo}', [NucleoController::class, 'update'])->name('nucleos.update');
             Route::delete('/{nucleo}', [NucleoController::class, 'destroy'])->name('nucleos.destroy');
+        });
+    });
+
+    Route::prefix('/turmas')->group(function () {
+        Route::get('/', [TurmaController::class, 'index'])->name('turmas.index');
+    });
+
+    Route::middleware(ChecaSeEAdmin::class)->group(function () {
+        Route::prefix('/turmas')->group(function () {
+            Route::get('/{turma}/edit', [TurmaController::class, 'edit'])->name('turmas.edit');
         });
     });
 });

@@ -9,15 +9,15 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class TurmaController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
      */
-    public function index():Response
+    public function index()
     {
         try {
             extract(request()->all());
@@ -35,12 +35,20 @@ class TurmaController extends Controller
             
             if (isset($disponivel)) $turmas = $turmas->where('disponivel', '=', true);
             
-            $turmas = Trata::resultado($turmas, 'turmas.nome'); // Ordenação por turma, dia ou tipo de aula.
+            $pagination = Trata::resultado($turmas, 'turmas.nome'); // Ordenação por turma, dia ou tipo de aula.
 
-            return response($turmas);
+            return isWeb()
+                ? Inertia::render('turmas/index', [
+                    'pagination' => $pagination,
+                    'session' => viteSession()
+                ])
+                : response($turmas);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+
+            return isWeb()
+                ? redirect()->route('dashboard')
+                : response($mensagem);
         }
     }
 

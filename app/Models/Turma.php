@@ -28,6 +28,11 @@ class Turma extends Model
         'tipo_de_aula_id'
     ];
 
+    function getDescricaoAttribute(string $value): array
+    {
+        return explode("\n\n", $value);
+    }
+
     public function nucleo()
     {
         return $this->belongsTo(Nucleo::class);
