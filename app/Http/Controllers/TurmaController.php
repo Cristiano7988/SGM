@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Filtra;
 use App\Helpers\Trata;
+use App\Models\Dia;
+use App\Models\Nucleo;
+use App\Models\TipoDeAula;
 use App\Models\Turma;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -29,17 +32,20 @@ class TurmaController extends Controller
                 ->leftJoin('tipos_de_aula', 'turmas.tipo_de_aula_id', 'tipos_de_aula.id')
                 ->select(['turmas.*'])->groupBy('turmas.id');
 
-            if (isset($nucleos)) $turmas = Filtra::resultado($turmas, $nucleos, 'nucleo_id')->with('nucleo');
-            if (isset($dias)) $turmas = Filtra::resultado($turmas, $dias, 'dia_id'); // Turma COM dia vem por padrão da model
-            if (isset($tipos_de_aula)) $turmas = Filtra::resultado($turmas, $tipos_de_aula, 'tipo_de_aula_id'); // Turma COM tipo de aula vem por padrão da model
+            if (isset($nucleoId)) $turmas = Filtra::resultado($turmas, $nucleoId, 'nucleo_id')->with('nucleo');
+            if (isset($diaId)) $turmas = Filtra::resultado($turmas, $diaId, 'dia_id'); // Turma COM dia vem por padrão da model
+            if (isset($tipoDeAulaId)) $turmas = Filtra::resultado($turmas, $tipoDeAulaId, 'tipo_de_aula_id'); // Turma COM tipo de aula vem por padrão da model
             
-            if (isset($disponivel)) $turmas = $turmas->where('disponivel', '=', true);
+            if (isset($disponivel)) $turmas = $turmas->where('disponivel', (int) $disponivel);
             
             $pagination = Trata::resultado($turmas, 'turmas.nome'); // Ordenação por turma, dia ou tipo de aula.
 
             return isWeb()
                 ? Inertia::render('turmas/index', [
                     'pagination' => $pagination,
+                    'nucleos' => Nucleo::all(),
+                    'dias' => Dia::all(),
+                    'tipos_de_aula' => TipoDeAula::all(),
                     'session' => viteSession()
                 ])
                 : response($turmas);

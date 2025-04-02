@@ -55,6 +55,30 @@ export interface IndexProps<T> {
     pagination: Pagination<T>;
 }
 
+export interface IndexPropsTurma {
+    session: Session, 
+    pagination: Pagination<T>;
+    nucleos: Nucleo[],
+    dias: Dia[],
+    tipos_de_aula: TipoDeAula[]
+}
+
+export interface FiltrosTurma {
+    disponivel?: boolean
+    nucleoId?: string,
+    diaId?: string,
+    tipoDeAulaId?: string,
+    [key: string]: any
+}
+
+export interface FiltrosHabilitadosTurma {
+    disponivel: boolean
+    nucleoId: boolean,
+    diaId: boolean,
+    tipoDeAulaId: boolean,
+    [key: string]: any
+}
+
 export interface Props<T> {
     errors: any,
     session: Session,
