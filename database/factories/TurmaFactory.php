@@ -21,19 +21,20 @@ class TurmaFactory extends Factory
             $imageName = $http->body();
         } while (preg_match('/\.(mp4|webm)$/', $imageName));
 
+        $vagasOfertadas = $this->faker->numberBetween(0, 50);
+
         return [
             'nome' => $this->faker->name(),
-            'descricao' => $this->faker->sentence(),
+            'descricao' => implode("\n\n", $this->faker->paragraphs(3)),
             'imagem' => 'https://random.dog/' . $imageName,
-            'vagas_preenchidas' => $this->faker->numberBetween(0, 100),
-            'vagas_fora_do_site' => $this->faker->numberBetween(0, 50),
-            'vagas_ofertadas' => $this->faker->numberBetween(10, 100),
-            'horario' => $this->faker->time(),
+            'vagas_fora_do_site' => $this->faker->numberBetween(0, $vagasOfertadas),
+            'vagas_ofertadas' => $vagasOfertadas,
+            'horario' => $this->faker->time('H:i'),
             'disponivel' => $this->faker->boolean(),
             'zoom' => $this->faker->url(),
             'zoom_id' => $this->faker->uuid(),
             'zoom_senha' => $this->faker->password(),
-            'whatsapp' => $this->faker->phoneNumber(),
+            'whatsapp' => $this->faker->url(),
             'spotify' => $this->faker->url(),
             'nucleo_id' => Nucleo::inRandomOrder()->first()->id,
             'dia_id' => Dia::inRandomOrder()->first()->id,
