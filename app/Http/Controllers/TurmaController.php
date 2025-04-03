@@ -12,10 +12,45 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
 class TurmaController extends Controller
 {
+    /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+                'nome' => [
+                    'string',
+                    'required',
+                    'min:3',
+                    'max:30',
+                ],
+                'descricao' => 'string|min:10|max:1500',
+                'imagem' => ['required', function($attribute, $value, $fail) {
+                    validaImagem($attribute, $value, $fail);
+                }],
+                'vagas_fora_do_site' => ['numeric', "max:{$data['vagas_ofertadas']}"],
+                'vagas_ofertadas' => ['numeric', "min:{$data['vagas_fora_do_site']}"],
+                'horario' => ['required', 'regex:/^([01]\d|2[0-3]):([0-5]\d)$/'], // Valida HH:MM
+                'disponivel' => 'boolean',
+                'zoom' => 'url',
+                'zoom_id' => 'string',
+                'zoom_senha' => 'string|min:3',
+                'whatsapp' => 'url',
+                'spotify' => 'url',
+                'nucleo_id' => 'required|numeric|min:1',
+                'dia_id' => 'required|numeric|min:1',
+                'tipo_de_aula_id' => 'required|numeric|min:1',
+            ]);   
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -100,31 +135,61 @@ class TurmaController extends Controller
         }
     }
 
+     /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Turma  $turma
+     */
+    public function edit(Turma $turma)
+    {
+        try {
+            return isWeb()
+                ? Inertia::render('turmas/edit', [
+                    'session' => viteSession(),
+                    'turma' => $turma,
+                    'nucleos' => Nucleo::all(),
+                    'dias' => Dia::all(),
+                    'tipos_de_aula' => TipoDeAula::all()
+                ])
+                : response($turma);
+        } catch (\Throwable $th) {
+            $mensagem = Trata::erro($th);
+
+            return isWeb()
+                ? redirect()->route('turmas.index')
+                : response($mensagem);
+        }
+    }
+
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Turma  $turma
-     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Turma $turma):Response
+    public function update(Request $request, Turma $turma)
     {
         try {
-            DB::beginTransaction();
-            $turma->update($request->except('imagem'));
-
-            if ($request->imagem) {
-                Storage::delete($turma->imagem);
-                $path = $request->imagem->store('turmas');
-                $turma->imagem = $path;
-                $turma->save();
+            $validator = $this->validator($request->all());
+            if ($validator->fails()) {
+                session(['error' => "Há alguma informação incorreta, revise o formulário. "]);
+        
+                return isWeb()
+                    ? redirect()->back()->withErrors($validator)
+                    : response($validator->errors(), 422);
             }
-            DB::commit();
 
-            return response($turma);
+            salvaImagem($turma, 'turmas');
+
+            return isWeb()
+                ? redirect()->route('turmas.index')
+                : response($turma);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+
+            return isWeb()
+                ? redirect()->route('turmas.index')
+                : response($mensagem);
         }
     }
 

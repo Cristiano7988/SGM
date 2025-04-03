@@ -83,6 +83,11 @@ export interface Props<T> {
     errors: any,
     session: Session,
     [key: string]: T; // This allows for additional model
+
+    // Para turmas
+    nucleos: any[],
+    dias: any[],
+    tipos_de_aula: any[]
 }
 
 export interface User {

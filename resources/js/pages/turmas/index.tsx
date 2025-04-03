@@ -27,7 +27,8 @@ export default function Index(props: IndexPropsTurma) {
     if (searchParams.get('tipoDeAulaId')) filtrosInicial.tipoDeAulaId = searchParams.get('tipoDeAulaId') ?? undefined;
 
     const [filtros, setFiltros] = useState<FiltrosTurma>(filtrosInicial);
-    const [mostrarFiltros, setMostrarFiltros] = useState(!!filtrosInicial);
+    const filtroEstaAtivo = ['disponivel', 'nucleoId', 'diaId', 'tipoDeAulaId'].filter(prop => prop in filtrosInicial).length;
+    const [mostrarFiltros, setMostrarFiltros] = useState(!!filtroEstaAtivo);
     const [filtrosHabilitados, setFiltrosHabilitados] = useState<FiltrosHabilitadosTurma>({
         disponivel: Boolean(searchParams.get('disponivel')),
         diaId: Boolean(searchParams.get('diaId')),

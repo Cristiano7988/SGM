@@ -40,6 +40,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(ChecaSeEAdmin::class)->group(function () {
         Route::prefix('/turmas')->group(function () {
             Route::get('/{turma}/edit', [TurmaController::class, 'edit'])->name('turmas.edit');
+            Route::post('/{turma}/update', [TurmaController::class, 'update'])->name('turmas.update');
         });
     });
 });
