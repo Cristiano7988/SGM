@@ -1,7 +1,7 @@
 import { Head, useForm } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { Nucleo, BreadcrumbItem, Props } from '@/types';
-import ImageInputToggle from '@/components/image-input-toggle';
+import { InputImageContent } from '@/components/form-elements/input-image-content';
 import { CalendarIcon } from 'lucide-react';
 import Session from '@/components/session';
 import ErrorLabel from '@/components/error-label';
@@ -55,7 +55,7 @@ export default function Edit(props: Props<Nucleo>) {
 
                 <form onSubmit={submit} className="flex flex-col gap-6 space-y-4">
                     
-                    <ImageInputToggle value={formData.imagem} setData={setData} errors={errors} />
+                    <InputImageContent value={formData.imagem} setData={setData} errors={errors} />
 
                     <div>
                         <label className="block font-medium">Nome</label>

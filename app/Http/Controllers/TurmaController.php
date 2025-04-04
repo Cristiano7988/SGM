@@ -94,27 +94,67 @@ class TurmaController extends Controller
     }
 
     /**
+     * Show the form for creating a new resource.
+     *
+     */
+    public function create(Turma $turma)
+    {
+        try {
+            return isWeb()
+                ? Inertia::render('turmas/create', [
+                    'turma' => $turma,
+                    'nucleos' => Nucleo::all(),
+                    'dias' => Dia::all(),
+                    'tipos_de_aula' => TipoDeAula::all()
+                ])
+                : response($turma);
+        } catch (\Throwable $th) {
+            $mensagem = Trata::erro($th);
+
+            return isWeb()
+                ? redirect()->route('turmas.index')
+                : response($mensagem);
+        }
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
-    public function store(Request $request):Response
+    public function store(Request $request)
     {
         try {
-            DB::beginTransaction();
-            $turma = Turma::create($request->except('imagem'));
-
-            if ($request->imagem) {
-                $path = $request->imagem->store('turmas');
-                $turma->imagem = $path;
-                $turma->save();
+            $validator = $this->validator($request->all());
+            if ($validator->fails()) {
+                session(['error' => "Há alguma informação incorreta, revise o formulário. "]);
+        
+                return isWeb()
+                    ? redirect()->back()->withErrors($validator)
+                    : response($validator->errors(), 422);
             }
+
+            DB::beginTransaction();
+            $data = request()->hasFile('imagem')
+                ? request()->except('imagem')
+                : request()->all();
+
+            $turma = Turma::create($data);
+
+            salvaImagem($turma, 'turmas');
             DB::commit();
 
-            return response($turma);
+            session(['success' => "A turma de nº {$turma->id}, {$turma->nome}, foi criada."]);
+
+            return isWeb()
+                ? redirect()->route('turmas.index')
+                : response($turma);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
+
+            return isWeb()
+                ? redirect()->route('turmas.index')
+                : response($mensagem);
             return $mensagem;
         }
     }
@@ -179,7 +219,17 @@ class TurmaController extends Controller
                     : response($validator->errors(), 422);
             }
 
+            DB::beginTransaction();
+            $data = request()->hasFile('imagem')
+                ? request()->except('imagem')
+                : request()->all();
+
+            $turma->update($data);
+
             salvaImagem($turma, 'turmas');
+            DB::commit();
+
+            session(['success' => "A turma de nº {$turma->id}, {$turma->nome}, foi atualizada."]);
 
             return isWeb()
                 ? redirect()->route('turmas.index')

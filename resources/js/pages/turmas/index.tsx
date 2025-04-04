@@ -79,7 +79,10 @@ export default function Index(props: IndexPropsTurma) {
                         </Switch>
 
                     </div>
-                    <Link href={route('turmas.index', filtros).toString()} className='bg-blue-500 px-4 py-2 rounded-md w-fit'>Filtrar</Link>
+                    <div className="flex gap-2">
+                        <Link href={route('turmas.index', filtros).toString()} className='bg-blue-500 px-4 py-2 rounded-md w-fit'>Filtrar</Link>
+                        <Link href={route('turmas.create')} className='bg-blue-500 border px-4 py-2 rounded-xl' children="Criar" />
+                    </div>
                 </div>
 
                 {mostrarFiltros && <div className='flex flex-wrap gap-8 justify-between'>

@@ -39,8 +39,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::middleware(ChecaSeEAdmin::class)->group(function () {
         Route::prefix('/turmas')->group(function () {
+            Route::get('/create', [TurmaController::class, 'create'])->name('turmas.create');
+            Route::post('/', [TurmaController::class, 'store'])->name('turmas.store');
             Route::get('/{turma}/edit', [TurmaController::class, 'edit'])->name('turmas.edit');
-            Route::post('/{turma}/update', [TurmaController::class, 'update'])->name('turmas.update');
+            Route::post('/{turma}', [TurmaController::class, 'update'])->name('turmas.update');
         });
     });
 });

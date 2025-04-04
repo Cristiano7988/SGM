@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import ErrorLabel from './error-label';
+import ErrorLabel from '../error-label';
 
-interface ImageInputToggleProps {
+interface InputImageContentProps {
   value: string | File | null;
   setData: (key: string, value: any) => void;
   errors: any
 }
 
-const ImageInputToggle: React.FC<ImageInputToggleProps> = ({ value, setData, errors }) => {
+export const InputImageContent: React.FC<InputImageContentProps> = ({ value, setData, errors }) => {
   const [isUrl, setIsUrl] = useState(true);
   const [preview, setPreview] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -62,7 +62,7 @@ const ImageInputToggle: React.FC<ImageInputToggleProps> = ({ value, setData, err
               value={typeof value === 'string' ? value : ''}
               onChange={handleUrlChange}
               placeholder="Insira a URL da imagem"
-              className="w-full p-2 border rounded-md"
+              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
         ) : (
@@ -71,12 +71,12 @@ const ImageInputToggle: React.FC<ImageInputToggleProps> = ({ value, setData, err
             <div className='flex'>
               <button 
                 type="button" 
-                className="cursor-pointer bg-gray-100 dark:bg-gray-900 file-upload-button p-2 rounded-md"
+                className="cursor-pointer bg-gray-100 dark:bg-gray-900 file-upload-button p-3 rounded-md"
                 onClick={() => inputRef.current?.click()}
               >
                 Escolher Arquivo
               </button>
-              <span ref={labelRef} className="border file-name p-2 rounded-md block text-center">Nenhum arquivo selecionado</span>
+              <span ref={labelRef} className="border file-name p-3 rounded-md block text-center">Nenhum arquivo selecionado</span>
               <input
                 ref={inputRef}
                 type="file"
@@ -92,7 +92,7 @@ const ImageInputToggle: React.FC<ImageInputToggleProps> = ({ value, setData, err
         <button
           type="button"
           onClick={toggleInputMode}
-          className="p-2 bg-blue-500 text-white rounded-md"
+          className="p-3 bg-blue-500 text-white rounded-md cursor-pointer"
         >
           Alternar para {isUrl ? 'Upload de Imagem' : 'URL'}
         </button>
@@ -100,5 +100,3 @@ const ImageInputToggle: React.FC<ImageInputToggleProps> = ({ value, setData, err
     </div>
   );
 };
-
-export default ImageInputToggle;

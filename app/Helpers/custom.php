@@ -74,11 +74,6 @@ if (!function_exists('salvaImagem')) {
             if ($isInOurEnd && !$isTheSameFile) Storage::disk('public')->delete($storagePath);
         }
 
-        $data = request()->hasFile('imagem')
-            ? request()->except('imagem')
-            : request()->all();
-        $model->update($data);
-
         if (request()->hasFile('imagem')) {
             $path = request()->imagem->store($tabela, 'public');
             $model->imagem = env('APP_URL') . "/storage/" . $path;
