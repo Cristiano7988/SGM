@@ -35,6 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('/turmas')->group(function () {
         Route::get('/', [TurmaController::class, 'index'])->name('turmas.index');
+        Route::get('/{turma}', [TurmaController::class, 'show'])->name('turmas.show');
     });
 
     Route::middleware(ChecaSeEAdmin::class)->group(function () {
@@ -43,6 +44,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/', [TurmaController::class, 'store'])->name('turmas.store');
             Route::get('/{turma}/edit', [TurmaController::class, 'edit'])->name('turmas.edit');
             Route::post('/{turma}', [TurmaController::class, 'update'])->name('turmas.update');
+            Route::delete('/{turma}', [TurmaController::class, 'destroy'])->name('turmas.destroy');
         });
     });
 });

@@ -143,6 +143,7 @@ export interface Turma {
     whatsapp: string,
     spotify: string,
     nucleo_id: number,
+    nucleo: Nucleo,
     dia_id: number,
     dia: Dia,
     tipo_de_aula_id: number,

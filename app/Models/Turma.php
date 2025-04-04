@@ -28,9 +28,24 @@ class Turma extends Model
         'tipo_de_aula_id'
     ];
 
+    protected $casts = [
+        'disponivel' => 'boolean',
+        'vagas_fora_do_site' => 'integer',
+        'vagas_ofertadas' => 'integer',
+        'vagas_preenchidas' => 'integer',
+        'descricao' => 'string'
+    ];
+
+    protected $appends = ['vagas_preenchidas'];
+
     function getDescricaoAttribute(string $value): array
     {
         return explode("\n\n", $value);
+    }
+
+    function getVagasPreenchidasAttribute(): int
+    {
+        return $this->matriculas()->count();
     }
 
     public function nucleo()

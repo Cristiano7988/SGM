@@ -163,15 +163,21 @@ class TurmaController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Turma  $turma
-     * @return \Illuminate\Http\Response
      */
-    public function show(Turma $turma):Response
+    public function show(Turma $turma)
     {
         try {
-            return response($turma);
+            return isWeb()
+                ? Inertia::render('turmas/show', [
+                    'turma' => $turma->with(['nucleo', 'dia', 'tipo_de_aula'])->first(),
+                ])
+                : response($turma);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+
+            return isWeb()
+                ? redirect()->route('turmas.index')
+                : response($mensagem);
         }
     }
 
@@ -257,10 +263,18 @@ class TurmaController extends Controller
             $turma->delete();
             DB::commit();
 
-            return response("A turma de nº {$turma->id}, {$turma->nome},  foi deletada.");;
+            $mensagem = "A turma de nº {$turma->id}, {$turma->nome}, foi excluída.";
+            session(['success' => $mensagem]);
+
+            return isWeb()
+                ? redirect()->route('turmas.index')
+                : response($mensagem);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+
+            return isWeb()
+                ? redirect()->route('turmas.index')
+                : response($mensagem);
         }
     }
 }
