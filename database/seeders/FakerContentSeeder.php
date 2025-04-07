@@ -15,7 +15,8 @@ class FakerContentSeeder extends Seeder
     {
         $this->call([
             NucleoSeeder::class,
-            TurmaSeeder::class
+            TurmaSeeder::class,
+            PacoteSeeder::class,
         ]);
     }
 }
