@@ -253,9 +253,8 @@ class TurmaController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Turma  $turma
-     * @return \Illuminate\Http\Response
      */
-    public function destroy(Turma $turma):Response
+    public function destroy(Turma $turma)
     {
         try {
             DB::beginTransaction();
