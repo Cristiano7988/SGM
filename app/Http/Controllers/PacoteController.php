@@ -4,19 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Filtra;
 use App\Helpers\Trata;
+use App\Models\Nucleo;
 use App\Models\Pacote;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class PacoteController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
      */
-    public function index():Response
+    public function index()
     {
         try {
             extract(request()->all());
@@ -28,17 +29,26 @@ class PacoteController extends Controller
                 ->leftJoin('nucleos', 'pacotes.nucleo_id', 'nucleos.id')
                 ->select(['pacotes.*'])->groupBy('pacotes.id');
 
-            if (isset($matriculas)) $pacotes = Filtra::resultado($pacotes, $matriculas, 'matriculas.id')->with('matriculas');
-            if (isset($periodos)) $pacotes = Filtra::resultado($pacotes, $periodos, 'periodos.id')->with('periodos');
-            if (isset($nucleos)) $pacotes = Filtra::resultado($pacotes, $nucleos, 'nucleos.id')->with('nucleo');
-            if (isset($ativo)) $pacotes = $pacotes->where('ativo', true);
+            // if (isset($matriculas)) $pacotes = Filtra::resultado($pacotes, $matriculas, 'matriculas.id')->with('matriculas');
+            // if (isset($periodos)) $pacotes = Filtra::resultado($pacotes, $periodos, 'periodos.id')->with('periodos');
+            if (isset($nucleoId)) $pacotes = Filtra::resultado($pacotes, $nucleoId, 'nucleos.id')->with('nucleo');
+            if (isset($ativo)) $pacotes = $pacotes->where('ativo', $ativo);
 
-            $pacotes = Trata::resultado($pacotes, 'pacotes.nome'); // Ordenação por pacote ou por núcleo.
+            $pagination = Trata::resultado($pacotes, 'pacotes.nome'); // Ordenação por pacote ou por núcleo.
 
-            return response($pacotes);
+            return isWeb()
+                ? Inertia::render('pacotes/index', [
+                    'pagination' => $pagination,
+                    'nucleos' => Nucleo::all(),
+                    'session' => viteSession(),
+                ])
+                : response($pacotes);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+
+            return isWeb()
+                ? redirect()->route('dashboard')
+                : response($mensagem);
         }
     }
 

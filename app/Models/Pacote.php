@@ -15,6 +15,15 @@ class Pacote extends Model
         'nucleo_id',
     ];
 
+    protected $appends = [
+        'valor_formatado',
+    ];
+
+    public function getValorFormatadoAttribute()
+    {
+        return "R$ " . number_format($this->attributes['valor'], 2, ',', '.');
+    }
+
     public function nucleo()
     {
         return $this->belongsTo(Nucleo::class);

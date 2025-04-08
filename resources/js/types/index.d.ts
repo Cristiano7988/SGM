@@ -50,45 +50,42 @@ export interface SessionType {
     success: string | null
 }
 
-export interface IndexProps<T> {
-    session: Session, 
+// Props
+
+export interface Props<T> {
+    errors: any,
+    session: Session,
     pagination: Pagination<T>;
 }
 
-export interface IndexPropsTurma {
-    session: Session, 
-    pagination: Pagination<T>;
+export interface TurmaProps extends Props<Turma> {
     nucleos: Nucleo[],
     dias: Dia[],
     tipos_de_aula: TipoDeAula[]
 }
 
-export interface FiltrosTurma {
-    disponivel?: boolean
-    nucleoId?: string,
-    diaId?: string,
-    tipoDeAulaId?: string,
-    [key: string]: any
+export interface NucleoProps extends Props<Nucleo> {
+    turmas: Turma[],
 }
 
-export interface FiltrosHabilitadosTurma {
-    disponivel: boolean
-    nucleoId: boolean,
-    diaId: boolean,
-    tipoDeAulaId: boolean,
-    [key: string]: any
+export interface PacoteProps extends Props<Pacote> {
+    nucleos: Nucleo[],
 }
 
-export interface Props<T> {
-    errors: any,
-    session: Session,
-    [key: string]: T; // This allows for additional model
+// Filtros
 
-    // Para turmas
-    nucleos: any[],
-    dias: any[],
-    tipos_de_aula: any[]
-}
+type FiltroValor = string | number | boolean | undefined;
+
+type FiltrosBase<Chaves extends string> = {
+    [K in Chaves]?: FiltroValor;
+} & {
+    [key: string]: FiltroValor; // <- Isso permite acesso dinâmico via string
+};
+
+export type FiltrosTurma = FiltrosBase<'disponivel' | 'nucleoId' | 'diaId' | 'tipoDeAulaId'>;
+export type FiltrosPacote = FiltrosBase<'ativo' | 'nucleoId'>;
+
+// Models
 
 export interface User {
     id: number;
@@ -148,4 +145,14 @@ export interface Turma {
     dia: Dia,
     tipo_de_aula_id: number,
     tipo_de_aula: Tipo
+}
+
+export interface Pacote {
+    id: number;
+    nome: string;
+    ativo: boolean;
+    nucleo_id: number;
+    nucleo: Nucleo;
+    valor: number;
+    valor_formatado: string;
 }

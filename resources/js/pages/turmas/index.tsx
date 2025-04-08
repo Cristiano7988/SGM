@@ -4,7 +4,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
-import { Turma, type BreadcrumbItem, IndexPropsTurma, FiltrosTurma, FiltrosHabilitadosTurma } from '@/types';
+import { Turma, type BreadcrumbItem, FiltrosTurma, TurmaProps } from '@/types';
 import { Switch } from '@headlessui/react';
 import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
@@ -16,7 +16,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Index(props: IndexPropsTurma) {
+export default function Index(props: TurmaProps) {
     const { pagination, session } = props;
     const searchParams = new URLSearchParams(location.search);
     const filtrosInicial: FiltrosTurma = {};
@@ -29,7 +29,7 @@ export default function Index(props: IndexPropsTurma) {
     const [filtros, setFiltros] = useState<FiltrosTurma>(filtrosInicial);
     const filtroEstaAtivo = ['disponivel', 'nucleoId', 'diaId', 'tipoDeAulaId'].filter(prop => prop in filtrosInicial).length;
     const [mostrarFiltros, setMostrarFiltros] = useState(!!filtroEstaAtivo);
-    const [filtrosHabilitados, setFiltrosHabilitados] = useState<FiltrosHabilitadosTurma>({
+    const [filtrosHabilitados, setFiltrosHabilitados] = useState<FiltrosTurma>({
         disponivel: Boolean(searchParams.get('disponivel')),
         diaId: Boolean(searchParams.get('diaId')),
         nucleoId: Boolean(searchParams.get('nucleoId')),
@@ -99,7 +99,7 @@ export default function Index(props: IndexPropsTurma) {
                             <Label htmlFor="disponivel" className='cursor-pointer'>Disponíveis</Label>
                         </div>
                         <Switch
-                            checked={filtrosHabilitados.disponivel}
+                            checked={Boolean(filtrosHabilitados.disponivel)}
                             onChange={(value) => handleFiltro('disponivel', true)}
                             className={` group relative flex h-7 w-14 cursor-pointer rounded-full ${filtrosHabilitados.disponivel ? "bg-blue-500" : "bg-white/10"} p-1 transition-colors duration-200 ease-in-out focus:outline-none data-[focus]:outline-1 data-[focus]:outline-white`}
                         >
@@ -117,7 +117,7 @@ export default function Index(props: IndexPropsTurma) {
                                 name="nucleoId"
                                 disabled={!filtrosHabilitados.nucleoId}
                                 onValueChange={(value) => handleFiltrosChange('nucleoId', value)}
-                                defaultValue={filtros.nucleoId}
+                                defaultValue={String(filtros.nucleoId)}
                             >
                                 <SelectTrigger className="w-auto gap-2 min-w-56 cursor-pointer">
                                     <SelectValue placeholder="Filtrar" />
@@ -133,7 +133,7 @@ export default function Index(props: IndexPropsTurma) {
                         </div>
                         <Switch
                             id="nucleoId"
-                            checked={filtrosHabilitados.nucleoId}
+                            checked={Boolean(filtrosHabilitados.nucleoId)}
                             onChange={(value) => handleFiltro('nucleoId')}
                             className={`group relative flex h-7 w-14 cursor-pointer rounded-full ${filtrosHabilitados.nucleoId ? "bg-blue-500" : "bg-white/10"} p-1 transition-colors duration-200 ease-in-out focus:outline-none data-[focus]:outline-1 data-[focus]:outline-white`}
                         >
@@ -149,7 +149,7 @@ export default function Index(props: IndexPropsTurma) {
                             <Label htmlFor="diaId" className={filtrosHabilitados.diaId ? "" : "opacity-50"}>Dia:</Label>
                             <Select
                                 onValueChange={(value) => handleFiltrosChange('diaId', value)}
-                                defaultValue={filtros.diaId}
+                                defaultValue={String(filtros.diaId)}
                                 disabled={!filtrosHabilitados.diaId}
                             >
                                 <SelectTrigger className="w-auto gap-2 min-w-56 cursor-pointer ">
@@ -165,7 +165,7 @@ export default function Index(props: IndexPropsTurma) {
                             </Select>
                         </div>
                         <Switch
-                            checked={filtrosHabilitados.diaId}
+                            checked={Boolean(filtrosHabilitados.diaId)}
                             onChange={(value) => handleFiltro('diaId')}
                             className={`group relative flex h-7 w-14 cursor-pointer rounded-full ${filtrosHabilitados.diaId ? "bg-blue-500" : "bg-white/10"} p-1 transition-colors duration-200 ease-in-out focus:outline-none data-[focus]:outline-1 data-[focus]:outline-white`}
                         >
@@ -181,7 +181,7 @@ export default function Index(props: IndexPropsTurma) {
                             <Label htmlFor="tipoDeAulaId" className={filtrosHabilitados.tipoDeAulaId ? "" : "opacity-50"}>Tipo de Aula:</Label>
                             <Select
                                 onValueChange={(value) => handleFiltrosChange('tipoDeAulaId', value)}
-                                defaultValue={filtros.tipoDeAulaId}
+                                defaultValue={String(filtros.tipoDeAulaId)}
                                 disabled={!filtrosHabilitados.tipoDeAulaId}
                             >
                                 <SelectTrigger className="w-auto gap-2 min-w-56 cursor-pointer ">
@@ -197,7 +197,7 @@ export default function Index(props: IndexPropsTurma) {
                             </Select>
                         </div>
                         <Switch
-                            checked={filtrosHabilitados.tipoDeAulaId}
+                            checked={Boolean(filtrosHabilitados.tipoDeAulaId)}
                             onChange={(value) => handleFiltro('tipoDeAulaId')}
                             className={`group relative flex h-7 w-14 cursor-pointer rounded-full ${filtrosHabilitados.tipoDeAulaId ? "bg-blue-500" : "bg-white/10"} p-1 transition-colors duration-200 ease-in-out focus:outline-none data-[focus]:outline-1 data-[focus]:outline-white`}
                         >

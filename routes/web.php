@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\NucleoController;
+use App\Http\Controllers\PacoteController;
 use App\Http\Controllers\TurmaController;
 use App\Http\Middleware\calculaIdadeDoAluno;
 use App\Http\Middleware\ChecaSeEAdmin;
@@ -46,6 +47,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/{turma}', [TurmaController::class, 'update'])->name('turmas.update');
             Route::delete('/{turma}', [TurmaController::class, 'destroy'])->name('turmas.destroy');
         });
+    });
+
+    Route::prefix('/pacotes')->group(function () {
+        Route::get('/', [PacoteController::class, 'index'])->name('pacotes.index');
     });
 });
 
