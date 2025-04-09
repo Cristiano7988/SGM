@@ -52,23 +52,44 @@ export interface SessionType {
 
 // Props
 
-export interface Props<T> {
+export interface Props {
     errors: any,
     session: Session,
+}
+
+export interface IndexProps<T> extends Props {
     pagination: Pagination<T>;
 }
 
-export interface TurmaProps extends Props<Turma> {
+export interface IndexPacoteProps extends IndexProps<PacoteAndExtraColumns>, PacoteRelations {}
+export interface FormPacoteProps extends Props, PacoteRelations {
+    pacote: Pacote;
+}
+export interface ShowPacoteProps {
+    pacote: PacoteAndExtraColumns
+}
+
+export interface IndexTurmaProps extends IndexProps<TurmaAndExtraColumns>, TurmaRelations {}
+export interface FormTurmaProps extends Props, TurmaRelations {
+    turma: Turma;
+}
+export interface ShowTurmaProps {
+    turma: TurmaAndExtraColumns
+}
+
+// Relations
+
+export interface TurmaRelations {
     nucleos: Nucleo[],
     dias: Dia[],
     tipos_de_aula: TipoDeAula[]
 }
 
-export interface NucleoProps extends Props<Nucleo> {
+export interface NucleoRelations {
     turmas: Turma[],
 }
 
-export interface PacoteProps extends Props<Pacote> {
+export interface PacoteRelations {
     nucleos: Nucleo[],
 }
 
@@ -84,6 +105,26 @@ type FiltrosBase<Chaves extends string> = {
 
 export type FiltrosTurma = FiltrosBase<'disponivel' | 'nucleoId' | 'diaId' | 'tipoDeAulaId'>;
 export type FiltrosPacote = FiltrosBase<'ativo' | 'nucleoId'>;
+
+// Form Elements
+
+export interface FormProps<T> {
+    data: T;
+    processing: boolean;
+    submit: (e: React.FormEvent) => void;
+    setData: (key: string, value: any) => void;
+    errors: any;
+}
+
+export interface FormPacoteContentProps extends FormProps<Pacote> {
+    props: PacoteRelations
+}
+
+export interface FormTurmaContentProps extends FormProps<Turma> {
+    props: TurmaRelations
+}
+
+
 
 // Models
 
@@ -129,7 +170,6 @@ export interface Turma {
     nome: string;
     imagem: string;
     descricao: Array;
-    vagas_preenchidas: number,
     vagas_fora_do_site: number,
     vagas_ofertadas: number,
     horario: string,
@@ -140,19 +180,26 @@ export interface Turma {
     whatsapp: string,
     spotify: string,
     nucleo_id: number,
-    nucleo: Nucleo,
     dia_id: number,
-    dia: Dia,
     tipo_de_aula_id: number,
-    tipo_de_aula: Tipo
 }
+
+export interface TurmaAndExtraColumns extends Turma {
+    vagas_preenchidas: number,
+    tipo_de_aula: Tipo,
+    dia: Dia,
+    nucleo: Nucleo,
+} 
 
 export interface Pacote {
     id: number;
     nome: string;
     ativo: boolean;
     nucleo_id: number;
-    nucleo: Nucleo;
     valor: number;
+}
+
+export interface PacoteAndExtraColumns extends Pacote {
     valor_formatado: string;
+    nucleo: Nucleo;
 }

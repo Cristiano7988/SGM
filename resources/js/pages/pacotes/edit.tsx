@@ -1,57 +1,45 @@
 import { Head, useForm } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, FormTurmaProps } from '@/types';
+import { BreadcrumbItem, FormPacoteProps } from '@/types';
 import Session from '@/components/session';
 import { ButtonSubmitContent } from '@/components/form-elements/button-submit-content';
-import { FormTurmaContent } from '@/components/form-elements/form-turma-content';
-
+import { FormPacoteContent } from '@/components/form-elements/form-pacote-content';
 const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Turmas', href: '/turmas' },
-    { title: 'Editar Turma', href: '#' },
+    { title: 'Pacotes', href: '/pacotes' },
+    { title: 'Editar Pacote', href: '#' },
 ];
 
-export default function Edit(props: FormTurmaProps) {
-    const { turma, session } = props;
+export default function Edit(props: FormPacoteProps) {
+    const { pacote, session } = props;
     const { data: formData, setData, post, processing, errors } = useForm({
-        id: turma.id,
-        nome: turma.nome,
-        imagem: turma.imagem,
-        descricao: turma.descricao.join('\n\n'),
-        vagas_fora_do_site: turma.vagas_fora_do_site,
-        vagas_ofertadas: turma.vagas_ofertadas,
-        horario: turma.horario,
-        dia_id: turma.dia_id,
-        nucleo_id: turma.nucleo_id,
-        tipo_de_aula_id: turma.tipo_de_aula_id,
-        disponivel: turma.disponivel,
-        zoom: turma.zoom,
-        zoom_id: turma.zoom_id,
-        zoom_senha: turma.zoom_senha,
-        whatsapp: turma.whatsapp,
-        spotify: turma.spotify,
+        id: pacote.id,
+        nome: pacote.nome,
+        valor: pacote.valor,
+        ativo: pacote.ativo,
+        nucleo_id: pacote.nucleo_id,
     });
 
-    const { processing: processingDeletion, delete: deleteTurma } = useForm();
+    const { processing: processingDeletion, delete: deletePacote } = useForm();
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('turmas.update', turma.id));
+        post(route('pacotes.update', pacote.id));
     };
 
     const submitDeletion = (e: React.FormEvent) => {
         e.preventDefault();
-        if (confirm('Tem certeza que deseja excluir esta turma?')) deleteTurma(route('turmas.destroy', turma.id));
+        if (confirm('Tem certeza que deseja excluir este pacote?')) deletePacote(route('pacotes.destroy', pacote.id));
     };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title='Editar Turma' />
+            <Head title='Editar Pacote' />
             <Session session={session}  />
 
             <div className="w-full mx-auto p-6 rounded-lg shadow">
-                <h1 className="text-xl font-bold mb-4">Editar Turma</h1>
+                <h1 className="text-xl font-bold mb-4">Editar Pacote</h1>
 
-                <FormTurmaContent
+                <FormPacoteContent
                     data={formData}
                     processing={processing}
                     submit={submit}

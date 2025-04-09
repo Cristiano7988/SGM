@@ -4,7 +4,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
-import { Turma, type BreadcrumbItem, FiltrosTurma, TurmaProps } from '@/types';
+import { type BreadcrumbItem, FiltrosTurma, IndexTurmaProps, TurmaAndExtraColumns } from '@/types';
 import { Switch } from '@headlessui/react';
 import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
@@ -16,7 +16,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Index(props: TurmaProps) {
+export default function Index(props: IndexTurmaProps) {
     const { pagination, session } = props;
     const searchParams = new URLSearchParams(location.search);
     const filtrosInicial: FiltrosTurma = {};
@@ -211,7 +211,7 @@ export default function Index(props: TurmaProps) {
 
                 {pagination.data.length
                         ? <div className="flex flex-wrap justify-between gap-4">
-                            {pagination.data.map((turma: Turma) => <FlipCardTurma key={turma.id} turma={turma} />)}
+                            {pagination.data.map((turma: TurmaAndExtraColumns) => <FlipCardTurma key={turma.id} turma={turma} />)}
                         </div>
                     : <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex flex-col justify-center items-center overflow-hidden rounded-xl border md:min-h-min">
                         <div className="m-auto">Sem resultados</div>

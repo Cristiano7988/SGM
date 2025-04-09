@@ -1,7 +1,7 @@
-import { Pacote } from "@/types";
+import { PacoteAndExtraColumns } from "@/types";
 import { Link } from "@inertiajs/react";
 
-export default function CardPacote({ pacote }: { pacote: Pacote }) {
+export default function CardPacote({ pacote }: { pacote: PacoteAndExtraColumns }) {
   return (
     <div
       className="relative w-95 h-60"
@@ -10,7 +10,7 @@ export default function CardPacote({ pacote }: { pacote: Pacote }) {
           <div className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20 p-4 flex justify-center gap-4">
             <div className="flex flex-col items-center m-auto gap-4">
               <b>{pacote.nome}</b>
-              {/* <Link className="rounded-lg bg-blue-600 px-4 py-2 text-white font-medium transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" href={route('pacotes.edit', { id: pacote.id })} children="Editar" /> */}
+              <Link className="rounded-lg bg-blue-600 px-4 py-2 text-white font-medium transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" href={route('pacotes.edit', { id: pacote.id })} children="Editar" />
             </div>
             <div className="flex flex-col m-auto gap-2">
               <p>{pacote.valor_formatado}</p>

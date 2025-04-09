@@ -1,6 +1,6 @@
 import CarouselText from '@/components/carousel-text';
 import AppLayout from '@/layouts/app-layout';
-import { Turma, type BreadcrumbItem, Props } from '@/types';
+import { type BreadcrumbItem, ShowTurmaProps } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -10,7 +10,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Show(props: Props<Turma>) {
+export default function Show(props: ShowTurmaProps) {
     const { turma } = props;
 
     return (

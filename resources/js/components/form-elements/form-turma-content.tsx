@@ -1,3 +1,4 @@
+import { FormTurmaContentProps } from "@/types";
 import { ButtonSubmitContent } from "./button-submit-content";
 import { InputImageContent } from "./input-image-content";
 import { InputNumberContent } from "./input-number-content";
@@ -8,20 +9,11 @@ import { SelectModelContent } from "./select-model-content";
 import { SwitchContent } from "./switch-content";
 import { TextAreaContent } from "./text-area-content";
 
-interface FormTurmaContentProps {
-    formData: any;
-    processing: boolean;
-    submit: (e: React.FormEvent) => void;
-    setData: (key: string, value: any) => void;
-    errors: any;
-    props: any;
-}
-
-export function FormTurmaContent({ formData, processing, submit, setData, errors, props }: FormTurmaContentProps) {
+export function FormTurmaContent({ data, processing, submit, setData, errors, props }: FormTurmaContentProps) {
     return (
         <form onSubmit={submit} className="flex flex-col gap-6 space-y-4">
             <InputImageContent
-                value={formData.imagem}
+                value={data.imagem}
                 setData={setData}
                 errors={errors}
             />
@@ -29,7 +21,7 @@ export function FormTurmaContent({ formData, processing, submit, setData, errors
             <InputTextContent
                 column="nome"
                 titulo="Nome"
-                value={formData.nome}
+                value={data.nome}
                 setData={setData}
                 error={errors.nome}
             />
@@ -37,7 +29,7 @@ export function FormTurmaContent({ formData, processing, submit, setData, errors
             <TextAreaContent
                 column="descricao"
                 titulo="Descrição"
-                value={formData.descricao}
+                value={data.descricao}
                 setData={setData}
                 error={errors.descricao}
             />
@@ -46,7 +38,7 @@ export function FormTurmaContent({ formData, processing, submit, setData, errors
                 <SelectModelContent
                     column="nucleo_id"
                     titulo="Núcleos"
-                    id={formData.nucleo_id}
+                    id={data.nucleo_id}
                     array={props.nucleos}
                     setData={setData}
                     error={errors.nucleo_id}
@@ -55,7 +47,7 @@ export function FormTurmaContent({ formData, processing, submit, setData, errors
                 <SelectModelContent
                     column="tipo_de_aula_id"
                     titulo="Tipo de aula"
-                    id={formData.tipo_de_aula_id}
+                    id={data.tipo_de_aula_id}
                     array={props.tipos_de_aula}
                     setData={setData}
                     error={errors.tipo_de_aula_id}
@@ -66,7 +58,7 @@ export function FormTurmaContent({ formData, processing, submit, setData, errors
                 <SelectModelContent
                     column="dia_id"
                     titulo="Dia"
-                    id={formData.dia_id}
+                    id={data.dia_id}
                     array={props.dias}
                     setData={setData}
                     error={errors.dia_id}
@@ -75,7 +67,7 @@ export function FormTurmaContent({ formData, processing, submit, setData, errors
                 <InputTimeContent
                     column="horario"
                     titulo="Horário"
-                    value={formData.horario}
+                    value={data.horario}
                     setData={setData}
                     error={errors.horario}
                 />
@@ -85,7 +77,7 @@ export function FormTurmaContent({ formData, processing, submit, setData, errors
                 column="disponivel"
                 titulo="Disponível"
                 tituloInativo="Indisponível"
-                value={formData.disponivel}
+                value={data.disponivel}
                 setData={setData}
                 error={errors.disponivel}
             />
@@ -94,7 +86,7 @@ export function FormTurmaContent({ formData, processing, submit, setData, errors
                 <InputUrlContent
                     column="whatsapp"
                     titulo="WhatsApp"
-                    value={formData.whatsapp}
+                    value={data.whatsapp}
                     setData={setData}
                     error={errors.whatsapp}
                 />
@@ -102,7 +94,7 @@ export function FormTurmaContent({ formData, processing, submit, setData, errors
                 <InputUrlContent
                     column="spotify"
                     titulo="Spotify"
-                    value={formData.spotify}
+                    value={data.spotify}
                     setData={setData}
                     error={errors.spotify}
                 />
@@ -113,7 +105,7 @@ export function FormTurmaContent({ formData, processing, submit, setData, errors
                 <InputUrlContent
                     column="zoom"
                     titulo="Link"
-                    value={formData.zoom}
+                    value={data.zoom}
                     setData={setData}
                     error={errors.zoom}
                 />
@@ -123,7 +115,7 @@ export function FormTurmaContent({ formData, processing, submit, setData, errors
                     <InputTextContent
                         column="zoom_id"
                         titulo="ID"
-                        value={formData.zoom_id}
+                        value={data.zoom_id}
                         setData={setData}
                         error={errors.zoom_id}
                     />
@@ -131,7 +123,7 @@ export function FormTurmaContent({ formData, processing, submit, setData, errors
                     <InputTextContent
                         column="zoom_senha"
                         titulo="Senha"
-                        value={formData.zoom_senha}
+                        value={data.zoom_senha}
                         setData={setData}
                         error={errors.zoom_senha}
                     />
@@ -144,20 +136,20 @@ export function FormTurmaContent({ formData, processing, submit, setData, errors
                     <InputNumberContent
                         titulo='Ofertadas'
                         column='vagas_ofertadas'
-                        value={formData.vagas_ofertadas}
+                        value={data.vagas_ofertadas}
                         setData={setData}
                         error={errors.vagas_ofertadas}
-                        min={formData.vagas_fora_do_site}
+                        min={data.vagas_fora_do_site}
                     />
 
                     <InputNumberContent
                         titulo='Fora do site'
                         column='vagas_fora_do_site'
-                        value={formData.vagas_fora_do_site}
+                        value={data.vagas_fora_do_site}
                         setData={setData}
                         error={errors.vagas_fora_do_site}
                         min={0}
-                        max={formData.vagas_ofertadas}
+                        max={data.vagas_ofertadas}
                     />
                 </div>
             </div>

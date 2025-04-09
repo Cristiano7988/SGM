@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Filtra;
 use App\Helpers\Trata;
+use App\Http\Requests\Settings\PacoteUpdateRequest;
 use App\Models\Nucleo;
 use App\Models\Pacote;
 use Illuminate\Http\Request;
@@ -96,20 +97,50 @@ class PacoteController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Show the form for editing the specified resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Pacote  $pacote
-     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Pacote $pacote):Response
+    public function edit(Pacote $pacote)
     {
         try {
-            $pacote->update($request->all());
-            return response($pacote);
+            return isWeb()
+                ? Inertia::render('pacotes/edit', [
+                    'session' => viteSession(),
+                    'pacote' => $pacote,
+                    'nucleos' => Nucleo::all(),
+                ])
+                : response($pacote);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+
+            return isWeb()
+                ? redirect()->route('pacotes.index')
+                : response($mensagem);
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  App\Http\Requests\Settings\PacoteUpdateRequest;  $request
+     * @param  \App\Models\Pacote  $pacote
+     */
+    public function update(PacoteUpdateRequest $request, Pacote $pacote)
+    {
+        try {
+            $pacote->update($request->validated());
+
+            session(['success' => 'Pacote atualizado com sucesso!']);
+            return isWeb()
+                ? redirect()->route('pacotes.index')
+                : response('');
+        } catch (\Throwable $th) {
+            $mensagem = Trata::erro($th);
+
+            return isWeb()
+                ? redirect()->route('pacotes.index')
+                : response($mensagem);
         }
     }
 

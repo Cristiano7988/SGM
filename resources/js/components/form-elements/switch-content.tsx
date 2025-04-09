@@ -12,7 +12,7 @@ interface SwitchContentProps {
 }
 
 export function SwitchContent({ titulo, tituloInativo, column, value, error, setData }: SwitchContentProps) {
-    const toggleInputMode = () => setData((prevData: any) => ({ ...prevData, value: !value }));
+    const toggleInputMode = () => setData(column, !value);
 
     return (
         <div className="flex items-center space-x-4">

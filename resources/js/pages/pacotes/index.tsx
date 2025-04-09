@@ -4,7 +4,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem, FiltrosPacote, Pacote, PacoteProps } from '@/types';
+import { type BreadcrumbItem, FiltrosPacote, IndexPacoteProps, PacoteAndExtraColumns } from '@/types';
 import { Switch } from '@headlessui/react';
 import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
@@ -16,7 +16,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Index(props: PacoteProps) {
+export default function Index(props: IndexPacoteProps) {
     const { pagination, session } = props;
     const searchParams = new URLSearchParams(location.search);
     const filtrosInicial: FiltrosPacote = {};
@@ -143,7 +143,7 @@ export default function Index(props: PacoteProps) {
 
                 {pagination.data.length
                         ? <div className="flex flex-wrap justify-between gap-4">
-                            {pagination.data.map((pacote: Pacote) => <CardPacote key={pacote.id} pacote={pacote} />)}
+                            {pagination.data.map((pacote: PacoteAndExtraColumns) => <CardPacote key={pacote.id} pacote={pacote} />)}
                         </div>
                     : <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex flex-col justify-center items-center overflow-hidden rounded-xl border md:min-h-min">
                         <div className="m-auto">Sem resultados</div>
