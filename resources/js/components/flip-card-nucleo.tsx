@@ -21,7 +21,8 @@ export default function FlipCardNucleo({ nucleo }: { nucleo: Nucleo }) {
 
   return (
     <div
-      className="relative w-95 h-60" // Tamanho do cartão
+      style={{ height: 'calc(.25rem * 80)' }}
+      className="relative w-95" // Tamanho do cartão
     >
       <motion.div
         className="relative w-full h-full"
@@ -32,8 +33,8 @@ export default function FlipCardNucleo({ nucleo }: { nucleo: Nucleo }) {
         {/* Frente do cartão */}
         <div className="absolute inset-0 border-sidebar-border/70 dark:border-sidebar-border rounded-xl border overflow-hidden backface-hidden">
           <div className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20 p-4 flex justify-center gap-4">
-            <div className="flex flex-col items-center m-auto gap-4">
-              <figure className="m-auto w-24 h-24 rounded-full overflow-hidden border border-gray-300">
+            <div className="flex flex-col items-center gap-4">
+              <figure className="w-24 h-24 rounded-full overflow-hidden border border-gray-300">
                 <img
                   src={nucleo.imagem}
                   alt={nucleo.nome}
@@ -43,7 +44,7 @@ export default function FlipCardNucleo({ nucleo }: { nucleo: Nucleo }) {
               <b>{nucleo.nome}</b>
               <Link className="rounded-lg bg-blue-600 px-4 py-2 text-white font-medium transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" href={route('nucleos.edit', { id: nucleo.id })} children="Editar" />
             </div>
-            <div className="flex flex-col m-auto gap-6">
+            <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-1">
                 <p><strong>Público alvo:</strong></p>
                 <div>
@@ -63,6 +64,10 @@ export default function FlipCardNucleo({ nucleo }: { nucleo: Nucleo }) {
               onClick={() => setFlipped(true)}
               className="cursor-pointer m-auto absolute right-0 top-1/2"
             />
+          </div>
+          <div className="flex justify-center gap-6 absolute w-full bg-sidebar p-4" style={{ bottom: 0 }}>
+            <Link className="rounded-lg bg-blue-600 px-4 py-2 text-white font-medium transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" href={route('pacotes.index', { nucleoId: nucleo.id })} children="Pacotes" />
+            <Link className="rounded-lg bg-blue-600 px-4 py-2 text-white font-medium transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" href={route('turmas.index', { nucleoId: nucleo.id })} children="Turmas" />
           </div>
         </div>
 

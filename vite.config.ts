@@ -12,8 +12,11 @@ export default defineConfig({
         host: '0.0.0.0',  // Permite que o Vite seja acessível fora do contêiner
         port: 5173,
         hmr: {
-            host: 'localhost',
-        }
+            host: process.env.HMR_HOST || 'localhost',
+            protocol: 'ws',
+            port: 5173,
+            clientPort: 5173,
+        },
     },
     plugins: [
         laravel({
