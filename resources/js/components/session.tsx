@@ -3,10 +3,10 @@ import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function Session({ session }: { session: SessionType }) {
-    const [show, setShow] = useState(!!(session?.error || session.success));
+    const [show, setShow] = useState(!!(session?.error || session?.success));
 
     useEffect(() => {
-        setShow(!!(session?.error || session.success));
+        setShow(!!(session?.error || session?.success));
     }, [session]);
 
     useEffect(() => {

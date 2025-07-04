@@ -19,11 +19,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
     })->name('dashboard');
 
-    Route::prefix('/nucleos')->group(function () {  
-        Route::get('/{nucleo}', [NucleoController::class, 'show'])->name('nucleos.show');
-        Route::get('/', [NucleoController::class, 'index'])->name('nucleos.index');
-    })->middleware(calculaIdadeDoAluno::class);
-
     Route::middleware(ChecaSeEAdmin::class)->group(function () {
         Route::prefix('/nucleos')->group(function () {
             Route::get('/create', [NucleoController::class, 'create'])->name('nucleos.create');
@@ -34,10 +29,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
     });
 
-    Route::prefix('/turmas')->group(function () {
-        Route::get('/', [TurmaController::class, 'index'])->name('turmas.index');
-        Route::get('/{turma}', [TurmaController::class, 'show'])->name('turmas.show');
-    });
+    Route::prefix('/nucleos')->group(function () {  
+        Route::get('/{nucleo}', [NucleoController::class, 'show'])->name('nucleos.show');
+        Route::get('/', [NucleoController::class, 'index'])->name('nucleos.index');
+    })->middleware(calculaIdadeDoAluno::class);
 
     Route::middleware(ChecaSeEAdmin::class)->group(function () {
         Route::prefix('/turmas')->group(function () {
@@ -47,6 +42,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/{turma}', [TurmaController::class, 'update'])->name('turmas.update');
             Route::delete('/{turma}', [TurmaController::class, 'destroy'])->name('turmas.destroy');
         });
+    });
+
+    Route::prefix('/turmas')->group(function () {
+        Route::get('/', [TurmaController::class, 'index'])->name('turmas.index');
+        Route::get('/{turma}', [TurmaController::class, 'show'])->name('turmas.show');
     });
 
     Route::prefix('/pacotes')->group(function () {
