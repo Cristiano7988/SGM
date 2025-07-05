@@ -52,6 +52,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('/pacotes')->group(function () {
         Route::get('/', [PacoteController::class, 'index'])->name('pacotes.index');
         Route::get('/{pacote}/edit', [PacoteController::class, 'edit'])->name('pacotes.edit');
+        Route::get('/create', [PacoteController::class, 'create'])->name('pacotes.create');
         Route::post('/{pacote}', [PacoteController::class, 'update'])->name('pacotes.update');
     });
 });

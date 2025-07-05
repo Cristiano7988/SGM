@@ -77,6 +77,14 @@ export interface ShowTurmaProps {
     turma: TurmaAndExtraColumns
 }
 
+export interface IndexNucleoProps extends IndexProps<NucleoAndExtraColumns>, NucleoRelations {}
+export interface FormNucleoProps extends Props, NucleoRelations {
+    nucleo: Nucleo;
+}
+export interface ShowNucleoProps {
+    nucleo: NucleoAndExtraColumns
+}
+
 // Relations
 
 export interface TurmaRelations {
@@ -87,6 +95,7 @@ export interface TurmaRelations {
 
 export interface NucleoRelations {
     turmas: Turma[],
+    pacotes: Pacote[],
 }
 
 export interface PacoteRelations {
@@ -95,16 +104,14 @@ export interface PacoteRelations {
 
 // Filtros
 
-type FiltroValor = string | number | boolean | undefined;
-
-type FiltrosBase<Chaves extends string> = {
-    [K in Chaves]?: FiltroValor;
-} & {
-    [key: string]: FiltroValor; // <- Isso permite acesso dinâmico via string
-};
-
-export type FiltrosTurma = FiltrosBase<'disponivel' | 'nucleoId' | 'diaId' | 'tipoDeAulaId'>;
-export type FiltrosPacote = FiltrosBase<'ativo' | 'nucleoId'>;
+export interface FiltrosType {
+    tipo: 'boolean' | 'select';
+    label: string;
+    nome: string;
+    valor?: string | number | boolean;
+    opcoes?: Turma[]|Nucleo[]|Pacote[]|TipoDeAula[]|Dia[]   ;
+    ativo: boolean;
+}
 
 // Form Elements
 
@@ -152,7 +159,6 @@ export interface Nucleo {
     fim_matricula: string;
     created_at: string;
     updated_at: string;
-    [key: string]: unknown; // This allows for additional properties...
 }
 
 export interface Dia {

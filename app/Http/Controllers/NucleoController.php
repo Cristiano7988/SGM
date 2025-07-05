@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use App\Helpers\Filtra;
 use App\Helpers\Trata;
 use App\Models\Nucleo;
+use App\Models\Pacote;
+use App\Models\Turma;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -87,10 +88,10 @@ class NucleoController extends Controller
              * Seleciona todos os núcleos dentro da faixa etária especificada
              * Tenham sido eles definidos em meses ou em anos
              */
-            if (isset($meses)) $nucleos->where('idade_minima', '<=', $meses)->where('idade_maxima', '>=', $meses);
+            // if (isset($meses)) $nucleos->where('idade_minima', '<=', $meses)->where('idade_maxima', '>=', $meses);
 
             $now = Carbon::now();
-            if (isset($matricular)) $nucleos->where('fim_matricula', '>=', $now)->where('inicio_matricula', '<=', $now);
+            // if (isset($matricular)) $nucleos->where('fim_matricula', '>=', $now)->where('inicio_matricula', '<=', $now);
             
             if (isset($turmas)) $nucleos = Filtra::resultado($nucleos, $turmas, 'turmas.id')->with('turmas');
             if (isset($pacotes)) $nucleos = Filtra::resultado($nucleos, $pacotes, 'pacotes.id')->with('pacotes');
@@ -100,7 +101,9 @@ class NucleoController extends Controller
             return isWeb()
                 ? Inertia::render('nucleos/index', [
                     'pagination' => $pagination,
-                    'session' => viteSession()
+                    'session' => viteSession(),
+                    'turmas' => Turma::all(),
+                    'pacotes' => Pacote::all(),
                 ])
                 : response($pagination);
         } catch (\Throwable $th) {

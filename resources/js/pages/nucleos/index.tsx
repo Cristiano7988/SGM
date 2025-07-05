@@ -1,8 +1,9 @@
 import FlipCardNucleo from '@/components/flip-card-nucleo';
 import Session from '@/components/session';
 import AppLayout from '@/layouts/app-layout';
-import { Nucleo, IndexProps, type BreadcrumbItem } from '@/types';
+import { Nucleo, type BreadcrumbItem, IndexNucleoProps, FiltrosType } from '@/types';
 import { Head } from '@inertiajs/react';
+import Filtros from '@/components/filtros';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -11,8 +12,28 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Index(props: IndexProps<Nucleo>) {
+export default function Index(props: IndexNucleoProps) {
     const { pagination, session } = props;
+    const searchParams = new URLSearchParams(location.search);
+    const filtros: FiltrosType[] = [
+        {
+            tipo: 'select',
+            label: 'Turma',
+            nome: 'turmas',
+            valor: searchParams.get('turmas') ?? undefined,
+            opcoes: props.turmas,
+            ativo: Boolean(searchParams.get('turmas')),
+        },
+        {
+            tipo: 'select',
+            label: 'Pacote',
+            nome: 'pacotes',
+            valor: searchParams.get('pacotes') ?? undefined,
+            opcoes: props.pacotes,
+            ativo: Boolean(searchParams.get('pacotes')),
+        },
+    ];
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Núcleos" />
@@ -20,6 +41,8 @@ export default function Index(props: IndexProps<Nucleo>) {
             <Session session={session}  />
 
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
+                <Filtros dados={filtros} tabela="nucleos" />
+                
                 {pagination.data.length
                         ? <div className="grid auto-rows-min gap-4 md:grid-cols-3">
                             {pagination.data.map((nucleo: Nucleo) => <FlipCardNucleo key={nucleo.id} nucleo={nucleo} />)}
