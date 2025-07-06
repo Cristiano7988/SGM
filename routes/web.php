@@ -56,6 +56,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/create', [PacoteController::class, 'create'])->name('pacotes.create');
             Route::post('/{pacote}', [PacoteController::class, 'update'])->name('pacotes.update');
             Route::post('/', [PacoteController::class, 'store'])->name('pacotes.store');
+            Route::delete('/{pacote}', [PacoteController::class, 'destroy'])->name('pacotes.destroy');
         });
 
     Route::prefix('/pacotes')->group(function () {

@@ -79,10 +79,9 @@ class PacoteController extends Controller
     {
         try {
             $pacote = Pacote::create($request->validated());
-            session(['success' => "O Pacote de nº {$pacote->id}, {$pacote->nome}, foi criado."]);
 
             return isWeb()
-                ? redirect()->route('pacotes.index')
+                ? redirect()->route('pacotes.index')->with('success', "O pacote de nº {$pacote->id}, {$pacote->nome}, foi criado.")
                 : response($pacote, 201);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
@@ -151,9 +150,8 @@ class PacoteController extends Controller
         try {
             $pacote->update($request->validated());
 
-            session(['success' => 'Pacote atualizado com sucesso!']);
             return isWeb()
-                ? redirect()->route('pacotes.index')
+                ? redirect()->route('pacotes.index')->with('success', "O pacote de nº {$pacote->id}, {$pacote->nome}, foi atualizado.")
                 : response('');
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
@@ -168,19 +166,22 @@ class PacoteController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Pacote  $pacote
-     * @return \Illuminate\Http\Response
      */
-    public function destroy(Pacote $pacote):Response
+    public function destroy(Pacote $pacote)
     {
         try {
             DB::beginTransaction();
             $excluido = Trata::exclusao($pacote, 'Pacote');
             if ($excluido) DB::commit(); // Exclui somente se conseguir notificar o cliente
 
-            return response("O pacote de nº {$pacote->id}, {$pacote->nome},  foi deletado.");
+            return isWeb()
+                ? redirect()->route('pacotes.index')->with('success', "O pacote de nº {$pacote->id}, {$pacote->nome}, foi deletado.")
+                : response("O pacote de nº {$pacote->id}, {$pacote->nome},  foi deletado.");
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+            return isWeb()
+                ? redirect()->route('pacotes.index')->with('error', $mensagem)
+                : response($mensagem, 500);
         }
     }
 }
