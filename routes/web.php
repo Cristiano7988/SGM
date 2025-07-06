@@ -19,42 +19,50 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
     })->name('dashboard');
 
-    Route::middleware(ChecaSeEAdmin::class)->group(function () {
-        Route::prefix('/nucleos')->group(function () {
+    Route::middleware(ChecaSeEAdmin::class)
+        ->prefix('/nucleos')
+        ->group(function () {
             Route::get('/create', [NucleoController::class, 'create'])->name('nucleos.create');
             Route::post('/', [NucleoController::class, 'store'])->name('nucleos.store');
             Route::get('/{nucleo}/edit', [NucleoController::class, 'edit'])->name('nucleos.edit');
             Route::post('/{nucleo}', [NucleoController::class, 'update'])->name('nucleos.update');
             Route::delete('/{nucleo}', [NucleoController::class, 'destroy'])->name('nucleos.destroy');
         });
-    });
 
-    Route::prefix('/nucleos')->group(function () {  
-        Route::get('/{nucleo}', [NucleoController::class, 'show'])->name('nucleos.show');
-        Route::get('/', [NucleoController::class, 'index'])->name('nucleos.index');
-    })->middleware(calculaIdadeDoAluno::class);
+    Route::middleware(calculaIdadeDoAluno::class)
+        ->prefix('/nucleos')
+        ->group(function () {  
+            Route::get('/{nucleo}', [NucleoController::class, 'show'])->name('nucleos.show');
+            Route::get('/', [NucleoController::class, 'index'])->name('nucleos.index');
+        });
 
-    Route::middleware(ChecaSeEAdmin::class)->group(function () {
-        Route::prefix('/turmas')->group(function () {
+    Route::middleware(ChecaSeEAdmin::class)
+        ->prefix('/turmas')
+        ->group(function () {
             Route::get('/create', [TurmaController::class, 'create'])->name('turmas.create');
             Route::post('/', [TurmaController::class, 'store'])->name('turmas.store');
             Route::get('/{turma}/edit', [TurmaController::class, 'edit'])->name('turmas.edit');
             Route::post('/{turma}', [TurmaController::class, 'update'])->name('turmas.update');
             Route::delete('/{turma}', [TurmaController::class, 'destroy'])->name('turmas.destroy');
         });
-    });
 
     Route::prefix('/turmas')->group(function () {
         Route::get('/', [TurmaController::class, 'index'])->name('turmas.index');
         Route::get('/{turma}', [TurmaController::class, 'show'])->name('turmas.show');
     });
+    
+    Route::middleware(ChecaSeEAdmin::class)
+        ->prefix('/pacotes')
+        ->group(function () {
+            Route::get('/{pacote}/edit', [PacoteController::class, 'edit'])->name('pacotes.edit');
+            Route::get('/create', [PacoteController::class, 'create'])->name('pacotes.create');
+            Route::post('/{pacote}', [PacoteController::class, 'update'])->name('pacotes.update');
+            Route::post('/', [PacoteController::class, 'store'])->name('pacotes.store');
+        });
 
     Route::prefix('/pacotes')->group(function () {
         Route::get('/', [PacoteController::class, 'index'])->name('pacotes.index');
-        Route::get('/{pacote}/edit', [PacoteController::class, 'edit'])->name('pacotes.edit');
-        Route::get('/create', [PacoteController::class, 'create'])->name('pacotes.create');
-        Route::post('/{pacote}', [PacoteController::class, 'update'])->name('pacotes.update');
-        Route::post('/', [PacoteController::class, 'store'])->name('pacotes.store');
+        Route::get('/{pacote}', [PacoteController::class, 'show'])->name('pacotes.show');
     });
 });
 
