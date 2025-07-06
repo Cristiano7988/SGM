@@ -9,7 +9,6 @@ use App\Models\Nucleo;
 use App\Models\TipoDeAula;
 use App\Models\Turma;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -81,7 +80,6 @@ class TurmaController extends Controller
                     'nucleos' => Nucleo::all(),
                     'dias' => Dia::all(),
                     'tipos_de_aula' => TipoDeAula::all(),
-                    'session' => viteSession()
                 ])
                 : response($turmas);
         } catch (\Throwable $th) {
@@ -191,7 +189,6 @@ class TurmaController extends Controller
         try {
             return isWeb()
                 ? Inertia::render('turmas/edit', [
-                    'session' => viteSession(),
                     'turma' => $turma,
                     'nucleos' => Nucleo::all(),
                     'dias' => Dia::all(),

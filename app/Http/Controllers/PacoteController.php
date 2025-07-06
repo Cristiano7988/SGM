@@ -46,7 +46,6 @@ class PacoteController extends Controller
                 ? Inertia::render('pacotes/index', [
                     'pagination' => $pagination,
                     'nucleos' => Nucleo::all(),
-                    'session' => viteSession(),
                 ])
                 : response($pacotes);
         } catch (\Throwable $th) {
@@ -66,7 +65,6 @@ class PacoteController extends Controller
     public function create()
     {
         return Inertia::render('pacotes/create', [
-            'session' => viteSession(),
             'nucleos' => Nucleo::all(),
             'periodos' => Periodo::all()
         ]);
@@ -98,15 +96,24 @@ class PacoteController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Pacote  $pacote
-     * @return \Illuminate\Http\Response
      */
-    public function show(Pacote $pacote):Response
+    public function show(Pacote $pacote)
     {
         try {
-            return response($pacote);
+            return isWeb()
+                ? Inertia::render('pacotes/show', [
+                    'pacote' => $pacote,
+                    'nucleo' => $pacote->nucleo,
+                    'periodos' => $pacote->periodos,
+                    'matriculas' => $pacote->matriculas,
+                ])
+                : response($pacote);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+
+            return isWeb()
+                ? redirect()->route('pacotes.index')
+                : $mensagem;
         }
     }
 
@@ -120,7 +127,6 @@ class PacoteController extends Controller
         try {
             return isWeb()
                 ? Inertia::render('pacotes/edit', [
-                    'session' => viteSession(),
                     'pacote' => $pacote,
                     'nucleos' => Nucleo::all(),
                 ])

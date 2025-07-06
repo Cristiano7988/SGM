@@ -101,7 +101,6 @@ class NucleoController extends Controller
             return isWeb()
                 ? Inertia::render('nucleos/index', [
                     'pagination' => $pagination,
-                    'session' => viteSession(),
                     'turmas' => Turma::all(),
                     'pacotes' => Pacote::all(),
                 ])
@@ -121,9 +120,7 @@ class NucleoController extends Controller
      */
     public function create()
     {
-        return Inertia::render('nucleos/create', [
-            'session' => viteSession()
-        ]);
+        return Inertia::render('nucleos/create');
     }
 
     /**
@@ -205,8 +202,7 @@ class NucleoController extends Controller
         try {
             return isWeb()
                 ? Inertia::render('nucleos/edit', [
-                    'nucleo' => $nucleo,
-                    'session' => viteSession()
+                    'nucleo' => $nucleo
                 ])
                 : response($nucleo);
         } catch (\Throwable $th) {

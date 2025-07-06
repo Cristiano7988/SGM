@@ -14,9 +14,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
-        return Inertia::render('dashboard', [
-            'session' => viteSession()
-        ]);
+        return Inertia::render('dashboard');
     })->name('dashboard');
 
     Route::middleware(ChecaSeEAdmin::class)
