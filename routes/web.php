@@ -54,6 +54,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{pacote}/edit', [PacoteController::class, 'edit'])->name('pacotes.edit');
         Route::get('/create', [PacoteController::class, 'create'])->name('pacotes.create');
         Route::post('/{pacote}', [PacoteController::class, 'update'])->name('pacotes.update');
+        Route::post('/', [PacoteController::class, 'store'])->name('pacotes.store');
     });
 });
 

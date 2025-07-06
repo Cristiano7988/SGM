@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Filtra;
 use App\Helpers\Trata;
-use App\Http\Requests\Settings\PacoteUpdateRequest;
+use App\Http\Requests\Settings\PacoteRequest;
 use App\Models\Nucleo;
 use App\Models\Pacote;
-use Illuminate\Http\Request;
+use App\Models\Periodo;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -29,6 +29,11 @@ class PacoteController extends Controller
                 ->leftJoin('matriculas', 'pacotes.id', 'matriculas.pacote_id')
                 ->leftJoin('nucleos', 'pacotes.nucleo_id', 'nucleos.id')
                 ->select(['pacotes.*'])->groupBy('pacotes.id');
+            
+            $pacotes->with([
+                'nucleo',
+                'periodos',
+            ]);
 
             // if (isset($matriculas)) $pacotes = Filtra::resultado($pacotes, $matriculas, 'matriculas.id')->with('matriculas');
             // if (isset($periodos)) $pacotes = Filtra::resultado($pacotes, $periodos, 'periodos.id')->with('periodos');
@@ -60,23 +65,32 @@ class PacoteController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('pacotes/create', [
+            'session' => viteSession(),
+            'nucleos' => Nucleo::all(),
+            'periodos' => Periodo::all()
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  \App\Http\Requests\Settings\PacoteRequest  $request
      */
-    public function store(Request $request):Response
+    public function store(PacoteRequest $request)
     {
         try {
-            $pacote = Pacote::create($request->all());
-            return response($pacote);
+            $pacote = Pacote::create($request->validated());
+            session(['success' => "O Pacote de nº {$pacote->id}, {$pacote->nome}, foi criado."]);
+
+            return isWeb()
+                ? redirect()->route('pacotes.index')
+                : response($pacote, 201);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+            return isWeb()
+                ? redirect()->route('pacotes.index')
+                : response($mensagem, 500);
         }
     }
 
@@ -123,10 +137,10 @@ class PacoteController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  App\Http\Requests\Settings\PacoteUpdateRequest;  $request
+     * @param  App\Http\Requests\Settings\PacoteRequest;  $request
      * @param  \App\Models\Pacote  $pacote
      */
-    public function update(PacoteUpdateRequest $request, Pacote $pacote)
+    public function update(PacoteRequest $request, Pacote $pacote)
     {
         try {
             $pacote->update($request->validated());

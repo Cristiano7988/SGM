@@ -14,38 +14,39 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Index(props: IndexTurmaProps) {
     const { pagination, session } = props;
+    const searchParams = new URLSearchParams(location.search);
     const filtros = [
         {
             tipo: 'boolean' as const,
             label: 'Disponível',
             nome: 'disponivel',
-            valor: new URLSearchParams(location.search).get('disponivel') ?? undefined,
+            valor: searchParams.get('disponivel') ?? 0,
             opcoes: [],
-            ativo: Boolean(new URLSearchParams(location.search).get('disponivel')),
+            ativo: Boolean(searchParams.get('disponivel')),
         },
         {
             tipo: 'select' as const,
             label: 'Núcleo',
             nome: 'nucleoId',
-            valor: new URLSearchParams(location.search).get('nucleoId') ?? undefined,
+            valor: searchParams.get('nucleoId') ?? undefined,
             opcoes: props.nucleos,
-            ativo: Boolean(new URLSearchParams(location.search).get('nucleoId')),
+            ativo: Boolean(searchParams.get('nucleoId')),
         },
         {
             tipo: 'select' as const,
             label: 'Dia',
             nome: 'diaId',
-            valor: new URLSearchParams(location.search).get('diaId') ?? undefined,
+            valor: searchParams.get('diaId') ?? undefined,
             opcoes: props.dias,
-            ativo: Boolean(new URLSearchParams(location.search).get('diaId')),
+            ativo: Boolean(searchParams.get('diaId')),
         },
         {
             tipo: 'select' as const,
             label: 'Tipo de Aula',
             nome: 'tipoDeAulaId',
-            valor: new URLSearchParams(location.search).get('tipoDeAulaId') ?? undefined,
+            valor: searchParams.get('tipoDeAulaId') ?? undefined,
             opcoes: props.tipos_de_aula,
-            ativo: Boolean(new URLSearchParams(location.search).get('tipoDeAulaId')),
+            ativo: Boolean(searchParams.get('tipoDeAulaId')),
         },
     ]
    

@@ -20,7 +20,7 @@ export default function Index(props: IndexPacoteProps) {
             tipo: 'boolean' as const,
             label: 'Ativo',
             nome: 'ativo',
-            valor: searchParams.get('ativo') ?? undefined,
+            valor: searchParams.get('ativo') ?? 0,
             opcoes: [],
             ativo: Boolean(searchParams.get('ativo')),
         },

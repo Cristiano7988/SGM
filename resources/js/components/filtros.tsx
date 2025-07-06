@@ -8,7 +8,7 @@ import { FiltrosType } from '@/types';
 
 export default function Filtros({ dados, tabela }: { dados: FiltrosType[], tabela: String}) {
     const [filtros, setFiltros] = useState<FiltrosType[]>(dados);
-    const filtroEstaAtivo = filtros.filter((filtro: FiltrosType) => filtro.valor !== undefined).length;
+    const filtroEstaAtivo = filtros.filter((filtro: FiltrosType) => filtro.ativo).length;
     const [mostrarFiltros, setMostrarFiltros] = useState(!!filtroEstaAtivo);
     
     const handleFiltrosChange = (nome: string, valor:string | boolean | undefined = undefined ) => {
