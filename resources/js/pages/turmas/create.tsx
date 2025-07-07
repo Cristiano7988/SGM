@@ -1,6 +1,6 @@
 import { Head, useForm } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, FormTurmaProps } from '@/types';
+import { BreadcrumbItem, CreatePropsTurma } from '@/types';
 import Session from '@/components/session';
 import { FormTurmaContent } from '@/components/form-elements/form-turma-content';
 
@@ -9,7 +9,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Criar turma', href: '#' },
 ];
 
-export default function Create(props: FormTurmaProps) {
+export default function Create(props: CreatePropsTurma) {
     const { session } = props;
     const { data: formData, setData, post, processing, errors } = useForm({
         id: 0,

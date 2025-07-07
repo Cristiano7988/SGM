@@ -1,6 +1,6 @@
 import { Head, useForm } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
+import { BreadcrumbItem, CreatePropsNucleo } from '@/types';
 import { InputImageContent } from '@/components/form-elements/input-image-content';
 import { CalendarIcon } from 'lucide-react';
 import Session from '@/components/session';
@@ -12,7 +12,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Editar Núcleo', href: '#' },
 ];
 
-const formatDate = (date: string | null | undefined) => {
+const formatDate = (date: string | null) => {
     if (!date) return '';
 
     const [day, month, year] = date.split('/'); // Divide a string
@@ -21,7 +21,7 @@ const formatDate = (date: string | null | undefined) => {
     return isNaN(parsedDate.getTime()) ? '' : parsedDate.toISOString().split('T')[0];
 };
 
-export default function Create(props: any) {
+export default function Create(props: CreatePropsNucleo) {
     const { session } = props;
     const { data: formData, setData, post, processing, errors } = useForm();
 

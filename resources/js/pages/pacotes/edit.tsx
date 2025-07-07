@@ -1,6 +1,6 @@
 import { Head, useForm } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, FormPacoteProps } from '@/types';
+import { BreadcrumbItem, EditPropsPacote } from '@/types';
 import Session from '@/components/session';
 import { ButtonSubmitContent } from '@/components/form-elements/button-submit-content';
 import { FormPacoteContent } from '@/components/form-elements/form-pacote-content';
@@ -9,7 +9,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Editar Pacote', href: '#' },
 ];
 
-export default function Edit(props: FormPacoteProps) {
+export default function Edit(props: EditPropsPacote) {
     const { pacote, session } = props;
     const { data: formData, setData, post, processing, errors } = useForm({
         id: pacote.id,

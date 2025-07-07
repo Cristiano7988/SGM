@@ -1,6 +1,6 @@
 import { Head, useForm } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
-import { Nucleo, BreadcrumbItem, Props } from '@/types';
+import { BreadcrumbItem, EditPropsNucleo } from '@/types';
 import { InputImageContent } from '@/components/form-elements/input-image-content';
 import { CalendarIcon } from 'lucide-react';
 import Session from '@/components/session';
@@ -21,7 +21,7 @@ const formatDate = (date: string | null) => {
     return isNaN(parsedDate.getTime()) ? '' : parsedDate.toISOString().split('T')[0];
 };
 
-export default function Edit(props: Props<Nucleo>) {
+export default function Edit(props: EditPropsNucleo) {
     const { nucleo, session } = props;
     const { data: formData, setData, post, processing, errors } = useForm({
         nome: nucleo.nome,

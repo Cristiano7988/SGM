@@ -1,9 +1,10 @@
 import FlipCardNucleo from '@/components/flip-card-nucleo';
 import Session from '@/components/session';
 import AppLayout from '@/layouts/app-layout';
-import { Nucleo, type BreadcrumbItem, IndexNucleoProps, FiltrosType } from '@/types';
+import { type BreadcrumbItem, FiltrosType, IndexPropsNucleo } from '@/types';
 import { Head } from '@inertiajs/react';
 import Filtros from '@/components/filtros';
+import { Nucleo } from '@/types/models';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -12,7 +13,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Index(props: IndexNucleoProps) {
+export default function Index(props: IndexPropsNucleo) {
     const { pagination, session } = props;
     const searchParams = new URLSearchParams(location.search);
     const filtros: FiltrosType[] = [

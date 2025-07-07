@@ -1,6 +1,6 @@
 import CarouselText from '@/components/carousel-text';
 import AppLayout from '@/layouts/app-layout';
-import { Nucleo, type BreadcrumbItem, Props } from '@/types';
+import { type BreadcrumbItem, ShowPropsNucleo } from '@/types';
 import { Head } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -10,7 +10,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Show(props: Props<Nucleo>) {
+export default function Show(props: ShowPropsNucleo) {
     const { nucleo } = props;
     const convertToYear = (idade: number) => {
         const meses = idade / 12;

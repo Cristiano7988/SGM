@@ -7,7 +7,7 @@ interface InputImageContentProps {
   errors: any
 }
 
-export const InputImageContent: React.FC<InputImageContentProps> = ({ value, setData, errors }) => {
+export function InputImageContent({ value, setData, errors }: InputImageContentProps) {
   const [isUrl, setIsUrl] = useState(true);
   const [preview, setPreview] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);

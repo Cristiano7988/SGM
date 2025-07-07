@@ -2,7 +2,8 @@ import CardPacote from '@/components/card-pacote';
 import Filtros from '@/components/filtros';
 import Session from '@/components/session';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem, IndexPacoteProps, PacoteAndExtraColumns } from '@/types';
+import { type BreadcrumbItem, IndexPropsPacote } from '@/types';
+import { Pacote } from '@/types/models';
 import { Head } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -12,7 +13,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Index(props: IndexPacoteProps) {
+export default function Index(props: IndexPropsPacote) {
     const { pagination, session } = props;
     const searchParams = new URLSearchParams(location.search);
     const filtros = [
@@ -29,7 +30,7 @@ export default function Index(props: IndexPacoteProps) {
             label: 'Núcleo',
             nome: 'nucleoId',
             valor: searchParams.get('nucleoId') ?? undefined,
-            opcoes: props.nucleos,
+            opcoes: props.periodos,
             ativo: Boolean(searchParams.get('nucleoId')),
         },
     ]
@@ -44,7 +45,7 @@ export default function Index(props: IndexPacoteProps) {
 
                 {pagination.data.length
                         ? <div className="flex flex-wrap justify-between gap-4">
-                            {pagination.data.map((pacote: PacoteAndExtraColumns) => <CardPacote key={pacote.id} pacote={pacote} />)}
+                            {pagination.data.map((pacote: Pacote) => <CardPacote key={pacote.id} pacote={pacote} />)}
                         </div>
                     : <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex flex-col justify-center items-center overflow-hidden rounded-xl border md:min-h-min">
                         <div className="m-auto">Sem resultados</div>

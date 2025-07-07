@@ -1,6 +1,6 @@
 import { Head, useForm } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, FormTurmaProps } from '@/types';
+import { BreadcrumbItem, EditPropsTurma } from '@/types';
 import Session from '@/components/session';
 import { ButtonSubmitContent } from '@/components/form-elements/button-submit-content';
 import { FormTurmaContent } from '@/components/form-elements/form-turma-content';
@@ -10,7 +10,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Editar Turma', href: '#' },
 ];
 
-export default function Edit(props: FormTurmaProps) {
+export default function Edit(props: EditPropsTurma) {
     const { turma, session } = props;
     const { data: formData, setData, post, processing, errors } = useForm({
         id: turma.id,

@@ -1,5 +1,5 @@
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem, ShowPacoteProps } from '@/types';
+import { type BreadcrumbItem, ShowPropsPacote } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -9,7 +9,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Show(props: ShowPacoteProps) {
+export default function Show(props: ShowPropsPacote) {
     const { pacote } = props;
 
     return (

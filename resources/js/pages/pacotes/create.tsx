@@ -1,6 +1,6 @@
 import { Head, useForm } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, FormPacoteProps } from '@/types';
+import { BreadcrumbItem, CreatePropsPacote } from '@/types';
 import Session from '@/components/session';
 import { FormPacoteContent } from '@/components/form-elements/form-pacote-content';
 const breadcrumbs: BreadcrumbItem[] = [
@@ -8,7 +8,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Editar Pacote', href: '#' },
 ];
 
-export default function Create(props: FormPacoteProps) {
+export default function Create(props: CreatePropsPacote) {
     const { session } = props;
     const { data: formData, setData, post, processing, errors } = useForm({
         id: 0,

@@ -2,7 +2,8 @@ import Filtros from '@/components/filtros';
 import FlipCardTurma from '@/components/flip-card-turma';
 import Session from '@/components/session';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem, IndexTurmaProps, TurmaAndExtraColumns } from '@/types';
+import { type BreadcrumbItem, IndexPropsTurma } from '@/types';
+import { Turma } from '@/types/models';
 import { Head } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -12,7 +13,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Index(props: IndexTurmaProps) {
+export default function Index(props: IndexPropsTurma) {
     const { pagination, session } = props;
     const searchParams = new URLSearchParams(location.search);
     const filtros = [
@@ -61,7 +62,7 @@ export default function Index(props: IndexTurmaProps) {
 
                 {pagination.data.length
                         ? <div className="flex flex-wrap justify-between gap-4">
-                            {pagination.data.map((turma: TurmaAndExtraColumns) => <FlipCardTurma key={turma.id} turma={turma} />)}
+                            {pagination.data.map((turma: Turma) => <FlipCardTurma key={turma.id} turma={turma} />)}
                         </div>
                     : <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex flex-col justify-center items-center overflow-hidden rounded-xl border md:min-h-min">
                         <div className="m-auto">Sem resultados</div>

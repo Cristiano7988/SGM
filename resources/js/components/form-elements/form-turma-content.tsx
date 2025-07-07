@@ -1,4 +1,3 @@
-import { FormTurmaContentProps } from "@/types";
 import { ButtonSubmitContent } from "./button-submit-content";
 import { InputImageContent } from "./input-image-content";
 import { InputNumberContent } from "./input-number-content";
@@ -9,7 +8,7 @@ import { SelectModelContent } from "./select-model-content";
 import { SwitchContent } from "./switch-content";
 import { TextAreaContent } from "./text-area-content";
 
-export function FormTurmaContent({ data, processing, submit, setData, errors, props }: FormTurmaContentProps) {
+export function FormTurmaContent({ data, processing, submit, setData, errors, props }: any) {
     return (
         <form onSubmit={submit} className="flex flex-col gap-6 space-y-4">
             <InputImageContent
