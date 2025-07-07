@@ -117,4 +117,5 @@ export interface FormProps<T> {
     submit: (e: React.FormEvent) => void;
     setData: (key: string, value: any) => void;
     errors: any;
+    props: any;
 }

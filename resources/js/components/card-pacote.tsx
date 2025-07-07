@@ -1,7 +1,7 @@
-import { PacoteAndExtraColumns } from "@/types";
+import { Pacote } from "@/types/models";
 import { Link } from "@inertiajs/react";
 
-export default function CardPacote({ pacote }: { pacote: PacoteAndExtraColumns }) {
+export default function CardPacote({ pacote }: { pacote: Pacote }) {
   return (
     <div
       className="relative w-95 h-60"

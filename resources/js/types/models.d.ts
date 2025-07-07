@@ -87,6 +87,8 @@ export interface Periodo {
     id: number;
     inicio: string;
     fim: string;
+    inicio_formatado: string;
+    fim_formatado: string;
     pacote_id: number;
     pacote: Pacote;
 }

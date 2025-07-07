@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,14 +15,36 @@ class Periodo extends Model
         'pacote_id',
     ];
 
-    function getInicioAttribute($value)
+    protected $casts = [
+        'inicio' => 'date',
+        'fim' => 'date',
+    ];
+
+    protected $appends = [
+        'inicio',
+        'fim',
+        'inicio_formatado',
+        'fim_formatado',
+    ];
+
+    function getInicioAttribute()
     {
-        return \Carbon\Carbon::parse($value)->format('d/m/Y');
+        return Carbon::parse($this->attributes['inicio'])->format('Y-m-d');
     }
 
-    function getFimAttribute($value)
+    function getFimAttribute()
     {
-        return \Carbon\Carbon::parse($value)->format('d/m/Y');
+        return Carbon::parse($this->attributes['fim'])->format('Y-m-d');
+    }
+
+    function getInicioFormatadoAttribute()
+    {
+        return Carbon::parse($this->inicio)->format('d/m/Y');
+    }
+
+    function getFimFormatadoAttribute()
+    {
+        return Carbon::parse($this->fim)->format('d/m/Y');
     }
 
     public function pacote()

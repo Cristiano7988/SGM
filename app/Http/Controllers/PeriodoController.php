@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Filtra;
 use App\Helpers\Trata;
+use App\Http\Requests\Settings\PeriodoRequest;
 use App\Models\Periodo;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -51,16 +51,20 @@ class PeriodoController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
-    public function store(Request $request):Response
+    public function store(PeriodoRequest $request)
     {
         try {
-            $periodo = Periodo::create($request->all());
-            return response($periodo);
+            $periodo = Periodo::create($request->validated());
+
+            return isWeb()
+                ? redirect()->route('periodos.index')->with('success', "O período de nº {$periodo->id}, de {$periodo->inicio} à {$periodo->fim}, foi criado com sucesso.")
+                : response($periodo);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+            return isWeb()
+                ? redirect()->route('periodos.index')->with('error', $mensagem)
+                : response($mensagem);
         }
     }
 
@@ -81,20 +85,48 @@ class PeriodoController extends Controller
     }
 
     /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Periodo  $periodo
+     */
+    public function edit(Periodo $periodo)
+    {
+        try {
+            return isWeb()
+                ? Inertia::render('periodos/edit', [
+                    'periodo' => $periodo,
+                    'pacotes' => \App\Models\Pacote::all(),
+                ])
+                : response($periodo);
+        } catch (\Throwable $th) {
+            $mensagem = Trata::erro($th);
+
+            return isWeb()
+                ? redirect()->route('periodos.index')->with('error', $mensagem)
+                : response($mensagem, 500);
+        }
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Periodo  $periodo
-     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Periodo $periodo):Response
+    public function update(PeriodoRequest $request, Periodo $periodo)
     {
         try {
-            $periodo->update($request->all());
-            return response($periodo);
+            $periodo->update($request->validated());
+
+            return isWeb()
+                ? redirect()->route('periodos.index')->with('success', "O período de nº {$periodo->id}, de {$periodo->inicio} à {$periodo->fim}, foi atualizado com sucesso.")
+                : response($periodo);
         } catch(\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+
+            return isWeb()
+                ? redirect()->route('periodos.index')->with('error', $mensagem)
+                : response($mensagem, 500);
         }
     }
 
@@ -102,19 +134,23 @@ class PeriodoController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Periodo  $periodo
-     * @return \Illuminate\Http\Response
      */
-    public function destroy(Periodo $periodo):Response
+    public function destroy(Periodo $periodo)
     {
         try {
             DB::beginTransaction();
             $excluido = Trata::exclusao($periodo, 'Período');
             if ($excluido) DB::commit(); // Exclui somente se conseguir notificar o cliente
 
-            return response("O período de nº {$periodo->id}, de {$periodo->inicio} à {$periodo->fim},  foi deletado.");;
+            return isWeb()
+                ? redirect()->route('periodos.index')->with('success', "O período de nº {$periodo->id}, de {$periodo->inicio} à {$periodo->fim}, foi deletado.")
+                : response("O período de nº {$periodo->id}, de {$periodo->inicio} à {$periodo->fim},  foi deletado.");;
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+
+            return isWeb()
+                ? redirect()->route('periodos.index')->with('error', $mensagem)
+                : response($mensagem, 500);
         }
     }
 }
