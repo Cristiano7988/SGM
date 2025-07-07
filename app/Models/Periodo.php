@@ -14,6 +14,16 @@ class Periodo extends Model
         'pacote_id',
     ];
 
+    function getInicioAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->format('d/m/Y');
+    }
+
+    function getFimAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->format('d/m/Y');
+    }
+
     public function pacote()
     {
         return $this->belongsTo(Pacote::class);

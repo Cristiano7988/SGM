@@ -8,6 +8,7 @@ use App\Models\Periodo;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class PeriodoController extends Controller
 {
@@ -16,24 +17,33 @@ class PeriodoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index():Response
+    public function index()
     {
         try {
             extract(request()->all());
             $periodos = Periodo::query();
 
             $periodos
+                ->with('pacote') // Carrega o pacote relacionado ao período
                 ->leftJoin('pacotes', 'pacotes.id', 'periodos.pacote_id')
                 ->select(['periodos.*'])->groupBy('periodos.id');
 
-            if (isset($pacotes)) $periodos = Filtra::resultado($periodos, $pacotes, 'pacotes.id')->with('pacote');
+            if (isset($pacoteId)) $periodos = Filtra::resultado($periodos, $pacoteId, 'pacotes.id')->with('pacote');
 
-            $periodos = Trata::resultado($periodos, 'periodos.inicio'); // Ordenação por período ou pacote.
+            $pagination = Trata::resultado($periodos, 'periodos.inicio'); // Ordenação por período ou pacote.
 
-            return response($periodos);
+            return isWeb()
+                ? Inertia::render('periodos/index', [
+                    'pagination' => $pagination,
+                    'pacotes' => \App\Models\Pacote::all(),
+                ])
+                : response($periodos);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+
+            return isWeb()
+                ? redirect()->back()->with('error', $mensagem)
+                : response($mensagem, 500);
         }
     }
 

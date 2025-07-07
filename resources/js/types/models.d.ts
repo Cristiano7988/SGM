@@ -85,8 +85,8 @@ export interface RelacionadasAoPacote {
 
 export interface Periodo {
     id: number;
-    inicio: Date;
-    fim: Date;
+    inicio: string;
+    fim: string;
     pacote_id: number;
     pacote: Pacote;
 }

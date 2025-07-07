@@ -8,6 +8,7 @@ import {
     Turma,
     RelacionadasATurma,
     Periodo,
+    RelacionadasAoPeriodo,
  } from './models';
 
 export interface Auth {

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\NucleoController;
 use App\Http\Controllers\PacoteController;
+use App\Http\Controllers\PeriodoController;
 use App\Http\Controllers\TurmaController;
 use App\Http\Middleware\calculaIdadeDoAluno;
 use App\Http\Middleware\ChecaSeEAdmin;
@@ -62,6 +63,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('/pacotes')->group(function () {
         Route::get('/', [PacoteController::class, 'index'])->name('pacotes.index');
         Route::get('/{pacote}', [PacoteController::class, 'show'])->name('pacotes.show');
+    });
+
+    Route::prefix('/periodos')->group(function () {
+        Route::get('/', [PeriodoController::class, 'index'])->name('periodos.index');
+        Route::get('/create', [PeriodoController::class, 'create'])->name('periodos.create');
     });
 });
 
