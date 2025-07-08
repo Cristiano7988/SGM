@@ -91,15 +91,23 @@ class PeriodoController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Periodo  $periodo
-     * @return \Illuminate\Http\Response
      */
-    public function show(Periodo $periodo):Response
+    public function show(Periodo $periodo)
     {
         try {
-            return response($periodo);
+            $periodo->load('pacote');
+
+            return isWeb()
+                ? Inertia::render('periodos/show', [
+                    'periodo' => $periodo,
+                    'pacotes' => Pacote::all(),
+                ])
+                : response($periodo);
         } catch(\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+            return isWeb()
+                ? redirect()->route('periodos.index')->with('error', $mensagem)
+                : response($mensagem, 500);
         }
     }
 
