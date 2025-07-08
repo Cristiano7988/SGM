@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\Filtra;
 use App\Helpers\Trata;
 use App\Models\Aluno;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Inertia\Inertia;
 
 class AlunoController extends Controller
 {
@@ -39,14 +40,18 @@ class AlunoController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
      */
-    public function index():Response
+    public function index()
     {
         try {
             extract(request()->all());
             $user = Auth::user();
             $alunos = Aluno::query();
+
+            $alunos->with([
+                'users',
+                'matriculas',
+            ]);
 
             $alunos
                 ->leftJoin('aluno_user', 'alunos.id', 'aluno_user.aluno_id')
@@ -55,18 +60,27 @@ class AlunoController extends Controller
 
             if (!$user->is_admin) $alunos = $alunos->whereIn('alunos.id', $user->alunos->pluck('id'));
 
-            if (isset($matriculas)) $alunos = Filtra::resultado($alunos, $matriculas, 'matriculas.id')->with('matriculas');
+            // if (isset($matriculas)) $alunos = Filtra::resultado($alunos, $matriculas, 'matriculas.id')->with('matriculas');
             if (isset($users)) {
                 if ($users != '*') $alunos->whereIn('aluno_user.user_id', explode(',', $users));
                 $alunos->with('users');
             }
 
-            $alunos = Trata::resultado($alunos, 'nome'); // Ordenação apenas por aluno.
+            $pagination = Trata::resultado($alunos, 'nome'); // Ordenação apenas por aluno.
 
-            return response($alunos);
+            return isWeb()
+                ? Inertia::render('alunos/index', [
+                    'pagination' => $pagination,
+                    'users' => $user->is_admin ? User::all() : $user->alunos->flatMap(function ($aluno) {
+                        return $aluno->users;
+                    })->unique('id'),
+                ])
+                : response($pagination);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+            return isWeb()
+                ? redirect()->route('dashboard')
+                : response($mensagem);
         }
     }
 

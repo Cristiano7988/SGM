@@ -113,3 +113,16 @@ export interface TipoDeAula {
     id: number,
     tipo: string
 }
+
+// Aluno
+export interface Aluno {
+    id: number;
+    nome: string;
+    data_de_nascimento: string;
+    data_de_nascimento_formatada: string;
+    idade: string
+}
+
+export interface RelacionadasAoAluno {
+    users: User[];
+}

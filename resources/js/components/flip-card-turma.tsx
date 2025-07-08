@@ -1,11 +1,11 @@
-import { TurmaAndExtraColumns } from "@/types";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import CarouselText from "./carousel-text";
 import { Link } from "@inertiajs/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { RelacionadasATurma, Turma } from "@/types/models";
 
-export default function FlipCardTurma({ turma }: { turma: TurmaAndExtraColumns }) {
+export default function FlipCardTurma({ turma }: { turma: Turma & RelacionadasATurma }) {
   const [flipped, setFlipped] = useState(false);
 
   return (

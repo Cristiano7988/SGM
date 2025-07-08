@@ -17,7 +17,8 @@ class FakerContentSeeder extends Seeder
             NucleoSeeder::class,
             TurmaSeeder::class,
             PacoteSeeder::class,
-            PeriodoSeeder::class
+            PeriodoSeeder::class,
+            AlunoSeeder::class,
         ]);
     }
 }

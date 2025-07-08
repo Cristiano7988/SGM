@@ -9,6 +9,8 @@ import {
     RelacionadasATurma,
     Periodo,
     RelacionadasAoPeriodo,
+    Aluno,
+    RelacionadasAoAluno,
  } from './models';
 
 export interface Auth {
@@ -98,6 +100,10 @@ export interface IndexPropsPeriodo  extends IndexProps<Periodo>, RelacionadasAoP
 export interface ShowPropsPeriodo { periodo: Periodo & RelacionadasAoNucleo; };
 export interface EditPropsPeriodo extends Props, FormProps, RelacionadasAoPeriodo { periodo: Periodo; };
 export interface CreatePropsPeriodo extends EditPropsPeriodo {};
+
+// Periodos
+
+export interface IndexPropsAluno  extends IndexProps<Aluno>, RelacionadasAoAluno {};
 
 // Filtros
 

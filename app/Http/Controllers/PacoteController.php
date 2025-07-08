@@ -8,7 +8,6 @@ use App\Http\Requests\Settings\PacoteRequest;
 use App\Models\Nucleo;
 use App\Models\Pacote;
 use App\Models\Periodo;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
