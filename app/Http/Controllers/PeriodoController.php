@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\Filtra;
 use App\Helpers\Trata;
 use App\Http\Requests\Settings\PeriodoRequest;
+use App\Models\Pacote;
 use App\Models\Periodo;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -47,6 +48,24 @@ class PeriodoController extends Controller
         }
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        try {
+            return Inertia::render('periodos/create', [
+                'pacotes' => Pacote::all(),
+            ]);
+        } catch (\Throwable $th) {
+            $mensagem = Trata::erro($th);
+
+            return isWeb()
+                ? redirect()->route('periodos.index')->with('error', $mensagem)
+                : response($mensagem, 500);
+        }
+    }
+    
     /**
      * Store a newly created resource in storage.
      *

@@ -106,7 +106,7 @@ export interface FiltrosType {
     label: string;
     nome: string;
     valor?: string | number | boolean;
-    opcoes?: Turma[]|Nucleo[]|Pacote[]|TipoDeAula[]|Dia[];
+    opcoes?: [];
     ativo: boolean;
 }
 

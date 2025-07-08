@@ -72,7 +72,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(ChecaSeEAdmin::class)
         ->prefix('/periodos')
         ->group(function () {
-            Route::post('/', [PeriodoController::class, 'create'])->name('periodos.create');
+            Route::get('/create', [PeriodoController::class, 'create'])->name('periodos.create');
+            Route::post('/', [PeriodoController::class, 'store'])->name('periodos.store');
             Route::get('/{periodo}/edit', [PeriodoController::class, 'edit'])->name('periodos.edit');
             Route::post('/{periodo}', [PeriodoController::class, 'update'])->name('periodos.update');
             Route::delete('/{periodo}', [PeriodoController::class, 'destroy'])->name('periodos.destroy');

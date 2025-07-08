@@ -30,7 +30,7 @@ export default function Index(props: IndexPropsPacote) {
             label: 'Núcleo',
             nome: 'nucleoId',
             valor: searchParams.get('nucleoId') ?? undefined,
-            opcoes: props.periodos,
+            opcoes: props.nucleos,
             ativo: Boolean(searchParams.get('nucleoId')),
         },
     ]

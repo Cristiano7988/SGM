@@ -79,6 +79,8 @@ export interface Pacote {
 
 export interface RelacionadasAoPacote {
     periodos: Periodo[];
+    // Para o filtro de Pacote
+    nucleos: Nucleo[];
 }
 
 // Periodo

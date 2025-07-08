@@ -58,7 +58,7 @@ export default function Filtros({ dados, tabela }: { dados: FiltrosType[], tabel
         </div>
 
         {mostrarFiltros && <div className='flex flex-wrap gap-8 justify-between'>
-            {filtros.map((filtro: any) => <div key={filtro.nome}>
+            {filtros.map((filtro: FiltrosType) => <div key={filtro.nome}>
 
             {filtro.tipo == 'select' &&
                 <div className='flex flex-col gap-4 w-fit justify-between border rounded-lg p-4'>
@@ -74,10 +74,10 @@ export default function Filtros({ dados, tabela }: { dados: FiltrosType[], tabel
                                 <SelectValue placeholder="Filtrar" />
                             </SelectTrigger>
                             <SelectContent>
-                                {filtro.opcoes.map((opcao: any) => <SelectItem
+                                {filtro.opcoes?.map((opcao: any) => <SelectItem
                                     key={opcao.id}
                                     value={opcao.id.toString()}
-                                    children={opcao.nome}
+                                    children={opcao.nome ?? opcao.tipo}
                                 /> )}
                             </SelectContent>
                         </Select>
