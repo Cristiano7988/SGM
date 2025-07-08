@@ -67,7 +67,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('/periodos')->group(function () {
         Route::get('/', [PeriodoController::class, 'index'])->name('periodos.index');
-        Route::get('/', [PeriodoController::class, 'show'])->name('periodos.show');
+        Route::get('/{periodo}', [PeriodoController::class, 'show'])->name('periodos.show');
     });
 
     Route::middleware(ChecaSeEAdmin::class)
