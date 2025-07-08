@@ -21,11 +21,17 @@ class Periodo extends Model
     ];
 
     protected $appends = [
+        'nome',
         'inicio',
         'fim',
         'inicio_formatado',
         'fim_formatado',
     ];
+
+    function getNomeAttribute()
+    {
+        return $this->inicio_formatado . ' - ' . $this->fim_formatado;
+    }
 
     function getInicioAttribute()
     {

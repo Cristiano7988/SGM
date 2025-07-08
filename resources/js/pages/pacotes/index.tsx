@@ -33,6 +33,14 @@ export default function Index(props: IndexPropsPacote) {
             opcoes: props.nucleos,
             ativo: Boolean(searchParams.get('nucleoId')),
         },
+        {
+            tipo: 'select' as const,
+            label: 'Períodos',
+            nome: 'periodos',
+            valor: searchParams.get('periodos') ?? undefined,
+            opcoes: props.periodos,
+            ativo: Boolean(searchParams.get('periodos')),
+        },
     ]
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

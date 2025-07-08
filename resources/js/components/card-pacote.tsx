@@ -1,7 +1,7 @@
-import { Pacote } from "@/types/models";
+import { Pacote, Periodo, RelacionadasAoPacote } from "@/types/models";
 import { Link } from "@inertiajs/react";
 
-export default function CardPacote({ pacote }: { pacote: Pacote }) {
+export default function CardPacote({ pacote }: { pacote: Pacote & RelacionadasAoPacote }) {
   return (
     <div
       className="relative w-95 h-60"
@@ -14,6 +14,11 @@ export default function CardPacote({ pacote }: { pacote: Pacote }) {
             </div>
             <div className="flex flex-col m-auto gap-2">
               <p>{pacote.valor_formatado}</p>
+              {pacote.periodos.map((periodo: Periodo) => (
+                <p key={periodo.id} className="text-sm text-neutral-500">
+                  De {periodo.inicio_formatado} até {periodo.fim_formatado}
+                </p>
+              ))}
             </div>
           </div>
         </div>

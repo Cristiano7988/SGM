@@ -36,7 +36,7 @@ class PacoteController extends Controller
             ]);
 
             // if (isset($matriculas)) $pacotes = Filtra::resultado($pacotes, $matriculas, 'matriculas.id')->with('matriculas');
-            // if (isset($periodos)) $pacotes = Filtra::resultado($pacotes, $periodos, 'periodos.id')->with('periodos');
+            if (isset($periodos)) $pacotes = Filtra::resultado($pacotes, $periodos, 'periodos.id')->with('periodos');
             if (isset($nucleoId)) $pacotes = Filtra::resultado($pacotes, $nucleoId, 'nucleos.id')->with('nucleo');
             if (isset($ativo)) $pacotes = $pacotes->where('ativo', $ativo);
 
@@ -46,6 +46,7 @@ class PacoteController extends Controller
                 ? Inertia::render('pacotes/index', [
                     'pagination' => $pagination,
                     'nucleos' => Nucleo::all(),
+                    'periodos' => Periodo::all(),
                 ])
                 : response($pacotes);
         } catch (\Throwable $th) {

@@ -74,10 +74,10 @@ export interface Pacote {
     nucleo_id: number;
     valor: number;
     valor_formatado: string;
-    nucleo: Nucleo;
 }
 
 export interface RelacionadasAoPacote {
+    nucleo: Nucleo;
     periodos: Periodo[];
     // Para o filtro de Pacote
     nucleos: Nucleo[];
