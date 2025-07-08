@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AlunoController;
 use App\Http\Controllers\NucleoController;
 use App\Http\Controllers\PacoteController;
 use App\Http\Controllers\PeriodoController;
@@ -79,6 +80,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/{periodo}', [PeriodoController::class, 'update'])->name('periodos.update');
             Route::delete('/{periodo}', [PeriodoController::class, 'destroy'])->name('periodos.destroy');
         });
+    });
+
+    Route::prefix('/alunos')->group(function () {
+        Route::get('/', [AlunoController::class, 'index'])->name('alunos.index');
+        Route::get('/create', [AlunoController::class, 'create'])->name('alunos.create');
     });
 
 require __DIR__.'/settings.php';
