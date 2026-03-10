@@ -101,9 +101,10 @@ export interface ShowPropsPeriodo { periodo: Periodo & RelacionadasAoNucleo; };
 export interface EditPropsPeriodo extends Props, FormProps, RelacionadasAoPeriodo { periodo: Periodo; };
 export interface CreatePropsPeriodo extends EditPropsPeriodo {};
 
-// Periodos
+// Alunos
 
 export interface IndexPropsAluno  extends IndexProps<Aluno>, RelacionadasAoAluno {};
+export interface CreatePropsAluno extends EditPropsAluno {};
 
 // Filtros
 
@@ -123,5 +124,6 @@ export interface FormProps<T> {
     submit: (e: React.FormEvent) => void;
     setData: (key: string, value: any) => void;
     errors: any;
-    props: any;
+    hasErrors: boolean;
+    props: T;
 }

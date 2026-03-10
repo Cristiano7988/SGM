@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Link } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Aluno, RelacionadasAoAluno, User } from "@/types/models";
+import { Link } from "@inertiajs/react";
 
 export default function FlipCardAluno({ aluno }: { aluno: Aluno & RelacionadasAoAluno }) {
   const [flipped, setFlipped] = useState(false);

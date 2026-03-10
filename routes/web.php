@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AlunoController;
+use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\NucleoController;
 use App\Http\Controllers\PacoteController;
 use App\Http\Controllers\PeriodoController;
@@ -85,6 +86,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('/alunos')->group(function () {
         Route::get('/', [AlunoController::class, 'index'])->name('alunos.index');
         Route::get('/create', [AlunoController::class, 'create'])->name('alunos.create');
+        Route::post('/', [AlunoController::class, 'store'])->name('alunos.store');
+        Route::get('/{aluno}', [AlunoController::class, 'show'])->name('alunos.show');
+    });
+
+    Route::prefix('/users')->group(function () {
+        Route::get('/', [UserController::class, 'index'])->name('users.index');
+        Route::get('/{user}', [UserController::class, 'show'])->name('users.show');        
     });
 
 require __DIR__.'/settings.php';

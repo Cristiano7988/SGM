@@ -119,10 +119,20 @@ export interface Aluno {
     id: number;
     nome: string;
     data_de_nascimento: string;
-    data_de_nascimento_formatada: string;
+    // data_de_nascimento_formatada: string;
     idade: string
 }
 
 export interface RelacionadasAoAluno {
     users: User[];
+    matriculas: Matricula[];
+}
+
+export interface Matricula {
+    id: number;
+    aluno_id: number;
+    turma_id: number;
+    created_at: string;
+    updated_at: string;
+    turma: Turma;
 }

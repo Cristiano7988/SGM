@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Inertia\Inertia;
 
 class UserController extends Controller
 {
@@ -396,10 +397,19 @@ class UserController extends Controller
 
             $users = Trata::resultado($users, 'users.nome'); // Ordenação por usuário ou por transação (bem como por seu cupom, forma de pagamento ou matrícula) feitas pelo usuário.
 
-            return response($users);
+            return isWeb()
+                ? Inertia::render('users/index', [
+                    'pagination' => $users,
+                    // 'tipos' => $user->is_admin ? User::select('tipos.id', 'tipos.nome')->join('tipo_user', 'users.id', 'tipo_user.user_id')->join('tipos', 'tipo_user.tipo_id', 'tipos.id')->groupBy('tipos.id')->get() : $user->tipos,
+                    'emails' => $user->is_admin ? User::select('emails.id', 'emails.assunto')->join('email_user', 'users.id', 'email_user.user_id')->join('emails', 'email_user.email_id', 'emails.id')->groupBy('emails.id')->get() : $user->emails,
+                    'alunos' => $user->alunos,
+                ])
+                : response($users);
         } catch(\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+            return isWeb()
+                ? redirect()->route('dashboard')->with('error', $mensagem)
+                : response($mensagem, 500);
         }
     }
 
@@ -444,15 +454,20 @@ class UserController extends Controller
      * Show an user.
      *
      * @param  User  $user
-     * @return \App\Models\User
      */
-    protected function show(User $user):Response
+    public function show(User $user)
     {
         try {
-            return response($user);
+            return isWeb()
+                ? Inertia::render('users/show', [
+                    'user' => $user->load(['alunos']),
+                ])
+                : response($user->load(['alunos']));
         } catch(\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+            return isWeb()
+                ? redirect()->route('users.index')->with('error', $mensagem)
+                : response($mensagem, 500);
         }
     }
 

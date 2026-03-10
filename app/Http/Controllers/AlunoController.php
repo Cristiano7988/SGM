@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Helpers\Trata;
 use App\Models\Aluno;
 use App\Models\User;
-use Illuminate\Http\Request;
+use App\Models\Matricula;
+use App\Http\Requests\Settings\AlunoRequest;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -14,29 +15,6 @@ use Inertia\Inertia;
 
 class AlunoController extends Controller
 {
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function validator(array $data, $aluno = false)
-    {
-        return Validator::make($data, [
-            'nome' => [
-                $aluno ? 'nullable' : 'required',
-                'string',
-                'min:2',
-                'max:255'],
-            'data_de_nascimento' => [
-                $aluno ? 'nullable' : 'required',
-                'date',
-                'date_format:Y-m-d',
-                'before:'.date('d/m/Y', strtotime('-30 days')) // Deve ter no mínimo 1 mês de idade
-            ]
-        ]);
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -71,9 +49,8 @@ class AlunoController extends Controller
             return isWeb()
                 ? Inertia::render('alunos/index', [
                     'pagination' => $pagination,
-                    'users' => $user->is_admin ? User::all() : $user->alunos->flatMap(function ($aluno) {
-                        return $aluno->users;
-                    })->unique('id'),
+                    'users' => $user->is_admin ? User::all() : $user->alunos->flatMap->users->unique('id'),
+                    'matriculas' => $user->is_admin ? Matricula::all() : $user->alunos->flatMap->matriculas->unique('id'),
                 ])
                 : response($pagination);
         } catch (\Throwable $th) {
@@ -85,30 +62,39 @@ class AlunoController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Show the form for creating a new resource.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
-    public function store(Request $request):Response
+    public function create()
+    {
+        $users = Auth::user()->is_admin
+            ? User::all()
+            : Auth::user()->alunos->flatMap->users->unique('id');
+
+        return Inertia::render('alunos/create', [ 'users' => $users ]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(AlunoRequest $request)
     {
         try {
-            // Aqui validamos os dados
-            $validator = $this->validator($request->all());
-            if ($validator->fails()) return response($validator->errors(), 422);
-
             $user = Auth::user();
 
-            // Aqui criamos o aluno
             DB::beginTransaction();
-            $aluno = Aluno::create($request->all());
-            $aluno->users()->attach($user->id);
+            $aluno = Aluno::create($request->validated());
+            if (isset($request->users) && !!count($request->users)) $aluno->users()->sync($request->users);
             DB::commit();
 
-            return response($aluno);
+            return isWeb()
+                ? redirect()->route('alunos.index')->with('success', 'Aluno criado com sucesso.')
+                : response($aluno);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+            return isWeb()
+                ? redirect()->route('alunos.index')->with('error', $mensagem)
+                : response($mensagem, 500);
         }
     }
 
@@ -116,48 +102,50 @@ class AlunoController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Aluno  $aluno
-     * @return \Illuminate\Http\Response
      */
-    public function show(Aluno $aluno):Response
+    public function show(Aluno $aluno)
     {
         try {
-            return response($aluno);
+            return isWeb()
+                ? Inertia::render('alunos/show', [
+                    'aluno' => $aluno->load(['users', 'matriculas']),
+                ])
+                : response($aluno->load(['users', 'matriculas']));
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+            return isWeb()
+                ? redirect()->route('alunos.index')->with('error', $mensagem)
+                : response($mensagem, 500);
         }
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Aluno  $aluno
-     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Aluno $aluno):Response
+    public function update(AlunoRequest $request, Aluno $aluno)
     {
         try {
-            // Aqui validamos os dados
-            $validator = $this->validator($request->all(), $aluno);
-            if ($validator->fails()) return response($validator->errors(), 422);
-
             // Aqui validamos se o aluno a ser atualizado tem relação com o usuário logado
             $authUser = Auth::user();
             if (!$authUser->is_admin) {                
-                $usuariosRelacionados = false;
-                if (in_array($authUser->id, $aluno->users->pluck('id')->toArray())) $usuariosRelacionados = true;
-                if (!$usuariosRelacionados) return response('Você não tem permissão para editar esse aluno', 403);
+                $alunoIds = $authUser->alunos->pluck('id')->toArray();
+                if (!in_array($aluno->id, $alunoIds)) return response("Você não tem permissão para editar esse aluno.", 403);
             }
 
             // Aqui atualizamos os dados
-            $aluno->update($request->all());
+            $aluno->update($request->validated());
             if (isset($request->users) && !!count($request->users)) $aluno->users()->sync($request->users);
 
-            return response($aluno);
+            return isWeb()
+                ? redirect()->route('alunos.index')->with('success', 'Aluno atualizado com sucesso.')
+                : response($aluno);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+            return isWeb()
+                ? redirect()->route('alunos.index')->with('error', $mensagem)
+                : response($mensagem, 500);
         }
     }
 
@@ -165,17 +153,20 @@ class AlunoController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Aluno  $aluno
-     * @return \Illuminate\Http\Response
      */
-    public function destroy(Aluno $aluno):Response
+    public function destroy(Aluno $aluno)
     {
         try {
             $aluno->users()->detach();
             $aluno->delete();
-            return response("O aluno de nº {$aluno->id}, {$aluno->nome},  foi deletado.");
+            return isWeb()
+                ? redirect()->route('alunos.index')->with('success', 'Aluno deletado com sucesso.')
+                : response("Aluno deletado com sucesso.");
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+            return isWeb()
+                ? redirect()->route('alunos.index')->with('error', $mensagem)
+                : response($mensagem, 500);
         }
     }
 }

@@ -1,10 +1,10 @@
 import { FormProps } from "@/types";
 import { ButtonSubmitContent } from "./button-submit-content";
 import { SelectModelContent } from "./select-model-content";
-import { Periodo } from "@/types/models";
+import { Periodo, RelacionadasAoPeriodo } from "@/types/models";
 import { InputDateContent } from "./input-date-content";
 
-export function FormPeriodoContent({ data, processing, submit, setData, errors, props }: FormProps<Periodo>) {
+export function FormPeriodoContent({ data, processing, submit, setData, errors, props }: FormProps<Periodo & RelacionadasAoPeriodo>) {
     return (
         <form onSubmit={submit} className="flex flex-col gap-6 space-y-4">
 

@@ -18,12 +18,12 @@ export default function Index(props: IndexPropsAluno) {
     const searchParams = new URLSearchParams(location.search);
     const filtros = [
         {
-            tipo: 'boolean' as const,
-            label: 'Disponível',
-            nome: 'disponivel',
-            valor: searchParams.get('disponivel') ?? 0,
-            opcoes: [],
-            ativo: Boolean(searchParams.get('disponivel')),
+            tipo: 'select' as const,
+            label: 'Matrículas',
+            nome: 'matriculas',
+            valor: searchParams.get('matriculas') ?? undefined,
+            opcoes: props.matriculas,
+            ativo: Boolean(searchParams.get('matriculas')),
         },
         {
             tipo: 'select' as const,

@@ -25,11 +25,15 @@ class Aluno extends Model
 
     public function getDataDeNascimentoFormatadaAttribute()
     {
+        if (!$this->data_de_nascimento) return null;
+
         return $this->data_de_nascimento->format('d/m/Y');
     }
 
     public function getIdadeAttribute()
     {   
+        if (!$this->data_de_nascimento) return null;
+
         $anos = $this->data_de_nascimento->diffInDays(now()) / 365;
 
         $formatado = $anos < 1
