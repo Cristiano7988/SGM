@@ -32,11 +32,11 @@ export default function Create(props: CreatePropsNucleo) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title='Editar Núcleo' />
+[]            <Head title='Criar Núcleo' />
             <Session session={session}  />
 
             <div className="w-full mx-auto p-6 rounded-lg shadow">
-                <h1 className="text-xl font-bold mb-4">Editar Núcleo</h1>
+                <h1 className="text-xl font-bold mb-4">Criar Núcleo</h1>
 
                 <form onSubmit={submit} className="flex flex-col gap-6 space-y-4">
                     
