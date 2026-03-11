@@ -95,7 +95,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('/users')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('users.index');
-        Route::get('/{user}', [UserController::class, 'show'])->name('users.show');        
+        Route::get('/{user}', [UserController::class, 'show'])->name('users.show');
+        Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+        Route::get('/create', [UserController::class, 'create'])->name('users.create');
     });
 
 require __DIR__.'/settings.php';

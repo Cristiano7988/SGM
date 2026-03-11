@@ -80,9 +80,8 @@ class UserController extends Controller
     /**
      * Show all users.
      *
-     * @return \App\Models\User
      */
-    protected function index():Response
+    public function index()
     {
         try {
 
@@ -98,6 +97,10 @@ class UserController extends Controller
             
             // Conecta todas tabelas (exceto a relação pacotes -> núcleos)
             $users = User::query();
+
+            $users->with([
+                "alunos"
+            ]);
             
                 // Tipos
             $users
@@ -395,11 +398,11 @@ class UserController extends Controller
                 }
             ]);
 
-            $users = Trata::resultado($users, 'users.nome'); // Ordenação por usuário ou por transação (bem como por seu cupom, forma de pagamento ou matrícula) feitas pelo usuário.
+            $pagination = Trata::resultado($users, 'users.nome'); // Ordenação por usuário ou por transação (bem como por seu cupom, forma de pagamento ou matrícula) feitas pelo usuário.
 
             return isWeb()
                 ? Inertia::render('users/index', [
-                    'pagination' => $users,
+                    'pagination' => $pagination,
                     // 'tipos' => $user->is_admin ? User::select('tipos.id', 'tipos.nome')->join('tipo_user', 'users.id', 'tipo_user.user_id')->join('tipos', 'tipo_user.tipo_id', 'tipos.id')->groupBy('tipos.id')->get() : $user->tipos,
                     'emails' => $user->is_admin ? User::select('emails.id', 'emails.assunto')->join('email_user', 'users.id', 'email_user.user_id')->join('emails', 'email_user.email_id', 'emails.id')->groupBy('emails.id')->get() : $user->emails,
                     'alunos' => $user->alunos,

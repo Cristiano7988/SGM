@@ -5,9 +5,18 @@ export interface User {
     nome: string;
     email: string;
     avatar?: string;
+    whatsapp: string;
     email_verified_at: string | null;
     created_at: string;
     updated_at: string;
+}
+
+export interface RelacionadasAoUser {
+    alunos: Aluno[],
+    // transacoes: Transacao[],
+    // emails: Email[],
+    // tipos: Tipo[],
+    // erros: Erro[]
 }
 
 export interface Nucleo {

@@ -2,7 +2,7 @@ import Filtros from '@/components/filtros';
 import FlipCardAluno from '@/components/flip-card-aluno';
 import Session from '@/components/session';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem, IndexPropsAluno, Pagination, SessionType } from '@/types';
+import { type BreadcrumbItem, IndexProps, Pagination, SessionType } from '@/types';
 import { Aluno, RelacionadasAoAluno } from '@/types/models';
 import { Head } from '@inertiajs/react';
 
@@ -13,7 +13,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Index(props: IndexPropsAluno) {
+export default function Index(props: IndexProps<Aluno & RelacionadasAoAluno>) {
     const { pagination, session }: { pagination: Pagination<Aluno & RelacionadasAoAluno>, session: SessionType } = props;
     const searchParams = new URLSearchParams(location.search);
     const filtros = [

@@ -69,17 +69,6 @@ export interface SessionType {
     success: string | null
 }
 
-// Props
-
-export interface Props {
-    errors: any,
-    session: Session,
-}
-
-export interface IndexProps<T> extends Props {
-    pagination: Pagination<T>;
-}
-
 // Nucleo
 
 export interface IndexPropsNucleo extends IndexProps<Nucleo>, RelacionadasAoNucleo {};
@@ -110,7 +99,6 @@ export interface CreatePropsPeriodo extends EditPropsPeriodo {};
 
 // Alunos
 
-export interface IndexPropsAluno  extends IndexProps<Aluno & RelacionadasAoAluno>, RelacionadasAoAluno {};
 export interface CreatePropsAluno extends EditPropsAluno {};
 
 // Filtros
@@ -120,10 +108,21 @@ export interface FiltrosType {
     label: string;
     nome: string;
     valor?: string | number | boolean;
-    opcoes?: [];
+    opcoes?: any[];
     ativo: boolean;
 }
 
 // Form Elements
 export type FormProps<T> = T & Record<string, any>;
 
+// Props
+
+export interface Props {
+    errors: any;
+    session: Session;
+}
+
+export interface IndexProps<T> extends Props {
+    pagination: Pagination<T>,
+    [key: string]: any;
+}

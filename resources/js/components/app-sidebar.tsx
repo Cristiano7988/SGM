@@ -38,6 +38,11 @@ const mainNavItems: NavItem[] = [
         url: '/alunos',
         icon: GraduationCap,
     },
+    {
+        title: 'Usuários (Responsáveis)',
+        url: '/users',
+        icon: Users,
+    },
 ];
 
 const footerNavItems: NavItem[] = [
