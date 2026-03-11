@@ -28,7 +28,7 @@ export default function Index(props: IndexPropsPeriodo) {
     ]
    
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout breadcrumbs={breadcrumbs} pagination={pagination}>
             <Head title="Periodos" />
 
             <Session session={session}  />
@@ -37,13 +37,13 @@ export default function Index(props: IndexPropsPeriodo) {
                 <Filtros dados={filtros} tabela="periodos" />
 
                 {pagination.data.length
-                        ? <div className="flex flex-wrap justify-between gap-4">
-                            {pagination.data.map((periodo: Periodo) => <CardPeriodo key={periodo.id} periodo={periodo} />)}
-                        </div>
+                    ? <div className="flex flex-wrap justify-between gap-4">
+                        {pagination.data.map((periodo: Periodo) => <CardPeriodo key={periodo.id} periodo={periodo} />)}
+                    </div>
                     : <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex flex-col justify-center items-center overflow-hidden rounded-xl border md:min-h-min">
                         <div className="m-auto">Sem resultados</div>
                     </div>
-                  }
+                }
             </div>
         </AppLayout>
     );

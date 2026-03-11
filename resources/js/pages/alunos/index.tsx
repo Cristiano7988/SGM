@@ -2,8 +2,8 @@ import Filtros from '@/components/filtros';
 import FlipCardAluno from '@/components/flip-card-aluno';
 import Session from '@/components/session';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem, IndexPropsAluno } from '@/types';
-import { Aluno } from '@/types/models';
+import { type BreadcrumbItem, IndexPropsAluno, Pagination, SessionType } from '@/types';
+import { Aluno, RelacionadasAoAluno } from '@/types/models';
 import { Head } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -14,7 +14,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Index(props: IndexPropsAluno) {
-    const { pagination, session } = props;
+    const { pagination, session }: { pagination: Pagination<Aluno & RelacionadasAoAluno>, session: SessionType } = props;
     const searchParams = new URLSearchParams(location.search);
     const filtros = [
         {
@@ -36,7 +36,7 @@ export default function Index(props: IndexPropsAluno) {
     ]
    
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout breadcrumbs={breadcrumbs} pagination={pagination}>
             <Head title="Alunos" />
 
             <Session session={session}  />
@@ -45,13 +45,13 @@ export default function Index(props: IndexPropsAluno) {
                 <Filtros dados={filtros} tabela="alunos" />
 
                 {pagination.data.length
-                        ? <div className="flex flex-wrap justify-between gap-4">
-                            {pagination.data.map((aluno: Aluno) => <FlipCardAluno key={aluno.id} aluno={aluno} />)}
-                        </div>
+                    ? <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+                        {pagination.data.map((aluno) => <FlipCardAluno key={aluno.id} aluno={aluno} />)}
+                    </div>
                     : <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex flex-col justify-center items-center overflow-hidden rounded-xl border md:min-h-min">
                         <div className="m-auto">Sem resultados</div>
                     </div>
-                  }
+                }
             </div>
         </AppLayout>
     );

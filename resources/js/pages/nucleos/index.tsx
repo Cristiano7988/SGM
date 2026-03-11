@@ -36,7 +36,7 @@ export default function Index(props: IndexPropsNucleo) {
     ];
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout breadcrumbs={breadcrumbs} pagination={pagination}>
             <Head title="Núcleos" />
 
             <Session session={session}  />
@@ -51,7 +51,7 @@ export default function Index(props: IndexPropsNucleo) {
                     : <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex flex-col justify-center items-center overflow-hidden rounded-xl border md:min-h-min">
                         <div className="m-auto">Sem resultados</div>
                     </div>
-                  }
+                }
             </div>
         </AppLayout>
     );

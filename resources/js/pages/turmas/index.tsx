@@ -52,7 +52,7 @@ export default function Index(props: IndexPropsTurma) {
     ]
    
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout breadcrumbs={breadcrumbs} pagination={pagination}>
             <Head title="Turmas" />
 
             <Session session={session}  />
@@ -61,13 +61,13 @@ export default function Index(props: IndexPropsTurma) {
                 <Filtros dados={filtros} tabela="turmas" />
 
                 {pagination.data.length
-                        ? <div className="flex flex-wrap justify-between gap-4">
-                            {pagination.data.map((turma: Turma) => <FlipCardTurma key={turma.id} turma={turma} />)}
-                        </div>
+                    ? <div className="flex flex-wrap justify-between gap-4">
+                        {pagination.data.map((turma: Turma) => <FlipCardTurma key={turma.id} turma={turma} />)}
+                    </div>
                     : <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex flex-col justify-center items-center overflow-hidden rounded-xl border md:min-h-min">
                         <div className="m-auto">Sem resultados</div>
                     </div>
-                  }
+                }
             </div>
         </AppLayout>
     );

@@ -43,7 +43,7 @@ export default function Index(props: IndexPropsPacote) {
         },
     ]
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout breadcrumbs={breadcrumbs} pagination={pagination}>
             <Head title="Pacotes" />
 
             <Session session={session}  />
@@ -52,13 +52,13 @@ export default function Index(props: IndexPropsPacote) {
                 <Filtros dados={filtros} tabela="pacotes" />
 
                 {pagination.data.length
-                        ? <div className="flex flex-wrap justify-between gap-4">
-                            {pagination.data.map((pacote: Pacote) => <CardPacote key={pacote.id} pacote={pacote} />)}
-                        </div>
+                    ? <div className="flex flex-wrap justify-between gap-4">
+                        {pagination.data.map((pacote: Pacote) => <CardPacote key={pacote.id} pacote={pacote} />)}
+                    </div>
                     : <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex flex-col justify-center items-center overflow-hidden rounded-xl border md:min-h-min">
                         <div className="m-auto">Sem resultados</div>
                     </div>
-                  }
+                }
             </div>
         </AppLayout>
     );
