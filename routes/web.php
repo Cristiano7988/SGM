@@ -90,6 +90,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{aluno}/edit', [AlunoController::class, 'edit'])->name('alunos.edit');
         Route::post('/{aluno}', [AlunoController::class, 'update'])->name('alunos.update');
         Route::get('/{aluno}', [AlunoController::class, 'show'])->name('alunos.show');
+        Route::delete('/{aluno}', [AlunoController::class, 'destroy'])->name('alunos.destroy');
     });
 
     Route::prefix('/users')->group(function () {

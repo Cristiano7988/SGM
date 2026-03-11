@@ -11,15 +11,22 @@ import ErrorLabel from "../error-label";
 export function FormAlunoContent({ inicialData, endpoint, related }: FormContentProps<Aluno>) {
 
     const { data, setData, errors, clearErrors, hasErrors, processing, post } = useForm<FormProps<Aluno>>(inicialData);
+    const { processing: processingDeletion, delete: deleteAluno } = useForm();
+    const editing = location.pathname.includes("edit");
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const param = location.pathname.includes("edit")
+        const param = editing
             ? route(endpoint, data.id)
             : route(endpoint);
 
         post(param);
+    };
+
+    const submitDeletion = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (confirm('Tem certeza que deseja excluir este aluno?')) deleteAluno(route('alunos.destroy', data.id));
     };
 
     const users = data.users.length ? data.users : [{ id: 0 }];
@@ -45,7 +52,7 @@ export function FormAlunoContent({ inicialData, endpoint, related }: FormContent
         clearErrors("users");
     };
 
-    return (
+    return (<>
         <form onSubmit={submit} className="flex flex-col gap-6 space-y-4">
 
             <InputTextContent
@@ -112,5 +119,16 @@ export function FormAlunoContent({ inicialData, endpoint, related }: FormContent
             </div>
 
         </form>
-    );
+        {editing && <form onSubmit={submitDeletion} >
+            <div className="flex justify-end mt-4">
+                <button
+                    type="submit"
+                    className="cursor-pointer bg-red-500 text-white px-4 py-2 rounded-md"
+                    disabled={processing}
+                >
+                    {processingDeletion ? "Excluindo..." : "Excluir"}
+                </button>
+            </div>
+        </form>}
+    </>);
 }
