@@ -19,7 +19,8 @@ class ChecaSeEAdmin
     public function handle(Request $request, Closure $next)
     {
         try {
-            $isAdmin = Auth::user()->is_admin;
+            $user = Auth::user();
+            $isAdmin = $user && $user->is_admin;
     
             if ($isAdmin) return $next($request);
             else {

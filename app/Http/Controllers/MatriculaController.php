@@ -34,7 +34,7 @@ class MatriculaController extends Controller
 
             $user = Auth::user();
             $alunosDoUsuario = $user->alunos->pluck('id');
-            if (!$user->is_admin) $matriculas->whereIn('aluno_id', $alunosDoUsuario);
+            if ($user && !$user->is_admin) $matriculas->whereIn('aluno_id', $alunosDoUsuario);
 
             if (isset($situacoes)) $matriculas = Filtra::resultado($matriculas, $situacoes, 'situacoes.id')->with('situacao');
             if (isset($marcacoes)) $matriculas = Filtra::resultado($matriculas, $marcacoes, 'marcacoes.id')->with('marcacao');
@@ -60,18 +60,18 @@ class MatriculaController extends Controller
     public function store(Request $request):Response
     {
         try {
-            $authUser = Auth::user();
+            $user = Auth::user();
             
             // Aqui validamos se o aluno a ser matrículado tem relação com o usuário logado
             $aluno = Aluno::find($request->aluno_id);
-            if (!$authUser->is_admin) {                
+            if ($user && !$user->is_admin) {                
                 $usuariosRelacionados = false;
-                if (in_array($authUser->id, $aluno->users->pluck('id')->toArray())) $usuariosRelacionados = true;
+                if (in_array($user->id, $aluno->users->pluck('id')->toArray())) $usuariosRelacionados = true;
                 if (!$usuariosRelacionados) return response('Você não tem permissão para matricular esse aluno', 403);
             }
 
             // Aqui validamos se o usuário logado possui algum tipo de responsabilidade pelo aluno a ser matriculado
-            if (!$authUser->tipos->count()) return response("Atualize as suas informações de usuário para sabermos qual será sua participação na vida letiva de {$aluno->nome} dentro da Toca.");
+            if (!$user->tipos->count()) return response("Atualize as suas informações de usuário para sabermos qual será sua participação na vida letiva de {$aluno->nome} dentro da Toca.");
             
             $temAcompanhante = false;
             $temAcompananhteReserva = false;

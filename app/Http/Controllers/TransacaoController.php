@@ -92,7 +92,7 @@ class TransacaoController extends Controller
             $authUser = Auth::user();
             $user = User::find($request->user_id);
             $matricula = Matricula::find($request->matricula_id);
-            if (!$authUser->is_admin) {
+            if ($authUser && !$authUser->is_admin) {
                 if (!$user->alunos->count()) return response('Adicione um aluno antes de prosseguir.', 403); // Validação necessária pois são os alunos que ligam usuários a outros usuários!
                 
                 // Se ele tem relação com o usuário logado

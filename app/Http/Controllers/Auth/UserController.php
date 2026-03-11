@@ -129,7 +129,7 @@ class UserController extends Controller
                 ->select(['users.*'])->groupBy('users.id');
 
             // Aqui é estabelecido que o usuário poderá acessar apenas informações relacionadas ao aluno ao qual está associado
-            if (!$user->is_admin) $users = $users->whereIn('alunos.id', $user->alunos->pluck('id'));
+            if ($user && !$user->is_admin) $users = $users->whereIn('alunos.id', $user->alunos->pluck('id'));
             
             // Aqui filtramos os usuários de acordo com suas relações
             if (isset($usuarios))                       $users = Filtra::resultado($users, $usuarios, 'users.id');
@@ -429,7 +429,7 @@ class UserController extends Controller
             if ($validator->fails()) return response($validator->errors(), 422);
 
             // Aqui validamos se o usuário a ser atualizado tem relação com o usuário logado
-            if (!$authUser->is_admin) {
+            if ($authUser && !$authUser->is_admin) {
                 if (!$authUser->alunos->count()) return response('Adicione um aluno antes de prosseguir', 403); // Validação necessária pois são os alunos que ligam usuários a outros usuários!
             }
             $user = Auth::user();
@@ -487,7 +487,7 @@ class UserController extends Controller
 
             // Aqui validamos se o usuário a ser atualizado tem relação com o usuário logado
             $authUser = Auth::user();
-            if (!$authUser->is_admin) {
+            if ($authUser && !$authUser->is_admin) {
                 if (!$user->alunos->count()) return response('Adicione um aluno antes de prosseguir', 403); // Validação necessária pois são os alunos que ligam usuários a outros usuários!
                 
                 $usuariosRelacionados = false;
