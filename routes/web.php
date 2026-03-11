@@ -87,6 +87,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', [AlunoController::class, 'index'])->name('alunos.index');
         Route::get('/create', [AlunoController::class, 'create'])->name('alunos.create');
         Route::post('/', [AlunoController::class, 'store'])->name('alunos.store');
+        Route::get('/{aluno}/edit', [AlunoController::class, 'edit'])->name('alunos.edit');
+        Route::post('/{aluno}', [AlunoController::class, 'update'])->name('alunos.update');
         Route::get('/{aluno}', [AlunoController::class, 'show'])->name('alunos.show');
     });
 

@@ -42,6 +42,12 @@ export interface SharedData {
     [key: string]: unknown;
 }
 
+export interface LinksPagination {
+    url: string,
+    label: string,
+    active: boolean
+}
+
 export interface Pagination<T> {
     current_page: number;
     data: T[];
@@ -49,7 +55,7 @@ export interface Pagination<T> {
     from: string|null;
     last_page: number;
     last_page_url: string;
-    links: T[];
+    links: LinksPagination[];
     next_page_url: string|null
     path: string;
     per_page: number;
@@ -57,6 +63,7 @@ export interface Pagination<T> {
     to: string|null;
     total: number
 }
+
 export interface SessionType {
     error: string | null,
     success: string | null
@@ -103,7 +110,7 @@ export interface CreatePropsPeriodo extends EditPropsPeriodo {};
 
 // Alunos
 
-export interface IndexPropsAluno  extends IndexProps<Aluno>, RelacionadasAoAluno {};
+export interface IndexPropsAluno  extends IndexProps<Aluno & RelacionadasAoAluno>, RelacionadasAoAluno {};
 export interface CreatePropsAluno extends EditPropsAluno {};
 
 // Filtros
@@ -118,12 +125,5 @@ export interface FiltrosType {
 }
 
 // Form Elements
-export interface FormProps<T> {
-    data: T;
-    processing: boolean;
-    submit: (e: React.FormEvent) => void;
-    setData: (key: string, value: any) => void;
-    errors: any;
-    hasErrors: boolean;
-    props: T;
-}
+export type FormProps<T> = T & Record<string, any>;
+

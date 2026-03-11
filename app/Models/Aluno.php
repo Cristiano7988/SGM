@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Aluno extends Model
 {
@@ -23,18 +24,23 @@ class Aluno extends Model
         'idade',
     ];
 
+    public function getDataDeNascimentoAttribute($value)
+    {
+        return Carbon::parse($value)->format('Y-m-d');
+    }
+
     public function getDataDeNascimentoFormatadaAttribute()
     {
         if (!$this->data_de_nascimento) return null;
 
-        return $this->data_de_nascimento->format('d/m/Y');
+        return Carbon::parse($this->data_de_nascimento)->format('d/m/Y');
     }
 
     public function getIdadeAttribute()
     {   
         if (!$this->data_de_nascimento) return null;
 
-        $anos = $this->data_de_nascimento->diffInDays(now()) / 365;
+        $anos = Carbon::parse($this->data_de_nascimento)->diffInDays(Carbon::now()) / 365;
 
         $formatado = $anos < 1
             ? number_format($anos, 1, '.', '')

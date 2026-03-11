@@ -36,7 +36,7 @@ class AlunoController extends Controller
                 ->leftJoin('matriculas', 'alunos.id', 'matriculas.aluno_id')
                 ->select(['alunos.*'])->groupBy('alunos.id');
 
-            if (!$user->is_admin) $alunos = $alunos->whereIn('alunos.id', $user->alunos->pluck('id'));
+            if ($user && !$user->is_admin) $alunos = $alunos->whereIn('alunos.id', $user->alunos->pluck('id'));
 
             // if (isset($matriculas)) $alunos = Filtra::resultado($alunos, $matriculas, 'matriculas.id')->with('matriculas');
             if (isset($users)) {
@@ -49,8 +49,8 @@ class AlunoController extends Controller
             return isWeb()
                 ? Inertia::render('alunos/index', [
                     'pagination' => $pagination,
-                    'users' => $user->is_admin ? User::all() : $user->alunos->flatMap->users->unique('id'),
-                    'matriculas' => $user->is_admin ? Matricula::all() : $user->alunos->flatMap->matriculas->unique('id'),
+                    'users' => $user && $user->is_admin ? User::all() : $user->alunos->flatMap->users->unique('id'),
+                    'matriculas' => $user && $user->is_admin ? Matricula::all() : $user->alunos->flatMap->matriculas->unique('id'),
                 ])
                 : response($pagination);
         } catch (\Throwable $th) {
@@ -67,9 +67,11 @@ class AlunoController extends Controller
      */
     public function create()
     {
-        $users = Auth::user()->is_admin
+        $user = Auth::user();
+
+        $users = $user && $user->is_admin
             ? User::all()
-            : Auth::user()->alunos->flatMap->users->unique('id');
+            : $user->alunos->flatMap->users->unique('id');
 
         return Inertia::render('alunos/create', [ 'users' => $users ]);
     }
@@ -120,6 +122,37 @@ class AlunoController extends Controller
     }
 
     /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Aluno  $aluno
+     */
+    public function edit(Aluno $aluno)
+    {
+        try {
+            $user = Auth::user();
+
+            $users = $user && $user->is_admin
+                ? User::all()
+                : $user->alunos->flatMap->users->unique('id');
+
+            $matriculas = $user && $user->is_admin
+                ? Matricula::all()
+                : $user->alunos->flatMap->matriculas->unique('id');
+
+            return Inertia::render('alunos/edit', [
+                'aluno' => $aluno->load(['users', 'matriculas']),
+                'users' => $users,
+                'matriculas' => $matriculas,
+            ]);
+        } catch (\Throwable $th) {
+            $mensagem = Trata::erro($th);
+            return isWeb()
+                ? redirect()->route('alunos.index')->with('error', $mensagem)
+                : response($mensagem, 500);
+        }
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \App\Models\Aluno  $aluno
@@ -128,12 +161,11 @@ class AlunoController extends Controller
     {
         try {
             // Aqui validamos se o aluno a ser atualizado tem relação com o usuário logado
-            $authUser = Auth::user();
-            if (!$authUser->is_admin) {                
-                $alunoIds = $authUser->alunos->pluck('id')->toArray();
+            $user = Auth::user();
+            if ($user && !$user->is_admin) {                
+                $alunoIds = $user->alunos->pluck('id')->toArray();
                 if (!in_array($aluno->id, $alunoIds)) return response("Você não tem permissão para editar esse aluno.", 403);
             }
-
             // Aqui atualizamos os dados
             $aluno->update($request->validated());
             if (isset($request->users) && !!count($request->users)) $aluno->users()->sync($request->users);

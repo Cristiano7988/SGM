@@ -8,7 +8,6 @@ export interface User {
     email_verified_at: string | null;
     created_at: string;
     updated_at: string;
-    [key: string]: unknown; // This allows for additional properties...
 }
 
 export interface Nucleo {
@@ -119,7 +118,7 @@ export interface Aluno {
     id: number;
     nome: string;
     data_de_nascimento: string;
-    // data_de_nascimento_formatada: string;
+    data_de_nascimento_formatada: string;
     idade: string
 }
 
@@ -136,3 +135,9 @@ export interface Matricula {
     updated_at: string;
     turma: Turma;
 }
+
+export interface FormContentProps<T> {
+    inicialData: T,
+    endpoint: string,
+    related: any
+};

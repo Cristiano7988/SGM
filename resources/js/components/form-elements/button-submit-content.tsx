@@ -10,7 +10,7 @@ export function ButtonSubmitContent({ classes, processing, processingText, butto
         <div className="flex justify-end">
             <button
                 type="submit"
-                className={`px-4 py-2 rounded text-white focus:outline-none focus:ring-2 focus:ring-offset-2 ${classes}`}
+                className={`px-4 py-2 rounded text-white focus:outline-none focus:ring-2 focus:ring-offset-2 ${classes} ${processing ? 'cursor-not-allowed opacity-50' : ''}`}
                 disabled={processing}
             >
                 {processing ? processingText : buttonText}
