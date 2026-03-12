@@ -146,9 +146,7 @@ class AlunoController extends Controller
             ]);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return isWeb()
-                ? redirect()->route('alunos.index')->with('error', $mensagem)
-                : response($mensagem, 500);
+            return redirect()->route('alunos.index')->with('error', $mensagem);
         }
     }
 
