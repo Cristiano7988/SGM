@@ -68,8 +68,11 @@ export interface Turma {
     whatsapp: string,
     spotify: string,
     nucleo_id: number,
+    nucleo: Nucleo;
     dia_id: number,
+    dia: Dia;
     tipo_de_aula_id: number,
+    tipo_de_aula: TipoDeAula;
 }
 
 export interface RelacionadasATurma {
@@ -148,10 +151,20 @@ export interface RelacionadasAoAluno {
 export interface Matricula {
     id: number;
     aluno_id: number;
+    aluno: Aluno;
     turma_id: number;
-    created_at: string;
-    updated_at: string;
     turma: Turma;
+    pacote_id: number;
+    pacote: Pacote;
+    situacao_id: number;
+    situacao: Situacao;
+}
+
+export interface RelacionadasAMatricula {
+    turma: Turma;
+    aluno: Aluno;
+    situacao: Situacao;
+    pacote: Pacote;
 }
 
 export interface FormContentProps<T> {
