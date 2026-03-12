@@ -11,7 +11,7 @@ import { InputNumberContent } from "./input-number-content";
 export function FormUserContent({ inicialData, endpoint, related }: FormContentProps<User>) {
 
     const { data, setData, errors, clearErrors, hasErrors, processing, post } = useForm<FormProps<User>>(inicialData);
-    // const { processing: processingDeletion, delete: deleteUser } = useForm();
+    const { processing: processingDeletion, delete: deleteUser } = useForm();
     const editing = location.pathname.includes("edit");
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -24,10 +24,10 @@ export function FormUserContent({ inicialData, endpoint, related }: FormContentP
         post(param);
     };
 
-    // const submitDeletion = (e: React.FormEvent) => {
-    //     e.preventDefault();
-    //     if (confirm('Tem certeza que deseja excluir este usuário?')) deleteUser(route('users.destroy', data.id));
-    // };
+    const submitDeletion = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (confirm('Tem certeza que deseja excluir este usuário?')) deleteUser(route('users.destroy', data.id));
+    };
 
     const alunos = data.alunos.length ? data.alunos : [{ id: 0 }];
 
@@ -274,7 +274,7 @@ export function FormUserContent({ inicialData, endpoint, related }: FormContentP
             </div>
 
         </form>
-        {/* {editing && <form onSubmit={submitDeletion} >
+        {editing && <form onSubmit={submitDeletion} >
             <div className="flex justify-end mt-4">
                 <button
                     type="submit"
@@ -284,6 +284,6 @@ export function FormUserContent({ inicialData, endpoint, related }: FormContentP
                     {processingDeletion ? "Excluindo..." : "Excluir"}
                 </button>
             </div>
-        </form>} */}
+        </form>}
     </>);
 }

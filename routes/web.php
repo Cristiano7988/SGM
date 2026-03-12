@@ -100,6 +100,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
         Route::post('/{user}', [UserController::class, 'update'])->name('users.update');
         Route::get('/{user}', [UserController::class, 'show'])->name('users.show');
+        Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     });
 
 require __DIR__.'/settings.php';

@@ -222,7 +222,7 @@ Route::middleware('auth:sanctum')->group(function () {
         });
 
         Route::prefix('/users')->group(function () {
-            Route::delete('/{user}', [UserController::class, 'delete']);
+            Route::delete('/{user}', [UserController::class, 'destroy']);
         });
     });
 });

@@ -434,14 +434,14 @@ class UserController extends Controller
         }
     }
 
-    public function edit()
+    public function edit(User $user)
     {
         try {
-            $user = Auth::user();
+            $authUser = Auth::user();
 
-            $alunos = $user && $user->is_admin
+            $alunos = $authUser && $authUser->is_admin
                 ? Aluno::all()
-                : $user->alunos;
+                : $authUser->alunos;
 
             return Inertia::render('users/edit', [
                 'user' => $user->load(['alunos']),
@@ -502,7 +502,7 @@ class UserController extends Controller
      *
      * @param  User  $user
      */
-    protected function delete(User $user)
+    public function destroy(User $user)
     {
         try {
             DB::beginTransaction();
@@ -511,10 +511,14 @@ class UserController extends Controller
             $excluido = Trata::exclusao($user, 'Usuário');
             if ($excluido) DB::commit(); // Exclui somente se conseguir notificar o cliente
         
-            return response("O usuário de nº {$user->id}, {$user->nome},  foi deletado.");
+            return isWeb()
+                ? redirect()->route('users.index')->with('success', $excluido)
+                : response("O usuário de id {$user->id} foi excluído com sucesso.");
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+            return isWeb()
+                ? redirect()->route('users.index')->with('error', $mensagem)
+                : response($mensagem, 500);
         }
     }
 }
