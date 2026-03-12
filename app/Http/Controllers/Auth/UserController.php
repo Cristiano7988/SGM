@@ -8,77 +8,14 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Aluno;
 use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Http\Requests\Settings\UserRequest;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class UserController extends Controller
 {
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function validator(array $data, $user)
-    {
-        return $user
-            ? Validator::make($data, [
-                'cpf' => ['string', 'min:11', 'max:14', Rule::unique('users')->ignore($user->id)],
-                'cnpj' => ['string', 'min:14', 'max:18', Rule::unique('users')->ignore($user->id)],
-                'whatsapp' => ['string', 'min:3', 'max:100', Rule::unique('users')->ignore($user->id)],
-                'instagram' => ['string', 'url', 'min:5', 'max:255', Rule::unique('users')->ignore($user->id)],
-                'cep' => ['string', 'min:8', 'max:9'],
-                'vinculo' => ['string', 'min:2', 'max:30'],
-                'pais' => ['string', 'min:2', 'max:50'],
-                'estado' => ['string', 'min:2', 'max:70'],
-                'cidade' => ['string', 'min:2', 'max:255'],
-                'bairro' => ['string', 'min:2', 'max:255'],
-                'logradouro' => ['string', 'min:2', 'max:255'],
-                'numero' => ['numeric', 'min:1', 'max:999999'],
-                'complemento' => ['numeric', 'min:1', 'max:999999']
-            ])
-            : Validator::make($data, [
-                'nome' => ['required', 'string', 'min:2', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-                'password' => ['required', 'string', 'min:8', 'confirmed']
-            ]);
-    }
-
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function validatorForRelatedUser(array $data)
-    {
-        return Validator::make($data, [
-            'nome' => ['required', 'string', 'min:2', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'cpf' => ['string', 'min:11', 'max:14', 'unique:users'],
-            'cnpj' => ['string', 'min:14', 'max:18', 'unique:users'],
-            'whatsapp' => ['string', 'min:3', 'max:100', 'unique:users'],
-            'instagram' => ['string', 'url', 'min:5', 'max:255', 'unique:users'],
-            'cep' => ['string', 'min:8', 'max:9'],
-            'vinculo' => ['string', 'min:2', 'max:30'],
-            'pais' => ['string', 'min:2', 'max:50'],
-            'estado' => ['string', 'min:2', 'max:70'],
-            'cidade' => ['string', 'min:2', 'max:255'],
-            'bairro' => ['string', 'min:2', 'max:255'],
-            'logradouro' => ['string', 'min:2', 'max:255'],
-            'numero' => ['numeric', 'min:1', 'max:999999'],
-            'complemento' => ['numeric', 'min:1', 'max:999999'],
-            'tipos' => ['array', 'min:1', 'max:2'],
-        ]);
-    }
-
     /**
      * Show all users.
      *
@@ -418,40 +355,61 @@ class UserController extends Controller
         }
     }
 
+    public function create()
+    {
+        try {
+            $user = Auth::user();
+
+            if(!$user) return redirect()->route('login')->with('error', 'Usuário sem permissão para acessar este recurso');
+
+            $alunos = $user->is_admin
+                ? Aluno::all()
+                : $user->alunos;
+
+            return Inertia::render('users/create', [
+                'alunos' => $alunos
+            ]);
+        } catch (\Throwable $th) {
+            $mensagem = Trata::erro($th);
+            return redirect()->route('users.create')->with('error', $mensagem);
+        }
+    }
+
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  Request  $request
-     * @return \App\Models\User
      */
-    protected function store(Request $request):Response
+    public function store(UserRequest $request)
     {
         try {
             $authUser = Auth::user();
 
-            // Aqui validamos os dados da requisição
-            $validator = $this->validatorForRelatedUser($request->all());
-            if ($validator->fails()) return response($validator->errors(), 422);
-
             // Aqui validamos se o usuário a ser atualizado tem relação com o usuário logado
             if ($authUser && !$authUser->is_admin) {
-                if (!$authUser->alunos->count()) return response('Adicione um aluno antes de prosseguir', 403); // Validação necessária pois são os alunos que ligam usuários a outros usuários!
+                if (!$authUser->alunos->count()) return isWeb()
+                    ? redirect()->route('users.index')->with('error', 'Usuário sem permissão para acessar este recurso')
+                    : response('Usuário sem permissão para acessar este recurso', 403); // Validação necessária pois são os alunos que ligam usuários a outros usuários!
             }
-            $user = Auth::user();
+            $data = $request->validated();
+
             $senhaAleatoria = Str::random(8);
-            $senhaCriptografada = $request['password'] || $senhaAleatoria;
-            $request['password'] = Hash::make($senhaCriptografada);
+            $senhaCriptografada = $data['password'] ?? $senhaAleatoria;
+            $data['password'] = Hash::make($senhaCriptografada);
 
             DB::beginTransaction();
-            $newUser = User::create($request->all());
+            $newUser = User::create($data);
             if (isset($request['tipos']) && !!count($request['tipos'] ?? [])) $newUser->tipos()->attach($request['tipos']);
-            $newUser->alunos()->attach($user->alunos);
+            $newUser->alunos()->attach($request->alunos);
             DB::commit();
     
-            return response($newUser);
+            return isWeb()
+                ? redirect()->route('users.index')->with('success', 'Usuário criado com sucesso.')
+                : response($newUser);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+            return isWeb()
+                ? redirect()->route('users.index')->with('error', $mensagem)
+                : response($mensagem, 500);
         }
     }
 
@@ -491,9 +449,7 @@ class UserController extends Controller
             ]);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return isWeb()
-                ? redirect()->route('users.index')->with('error', $mensagem)
-                : response($mensagem, 500);
+            return redirect()->route('users.index')->with('error', $mensagem);
         }
     }
 
@@ -545,9 +501,8 @@ class UserController extends Controller
      * Delete an user.
      *
      * @param  User  $user
-     * @return Boolean
      */
-    protected function delete(User $user):Response
+    protected function delete(User $user)
     {
         try {
             DB::beginTransaction();

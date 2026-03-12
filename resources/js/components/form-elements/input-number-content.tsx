@@ -6,12 +6,18 @@ interface InputNumberContentProps {
     titulo: string;
     column: string;
     error?: string;
+    clearErrors: Function;
     setData: Function;
     min?: number;
     max?: number;
 }
 
-export function InputNumberContent({ titulo, column, value, error, setData, min = 0, max = 100 }: InputNumberContentProps) {
+export function InputNumberContent({ titulo, column, value, error, clearErrors, setData, min = 0, max = 100 }: InputNumberContentProps) {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        clearErrors(column);
+        setData(column, e.target.value);
+    }
+
     return (
         <div className="relative w-full flex flex-col gap-4">
             <Label htmlFor={column} className='block font-medium text-white'>{titulo}</Label>
@@ -25,7 +31,7 @@ export function InputNumberContent({ titulo, column, value, error, setData, min 
                     colorScheme: 'light',
                 }}
                 value={value}
-                onChange={(e) => setData(column, Number(e.target.value))}
+                onChange={handleChange}
             />
             <ErrorLabel error={error} />
         </div>

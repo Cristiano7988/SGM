@@ -91,14 +91,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/{aluno}', [AlunoController::class, 'update'])->name('alunos.update');
         Route::get('/{aluno}', [AlunoController::class, 'show'])->name('alunos.show');
         Route::delete('/{aluno}', [AlunoController::class, 'destroy'])->name('alunos.destroy');
-    });
-
-    Route::prefix('/users')->group(function () {
+        });
+        
+        Route::prefix('/users')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('users.index');
-        Route::get('/{user}', [UserController::class, 'show'])->name('users.show');
+        Route::get('/create', [UserController::class, 'create'])->name('users.create');
+        Route::post('/', [UserController::class, 'store'])->name('users.store');
         Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
         Route::post('/{user}', [UserController::class, 'update'])->name('users.update');
-        Route::get('/create', [UserController::class, 'create'])->name('users.create');
+        Route::get('/{user}', [UserController::class, 'show'])->name('users.show');
     });
 
 require __DIR__.'/settings.php';

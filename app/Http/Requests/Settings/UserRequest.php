@@ -4,6 +4,8 @@ namespace App\Http\Requests\Settings;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class UserRequest extends FormRequest
 {
@@ -23,97 +25,31 @@ class UserRequest extends FormRequest
             ]);
         }
 
-        return [
-            'nome' => [
-                $user ? 'nullable' : 'required',
-                'string',
-                'min:2',
-                'max:255'
-            ],
-            // 'email' => [
-            //     $user ? 'nullable' : 'required',
-            //     'email',
-            //     'max:255'
-            // ],
-            // 'password' => [
-            //     $user ? 'nullable' : 'required',
-            //     'string',
-            //     'min:8',
-            //     'confirmed'
-            // ],
-            'email_nf' => [
-                'required',
-                'email',
-                'max:255'
-            ],
-            'cpf' => [
-                'nullable',
-                // 'required',
-                'string',
-                'size:14'
-            ],
-            'cnpj' => [
-                'nullable',
-                // 'required',
-                'string',
-                'size:18'
-            ],
-            // 'vinculo' => [
-            //     'required',
-            //     'string',
-            //     'max:255'
-            // ],
-            'whatsapp' => [
-                'nullable',
-                'string',
-                'max:255'
-            ],
-            'instagram' => [
-                'nullable',
-                'string',
-                'max:255'
-            ],
-            'cep' => [
-                'nullable',
-                'string',
-                'size:9'
-            ],
-            'pais' => [
-                'nullable',
-                'string',
-                'max:255'
-            ],
-            'estado' => [
-                'nullable',
-                'string',
-                'max:255'
-            ],
-            'cidade' => [
-                'nullable',
-                'string',
-                'max:255'
-            ],
-            'bairro' => [
-                'nullable',
-                'string',
-                'max:255'
-            ],
-            'logradouro' => [
-                'nullable',
-                'string',
-                'max:255'
-            ],
-            'numero' => [
-                'nullable',
-                'integer',
-                'max:255'
-            ],
-            'complemento' => [
-                'nullable',
-                'string',
-                'max:255'
-            ],
-            'alunos.*' => ['integer', 'exists:alunos,id'],
-        ];
+        $id = $user ? $user->id : null;
+            
+        return !request()->password
+            ? [
+                'nome' => ['required', 'string', 'min:2', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($id)],
+                'email_nf' => ['string', 'email', 'max:255'],
+                'cpf' => ['nullable', 'string', 'min:11', 'max:14', Rule::unique('users')->ignore($id)],
+                'cnpj' => ['nullable', 'string', 'min:14', 'max:18', Rule::unique('users')->ignore($id)],
+                'whatsapp' => ['string', 'min:3', 'max:100', Rule::unique('users')->ignore($id)],
+                'instagram' => ['nullable', 'string', 'url', 'min:5', 'max:255', Rule::unique('users')->ignore($id)],
+                'cep' => ['nullable', 'string', 'min:8', 'max:9'],
+                // 'vinculo' => ['string', 'min:2', 'max:30'],
+                'pais' => ['string', 'min:2', 'max:50'],
+                'estado' => ['string', 'min:2', 'max:70'],
+                'cidade' => ['string', 'min:2', 'max:255'],
+                'bairro' => ['string', 'min:2', 'max:255'],
+                'logradouro' => ['string', 'min:2', 'max:255'],
+                'numero' => ['integer', 'min:1', 'max:999999'],
+                'complemento' => ['string', 'min:1', 'max:999999']
+            ]
+            : [
+                'nome' => ['required', 'string', 'min:2', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+                'password' => ['required', 'string', 'min:8', 'confirmed']
+            ];
     }
 }

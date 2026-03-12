@@ -2,10 +2,11 @@ import { Link, useForm } from "@inertiajs/react";
 import { ButtonSubmitContent } from "./button-submit-content";
 import { InputTextContent } from "./input-text-content";
 import { SelectModelContent } from "./select-model-content";
-import { CalendarIcon, Unlink } from "lucide-react";
+import { Unlink } from "lucide-react";
 import { Aluno, FormContentProps, User } from "@/types/models";
 import { FormProps } from "@/types/index";
 import ErrorLabel from "../error-label";
+import { InputNumberContent } from "./input-number-content";
 
 export function FormUserContent({ inicialData, endpoint, related }: FormContentProps<User>) {
 
@@ -51,12 +52,6 @@ export function FormUserContent({ inicialData, endpoint, related }: FormContentP
         clearErrors("alunos");
     };
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setData(name, value);
-        clearErrors(name);
-    }
-
     return (<>
         <form onSubmit={submit} className="flex flex-col gap-6 space-y-4">
             <div className='flex gap-4'>
@@ -64,7 +59,8 @@ export function FormUserContent({ inicialData, endpoint, related }: FormContentP
                     column="nome"
                     titulo="Nome"
                     value={data.nome}
-                    setData={handleInputChange}
+                    setData={setData}
+                    clearErrors={clearErrors}
                     error={errors.nome}
                     required
                 />
@@ -73,30 +69,44 @@ export function FormUserContent({ inicialData, endpoint, related }: FormContentP
                     column="email_nf"
                     titulo="Email para Nota Fiscal"
                     value={data.email_nf}
-                    setData={handleInputChange}
+                    setData={setData}
+                    clearErrors={clearErrors}
                     error={errors.email_nf}
                 />
             </div>
+
+            {!editing && <InputTextContent
+                column="email"
+                titulo="Email de acesso"
+                value={data.email}
+                setData={setData}
+                clearErrors={clearErrors}
+                error={errors.email}
+            />}
             
             <hr />
 
             <div className='flex flex-col gap-4'>
                 <h2 className="text-lg font-semibold">Documentos</h2>
-                <InputTextContent
-                    column="cpf"
-                    titulo="CPF"
-                    value={data.cpf}
-                    setData={handleInputChange}
-                    error={errors.cpf}
-                />
-
-                <InputTextContent
-                    column="cnpj"
-                    titulo="CNPJ"
-                    value={data.cnpj}
-                    setData={handleInputChange}
-                    error={errors.cnpj}
+                <div className='flex gap-4'>
+                    <InputTextContent
+                        column="cpf"
+                        titulo="CPF"
+                        value={data.cpf}
+                        setData={setData}
+                        clearErrors={clearErrors}
+                        error={errors.cpf}
                     />
+
+                    <InputTextContent
+                        column="cnpj"
+                        titulo="CNPJ"
+                        value={data.cnpj}
+                        setData={setData}
+                        clearErrors={clearErrors}
+                        error={errors.cnpj}
+                    />
+                </div>
             </div>
             {/* <InputTextContent
                 column="vinculo"
@@ -110,20 +120,24 @@ export function FormUserContent({ inicialData, endpoint, related }: FormContentP
 
             <div className='flex flex-col gap-4'>
                 <h2 className="text-lg font-semibold">Contato</h2>
-                <InputTextContent
-                    column="whatsapp"
-                    titulo="WhatsApp"
-                    value={data.whatsapp}
-                    setData={handleInputChange}
-                    error={errors.whatsapp}
-                />
-                <InputTextContent
-                    column="instagram"
-                    titulo="Instagram"
-                    value={data.instagram}
-                    setData={handleInputChange}
-                    error={errors.instagram}
-                />
+                <div className='flex gap-4'>
+                    <InputTextContent
+                        column="whatsapp"
+                        titulo="WhatsApp"
+                        value={data.whatsapp}
+                        setData={setData}
+                        clearErrors={clearErrors}
+                        error={errors.whatsapp}
+                    />
+                    <InputTextContent
+                        column="instagram"
+                        titulo="Instagram"
+                        value={data.instagram}
+                        setData={setData}
+                        clearErrors={clearErrors}
+                        error={errors.instagram}
+                    />
+                </div>
             </div>
 
             <hr />
@@ -135,7 +149,8 @@ export function FormUserContent({ inicialData, endpoint, related }: FormContentP
                     column="cep"
                     titulo="CEP"
                     value={data.cep}
-                    setData={handleInputChange}
+                    setData={setData}
+                    clearErrors={clearErrors}
                     error={errors.cep}
                 />
 
@@ -144,7 +159,8 @@ export function FormUserContent({ inicialData, endpoint, related }: FormContentP
                         column="pais"
                         titulo="País"
                         value={data.pais}
-                        setData={handleInputChange}
+                        setData={setData}
+                        clearErrors={clearErrors}
                         error={errors.pais}
                         required
                     />
@@ -152,7 +168,8 @@ export function FormUserContent({ inicialData, endpoint, related }: FormContentP
                         column="estado"
                         titulo="Estado"
                         value={data.estado}
-                        setData={handleInputChange}
+                        setData={setData}
+                        clearErrors={clearErrors}
                         error={errors.estado}
                     />
                 </div>
@@ -162,14 +179,16 @@ export function FormUserContent({ inicialData, endpoint, related }: FormContentP
                         column="cidade"
                         titulo="Cidade"
                         value={data.cidade}
-                        setData={handleInputChange}
+                        setData={setData}
+                        clearErrors={clearErrors}
                         error={errors.cidade}
                     />
                     <InputTextContent
                         column="bairro"
                         titulo="Bairro"
                         value={data.bairro}
-                        setData={handleInputChange}
+                        setData={setData}
+                        clearErrors={clearErrors}
                         error={errors.bairro}
                     />
                 </div>
@@ -178,23 +197,26 @@ export function FormUserContent({ inicialData, endpoint, related }: FormContentP
                     column="logradouro"
                     titulo="Logradouro"
                     value={data.logradouro}
-                    setData={handleInputChange}
+                    setData={setData}
+                    clearErrors={clearErrors}
                     error={errors.logradouro}
                 />
 
                 <div className='flex gap-4'>
-                    <InputTextContent
+                    <InputNumberContent
                         column="numero"
                         titulo="Número"
                         value={data.numero}
-                        setData={handleInputChange}
+                        setData={setData}
+                        clearErrors={clearErrors}
                         error={errors.numero}
                     />
                     <InputTextContent
                         column="complemento"
                         titulo="Complemento"
                         value={data.complemento}
-                        setData={handleInputChange}
+                        setData={setData}
+                        clearErrors={clearErrors}
                         error={errors.complemento}
                     />
                 </div>

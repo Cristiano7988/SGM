@@ -4,7 +4,6 @@ export interface User {
     id: number;
     nome: string;
     email: string;
-    password: string;
     email_nf: string;
     cpf: string;
     cnpj: string;
@@ -17,11 +16,8 @@ export interface User {
     cidade: string;
     bairro: string;
     logradouro: string;
-    numero: string;
+    numero: number | undefined;
     complemento: string;
-    email_verified_at: string | null;
-    created_at: string;
-    updated_at: string;
 }
 
 export interface RelacionadasAoUser {
