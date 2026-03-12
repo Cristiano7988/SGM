@@ -120,7 +120,13 @@ class NucleoController extends Controller
      */
     public function create()
     {
-        return Inertia::render('nucleos/create');
+        $turmas = Turma::all();
+        $pacotes = Pacote::all();
+
+        return Inertia::render('nucleos/create',  [
+            'turmas' => $turmas,
+            'pacotes' => $pacotes
+        ]);
     }
 
     /**
