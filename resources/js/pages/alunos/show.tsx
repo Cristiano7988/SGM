@@ -19,7 +19,7 @@ export default function Show(props: any) {
             <div className='flex flex-col gap-4 p-4'>
                 <p><strong>Nome:</strong> {aluno.nome}</p>
                 <p><strong>Data de Nascimento:</strong> {aluno.data_de_nascimento_formatada}</p>
-                <p><strong>Idade:</strong>{aluno.idade}</p>
+                <p><strong>Idade:</strong> {aluno.idade}</p>
 
                 <hr />
 
