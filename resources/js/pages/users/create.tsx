@@ -12,7 +12,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Create(props: { session: any, alunos: Aluno[] }) {
     const { session, alunos } = props;
-    const usuarioInicial: User & RelacionadasAoUser = {
+    const initialData: User & RelacionadasAoUser = {
         id: 0,
         nome: '',
         email: '',
@@ -42,7 +42,7 @@ export default function Create(props: { session: any, alunos: Aluno[] }) {
                 <h1 className="text-xl font-bold mb-4">Criar Usuário</h1>
 
                 <FormUserContent
-                    inicialData={usuarioInicial}
+                    initialData={initialData}
                     endpoint={route("users.store")}
                     related={{ alunos }}
                 />

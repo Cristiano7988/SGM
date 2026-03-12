@@ -5,8 +5,8 @@ import { FormContentProps, Periodo } from "@/types/models";
 import { InputDateContent } from "./input-date-content";
 import { useForm } from "@inertiajs/react";
 
-export function FormPeriodoContent({ inicialData, endpoint, related }: FormContentProps<Periodo>) {
-    const { data, setData, errors, clearErrors, hasErrors, processing, post } = useForm<FormProps<Periodo>>(inicialData);
+export function FormPeriodoContent({ initialData, endpoint, related }: FormContentProps<Periodo>) {
+    const { data, setData, errors, clearErrors, hasErrors, processing, post } = useForm<FormProps<Periodo>>(initialData);
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

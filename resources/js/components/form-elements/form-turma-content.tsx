@@ -11,8 +11,8 @@ import { TextAreaContent } from "./text-area-content";
 import { useForm } from "@inertiajs/react";
 import { FormProps } from "@/types";
 
-export function FormTurmaContent({ inicialData, endpoint, related }: FormContentProps<Turma>) {
-    const { data, setData, errors, clearErrors, hasErrors, processing, post } = useForm<FormProps<Turma>>(inicialData);
+export function FormTurmaContent({ initialData, endpoint, related }: FormContentProps<Turma>) {
+    const { data, setData, errors, clearErrors, hasErrors, processing, post } = useForm<FormProps<Turma>>(initialData);
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

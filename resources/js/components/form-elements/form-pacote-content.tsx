@@ -7,8 +7,8 @@ import { SwitchContent } from "./switch-content";
 import { FormContentProps, Pacote } from "@/types/models";
 import { FormProps } from "@/types";
 
-export function FormPacoteContent({ inicialData, endpoint, related }: FormContentProps<Pacote>) {
-    const { data, setData, errors, clearErrors, hasErrors, processing, post } = useForm<FormProps<Pacote>>(inicialData);
+export function FormPacoteContent({ initialData, endpoint, related }: FormContentProps<Pacote>) {
+    const { data, setData, errors, clearErrors, hasErrors, processing, post } = useForm<FormProps<Pacote>>(initialData);
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

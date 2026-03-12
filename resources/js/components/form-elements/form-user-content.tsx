@@ -8,8 +8,8 @@ import { FormProps } from "@/types/index";
 import ErrorLabel from "../error-label";
 import { InputNumberContent } from "./input-number-content";
 
-export function FormUserContent({ inicialData, endpoint, related }: FormContentProps<User>) {
-    const { data, setData, errors, clearErrors, hasErrors, processing, post } = useForm<FormProps<User>>(inicialData);
+export function FormUserContent({ initialData, endpoint, related }: FormContentProps<User>) {
+    const { data, setData, errors, clearErrors, hasErrors, processing, post } = useForm<FormProps<User>>(initialData);
 
     const editing = location.pathname.includes("edit");
 

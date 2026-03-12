@@ -28,7 +28,7 @@ export default function Edit(props: EditPropsPacote) {
                 <h1 className="text-xl font-bold mb-4">Editar Pacote</h1>
 
                 <FormPacoteContent
-                    inicialData={pacote}
+                    initialData={pacote}
                     endpoint={route('pacotes.update', pacote.id)}
                     related={{ nucleos }}
                 />

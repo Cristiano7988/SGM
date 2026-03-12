@@ -11,14 +11,15 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Create(props: { session: any, users: User[], matriculas: Matricula[] }) {
-    const alunoInicial: Aluno & RelacionadasAoAluno = {
+    const { users, matriculas } = props;
+    const initialData: Aluno & RelacionadasAoAluno = {
         id: 0,
         nome: '',
         data_de_nascimento: '',
         data_de_nascimento_formatada: '',
         idade: '',
-        users: props.users,
-        matriculas: props.matriculas,
+        users,
+        matriculas,
     };
 
     return (
@@ -30,12 +31,9 @@ export default function Create(props: { session: any, users: User[], matriculas:
                 <h1 className="text-xl font-bold mb-4">Criar Aluno</h1>
 
                 <FormAlunoContent
-                    inicialData={alunoInicial}
-                    endpoint="alunos.store"
-                    related={{
-                        users: props.users,
-                        matriculas: props.matriculas,
-                    }}
+                    initialData={initialData}
+                    endpoint={route("alunos.store")}
+                    related={{ users, matriculas }}
                 />
             </div>
         </AppLayout>

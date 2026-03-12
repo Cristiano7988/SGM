@@ -39,8 +39,8 @@ export interface Nucleo {
     idade_maxima: number;
     inicio_matricula: string;
     fim_matricula: string;
-    created_at: string;
-    updated_at: string;
+    // created_at: string;
+    // updated_at: string;
     unidade_de_tempo_minima: string;
     unidade_de_tempo_maxima: string;
 }
@@ -151,24 +151,25 @@ export interface RelacionadasAoAluno {
 export interface Matricula {
     id: number;
     aluno_id: number;
-    aluno: Aluno;
     turma_id: number;
-    turma: Turma;
     pacote_id: number;
-    pacote: Pacote;
     situacao_id: number;
-    situacao: Situacao;
 }
 
 export interface RelacionadasAMatricula {
-    turma: Turma;
-    aluno: Aluno;
-    situacao: Situacao;
-    pacote: Pacote;
+    turma?: Turma;
+    aluno?: Aluno | null;
+    situacao?: Situacao;
+    pacote?: Pacote;
+    // Para o filtro de Matrícula
+    turmas: Turma[];
+    alunos: Aluno[];
+    situacoes: Situacao[];
+    pacotes: Pacote[];
 }
 
 export interface FormContentProps<T> {
-    inicialData: T,
+    initialData: T,
     endpoint: string,
     related: any
 };

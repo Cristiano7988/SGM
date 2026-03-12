@@ -1,4 +1,4 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, CreatePropsPacote } from '@/types';
 import Session from '@/components/session';
@@ -9,19 +9,16 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Create(props: CreatePropsPacote) {
-    const { session } = props;
-    const { data: formData, setData, post, processing, errors } = useForm({
+    const { session, nucleos, periodos } = props;
+    const initialData = {
         id: 0,
         nome: '',
-        nucleo_id: 0,
-        ativo: false,
         valor: 0,
-    });
-
-    const submit = (e: React.FormEvent) => {
-        e.preventDefault();
-        post(route('pacotes.store'));
-    };
+        valor_formatado: '',
+        tipo: '',
+        ativo: false,
+        nucleo_id: 0,
+    }
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -32,12 +29,9 @@ export default function Create(props: CreatePropsPacote) {
                 <h1 className="text-xl font-bold mb-4">Criar Pacote</h1>
 
                 <FormPacoteContent
-                    data={formData}
-                    processing={processing}
-                    submit={submit}
-                    setData={setData}
-                    errors={errors}
-                    props={props}
+                    initialData={initialData}
+                    endpoint={route("pacote.store")}
+                    related={{ nucleos, periodos }}
                 />
             </div>
         </AppLayout>

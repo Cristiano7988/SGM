@@ -29,7 +29,7 @@ export default function Edit(props: { session: any, aluno: Aluno & RelacionadasA
                 <h1 className="text-xl font-bold mb-4">Editar Aluno</h1>
 
                 <FormAlunoContent
-                    inicialData={aluno}
+                    initialData={aluno}
                     endpoint={route("alunos.update", aluno.id)}
                     related={{ users, matriculas }}
                 />

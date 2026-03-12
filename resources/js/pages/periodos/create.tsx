@@ -10,7 +10,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Create(props: CreatePropsPeriodo) {
     const { session, pacotes } = props;
-    const inicialData = {
+    const initialData = {
         id: 0,
         inicio: '',
         fim: '',
@@ -26,7 +26,7 @@ export default function Create(props: CreatePropsPeriodo) {
                 <h1 className="text-xl font-bold mb-4">Criar Período</h1>
 
                 <FormPeriodoContent
-                    inicialData={inicialData}
+                    initialData={initialData}
                     endpoint={route('periodos.store')}
                     related={{ pacotes }}
                 />

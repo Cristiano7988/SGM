@@ -29,7 +29,7 @@ export default function Edit(props: EditPropsTurma) {
                 <h1 className="text-xl font-bold mb-4">Editar Turma</h1>
 
                 <FormTurmaContent
-                    inicialData={turma}
+                    initialData={turma}
                     endpoint={route('turmas.update', turma.id)}
                     related={{ nucleos, dias, tipos_de_aula }}
                 />

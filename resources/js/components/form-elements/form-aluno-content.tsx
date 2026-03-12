@@ -8,8 +8,8 @@ import { Aluno, FormContentProps, User } from "@/types/models";
 import { FormProps } from "@/types/index";
 import ErrorLabel from "../error-label";
 
-export function FormAlunoContent({ inicialData, endpoint, related }: FormContentProps<Aluno>) {
-    const { data, setData, errors, clearErrors, hasErrors, processing, post } = useForm<FormProps<Aluno>>(inicialData);
+export function FormAlunoContent({ initialData, endpoint, related }: FormContentProps<Aluno>) {
+    const { data, setData, errors, clearErrors, hasErrors, processing, post } = useForm<FormProps<Aluno>>(initialData);
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
