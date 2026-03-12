@@ -30,7 +30,7 @@ export default function Edit(props: { session: any, user: User & RelacionadasAoU
 
                 <FormUserContent
                     inicialData={user}
-                    endpoint={route("users.update")}
+                    endpoint={route("users.update", user.id)}
                     related={{ alunos }}
                 />
 

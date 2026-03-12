@@ -17,7 +17,7 @@ export default function Edit(props: { session: any, aluno: Aluno & RelacionadasA
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (confirm('Tem certeza que deseja excluir este aluno?')) deleteAluno(route('alunos.destroy', props.aluno.id));
+        if (confirm('Tem certeza que deseja excluir este aluno?')) deleteAluno(route('alunos.destroy', aluno.id));
     };
 
     return (
@@ -30,7 +30,7 @@ export default function Edit(props: { session: any, aluno: Aluno & RelacionadasA
 
                 <FormAlunoContent
                     inicialData={aluno}
-                    endpoint={route("alunos.update")}
+                    endpoint={route("alunos.update", aluno.id)}
                     related={{ users, matriculas }}
                 />
 

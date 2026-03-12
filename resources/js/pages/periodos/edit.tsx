@@ -29,7 +29,7 @@ export default function Edit(props: EditPropsPeriodo) {
 
                 <FormPeriodoContent
                     inicialData={periodo}
-                    endpoint={route("periodos.update")}
+                    endpoint={route("periodos.update", periodo.id)}
                     related={{ pacotes }}
                 />
 
