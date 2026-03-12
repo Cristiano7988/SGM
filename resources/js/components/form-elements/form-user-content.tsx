@@ -9,24 +9,14 @@ import ErrorLabel from "../error-label";
 import { InputNumberContent } from "./input-number-content";
 
 export function FormUserContent({ inicialData, endpoint, related }: FormContentProps<User>) {
-
     const { data, setData, errors, clearErrors, hasErrors, processing, post } = useForm<FormProps<User>>(inicialData);
-    const { processing: processingDeletion, delete: deleteUser } = useForm();
+
     const editing = location.pathname.includes("edit");
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const param = editing
-            ? route(endpoint, data.id)
-            : route(endpoint);
-
-        post(param);
-    };
-
-    const submitDeletion = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (confirm('Tem certeza que deseja excluir este usuário?')) deleteUser(route('users.destroy', data.id));
+        post(endpoint);
     };
 
     const alunos = data.alunos.length ? data.alunos : [{ id: 0 }];
@@ -274,16 +264,5 @@ export function FormUserContent({ inicialData, endpoint, related }: FormContentP
             </div>
 
         </form>
-        {editing && <form onSubmit={submitDeletion} >
-            <div className="flex justify-end mt-4">
-                <button
-                    type="submit"
-                    className="cursor-pointer bg-red-500 text-white px-4 py-2 rounded-md"
-                    disabled={processing}
-                >
-                    {processingDeletion ? "Excluindo..." : "Excluir"}
-                </button>
-            </div>
-        </form>}
     </>);
 }

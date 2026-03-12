@@ -1,4 +1,4 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, CreatePropsTurma } from '@/types';
 import Session from '@/components/session';
@@ -10,8 +10,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Create(props: CreatePropsTurma) {
-    const { session } = props;
-    const { data: formData, setData, post, processing, errors } = useForm({
+    const { session, nucleos, dias, tipos_de_aula } = props;
+    const inicialData = {
         id: 0,
         nome: '',
         imagem: '',
@@ -28,11 +28,6 @@ export default function Create(props: CreatePropsTurma) {
         zoom_senha: '',
         whatsapp: '',
         spotify: '',
-    });
-
-    const submit = (e: React.FormEvent) => {
-        e.preventDefault();
-        post(route('turmas.store'));
     };
 
     return (
@@ -44,12 +39,9 @@ export default function Create(props: CreatePropsTurma) {
                 <h1 className="text-xl font-bold mb-4">Criar Turma</h1>
 
                 <FormTurmaContent
-                    data={formData}
-                    processing={processing}
-                    submit={submit}
-                    setData={setData}
-                    errors={errors}
-                    props={props}
+                    inicialData={inicialData}
+                    endpoint={route('turmas.store')}
+                    related={{ nucleos, dias, tipos_de_aula }}
                 />
             </div>
         </AppLayout>

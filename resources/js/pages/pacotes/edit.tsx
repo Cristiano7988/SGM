@@ -10,21 +10,9 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Edit(props: EditPropsPacote) {
-    const { pacote, session } = props;
-    const { data: formData, setData, post, processing, errors } = useForm({
-        id: pacote.id,
-        nome: pacote.nome,
-        valor: pacote.valor,
-        ativo: pacote.ativo,
-        nucleo_id: pacote.nucleo_id,
-    });
+    const { pacote, session, nucleos } = props;
 
-    const { processing: processingDeletion, delete: deletePacote } = useForm();
-
-    const submit = (e: React.FormEvent) => {
-        e.preventDefault();
-        post(route('pacotes.update', pacote.id));
-    };
+    const { processing, delete: deletePacote } = useForm();
 
     const submitDeletion = (e: React.FormEvent) => {
         e.preventDefault();
@@ -40,17 +28,14 @@ export default function Edit(props: EditPropsPacote) {
                 <h1 className="text-xl font-bold mb-4">Editar Pacote</h1>
 
                 <FormPacoteContent
-                    data={formData}
-                    processing={processing}
-                    submit={submit}
-                    setData={setData}
-                    errors={errors}
-                    props={props}
+                    inicialData={pacote}
+                    endpoint={route('pacotes.update', pacote.id)}
+                    related={{ nucleos }}
                 />
 
                 <form onSubmit={submitDeletion} className='mt-4'>
                     <ButtonSubmitContent
-                        processing={processingDeletion}
+                        processing={processing}
                         processingText="Excluindo..."
                         buttonText="Excluir"
                         classes="bg-red-500 hover:bg-red-600 focus:ring-red-500 focus:ring-offset-red-200"

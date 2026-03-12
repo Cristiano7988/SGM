@@ -1,3 +1,4 @@
+import { FormContentProps, Turma } from "@/types/models";
 import { ButtonSubmitContent } from "./button-submit-content";
 import { InputImageContent } from "./input-image-content";
 import { InputNumberContent } from "./input-number-content";
@@ -7,8 +8,18 @@ import { InputUrlContent } from "./input-url-content";
 import { SelectModelContent } from "./select-model-content";
 import { SwitchContent } from "./switch-content";
 import { TextAreaContent } from "./text-area-content";
+import { useForm } from "@inertiajs/react";
+import { FormProps } from "@/types";
 
-export function FormTurmaContent({ data, processing, submit, setData, errors, props }: any) {
+export function FormTurmaContent({ inicialData, endpoint, related }: FormContentProps<Turma>) {
+    const { data, setData, errors, clearErrors, hasErrors, processing, post } = useForm<FormProps<Turma>>(inicialData);
+
+    const submit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        post(endpoint);
+    };
+
     return (
         <form onSubmit={submit} className="flex flex-col gap-6 space-y-4">
             <InputImageContent
@@ -23,6 +34,7 @@ export function FormTurmaContent({ data, processing, submit, setData, errors, pr
                 value={data.nome}
                 setData={setData}
                 error={errors.nome}
+                clearErrors={clearErrors}
             />
 
             <TextAreaContent
@@ -38,7 +50,7 @@ export function FormTurmaContent({ data, processing, submit, setData, errors, pr
                     column="nucleo_id"
                     titulo="Núcleos"
                     id={data.nucleo_id}
-                    array={props.nucleos}
+                    array={related.nucleos}
                     setData={setData}
                     error={errors.nucleo_id}
                 />
@@ -47,7 +59,7 @@ export function FormTurmaContent({ data, processing, submit, setData, errors, pr
                     column="tipo_de_aula_id"
                     titulo="Tipo de aula"
                     id={data.tipo_de_aula_id}
-                    array={props.tipos_de_aula}
+                    array={related.tipos_de_aula}
                     setData={setData}
                     error={errors.tipo_de_aula_id}
                 />
@@ -58,7 +70,7 @@ export function FormTurmaContent({ data, processing, submit, setData, errors, pr
                     column="dia_id"
                     titulo="Dia"
                     id={data.dia_id}
-                    array={props.dias}
+                    array={related.dias}
                     setData={setData}
                     error={errors.dia_id}
                 />
@@ -117,6 +129,7 @@ export function FormTurmaContent({ data, processing, submit, setData, errors, pr
                         value={data.zoom_id}
                         setData={setData}
                         error={errors.zoom_id}
+                        clearErrors={clearErrors}
                     />
 
                     <InputTextContent
@@ -125,6 +138,7 @@ export function FormTurmaContent({ data, processing, submit, setData, errors, pr
                         value={data.zoom_senha}
                         setData={setData}
                         error={errors.zoom_senha}
+                        clearErrors={clearErrors}
                     />
                 </div>
             </div>
@@ -139,6 +153,7 @@ export function FormTurmaContent({ data, processing, submit, setData, errors, pr
                         setData={setData}
                         error={errors.vagas_ofertadas}
                         min={data.vagas_fora_do_site}
+                        clearErrors={clearErrors}
                     />
 
                     <InputNumberContent
@@ -149,16 +164,17 @@ export function FormTurmaContent({ data, processing, submit, setData, errors, pr
                         error={errors.vagas_fora_do_site}
                         min={0}
                         max={data.vagas_ofertadas}
+                        clearErrors={clearErrors}
                     />
                 </div>
             </div>
 
-            <ButtonSubmitContent
+            {!hasErrors && <ButtonSubmitContent
                 processing={processing}
                 processingText="Salvando..."
                 buttonText="Salvar"
                 classes="bg-blue-500 hover:bg-blue-600 focus:ring-blue-500 focus:ring-offset-blue-200"
-            />
+            />}
         </form>
     );
 }

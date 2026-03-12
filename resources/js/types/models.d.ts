@@ -58,7 +58,7 @@ export interface Turma {
     imagem: string;
     descricao: Array;
     vagas_fora_do_site: number,
-    vagas_preenchidas: number
+    // vagas_preenchidas: number
     vagas_ofertadas: number,
     horario: string,
     disponivel: boolean,
@@ -106,10 +106,10 @@ export interface Periodo {
     id: number;
     inicio: string;
     fim: string;
-    inicio_formatado: string;
-    fim_formatado: string;
-    pacote_id: number;
-    pacote: Pacote;
+    // inicio_formatado: string;
+    // fim_formatado: string;
+    // pacote_id: number;
+    // pacote: Pacote;
 }
 
 export interface RelacionadasAoPeriodo {

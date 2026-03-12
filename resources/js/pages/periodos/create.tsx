@@ -1,4 +1,4 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, CreatePropsPeriodo } from '@/types';
 import Session from '@/components/session';
@@ -9,17 +9,12 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Create(props: CreatePropsPeriodo) {
-    const { session } = props;
-    const { data: formData, setData, post, processing, errors } = useForm({
+    const { session, pacotes } = props;
+    const inicialData = {
         id: 0,
         inicio: '',
         fim: '',
         pacote_id: 0,
-    });
-
-    const submit = (e: React.FormEvent) => {
-        e.preventDefault();
-        post(route('periodos.store'));
     };
 
     return (
@@ -31,12 +26,9 @@ export default function Create(props: CreatePropsPeriodo) {
                 <h1 className="text-xl font-bold mb-4">Criar Período</h1>
 
                 <FormPeriodoContent
-                    data={formData}
-                    processing={processing}
-                    submit={submit}
-                    setData={setData}
-                    errors={errors}
-                    props={props}
+                    inicialData={inicialData}
+                    endpoint={route('periodos.store')}
+                    related={{ pacotes }}
                 />
             </div>
         </AppLayout>
