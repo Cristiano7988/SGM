@@ -11,97 +11,38 @@ use App\Http\Middleware\ChecaSeEAdmin;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('welcome');
-})->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    /**
+     * ROTAS ADMINISTRATIVAS
+    */
+    Route::middleware(ChecaSeEAdmin::class)->group(function () {
+        Route::resource('nucleos', NucleoController::class)->except(['index', 'show']);
+        Route::resource('turmas', TurmaController::class)->except(['index', 'show']);
+        Route::resource('pacotes', PacoteController::class)->except(['index', 'show']);
+        Route::resource('periodos', PeriodoController::class)->except(['index', 'show']);
+    });
+
+    /**
+     * ROTAS DE USUÁRIO COMUM
+     */
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
 
-    Route::middleware(ChecaSeEAdmin::class)
-        ->prefix('/nucleos')
-        ->group(function () {
-            Route::get('/create', [NucleoController::class, 'create'])->name('nucleos.create');
-            Route::post('/', [NucleoController::class, 'store'])->name('nucleos.store');
-            Route::get('/{nucleo}/edit', [NucleoController::class, 'edit'])->name('nucleos.edit');
-            Route::post('/{nucleo}', [NucleoController::class, 'update'])->name('nucleos.update');
-            Route::delete('/{nucleo}', [NucleoController::class, 'destroy'])->name('nucleos.destroy');
-        });
-
     Route::middleware(calculaIdadeDoAluno::class)
-        ->prefix('/nucleos')
-        ->group(function () {  
-            Route::get('/{nucleo}', [NucleoController::class, 'show'])->name('nucleos.show');
-            Route::get('/', [NucleoController::class, 'index'])->name('nucleos.index');
-        });
-
-    Route::middleware(ChecaSeEAdmin::class)
-        ->prefix('/turmas')
-        ->group(function () {
-            Route::get('/create', [TurmaController::class, 'create'])->name('turmas.create');
-            Route::post('/', [TurmaController::class, 'store'])->name('turmas.store');
-            Route::get('/{turma}/edit', [TurmaController::class, 'edit'])->name('turmas.edit');
-            Route::post('/{turma}', [TurmaController::class, 'update'])->name('turmas.update');
-            Route::delete('/{turma}', [TurmaController::class, 'destroy'])->name('turmas.destroy');
-        });
-
-    Route::prefix('/turmas')->group(function () {
-        Route::get('/', [TurmaController::class, 'index'])->name('turmas.index');
-        Route::get('/{turma}', [TurmaController::class, 'show'])->name('turmas.show');
-    });
-    
-    Route::middleware(ChecaSeEAdmin::class)
-        ->prefix('/pacotes')
-        ->group(function () {
-            Route::get('/{pacote}/edit', [PacoteController::class, 'edit'])->name('pacotes.edit');
-            Route::get('/create', [PacoteController::class, 'create'])->name('pacotes.create');
-            Route::post('/{pacote}', [PacoteController::class, 'update'])->name('pacotes.update');
-            Route::post('/', [PacoteController::class, 'store'])->name('pacotes.store');
-            Route::delete('/{pacote}', [PacoteController::class, 'destroy'])->name('pacotes.destroy');
-        });
-
-    Route::prefix('/pacotes')->group(function () {
-        Route::get('/', [PacoteController::class, 'index'])->name('pacotes.index');
-        Route::get('/{pacote}', [PacoteController::class, 'show'])->name('pacotes.show');
-    });
-
-    Route::prefix('/periodos')->group(function () {
-        Route::get('/', [PeriodoController::class, 'index'])->name('periodos.index');
-        Route::get('/{periodo}', [PeriodoController::class, 'show'])->name('periodos.show');
-    });
-
-    Route::middleware(ChecaSeEAdmin::class)
-        ->prefix('/periodos')
-        ->group(function () {
-            Route::get('/create', [PeriodoController::class, 'create'])->name('periodos.create');
-            Route::post('/', [PeriodoController::class, 'store'])->name('periodos.store');
-            Route::get('/{periodo}/edit', [PeriodoController::class, 'edit'])->name('periodos.edit');
-            Route::post('/{periodo}', [PeriodoController::class, 'update'])->name('periodos.update');
-            Route::delete('/{periodo}', [PeriodoController::class, 'destroy'])->name('periodos.destroy');
-        });
-    });
-
-    Route::prefix('/alunos')->group(function () {
-        Route::get('/', [AlunoController::class, 'index'])->name('alunos.index');
-        Route::get('/create', [AlunoController::class, 'create'])->name('alunos.create');
-        Route::post('/', [AlunoController::class, 'store'])->name('alunos.store');
-        Route::get('/{aluno}/edit', [AlunoController::class, 'edit'])->name('alunos.edit');
-        Route::post('/{aluno}', [AlunoController::class, 'update'])->name('alunos.update');
-        Route::get('/{aluno}', [AlunoController::class, 'show'])->name('alunos.show');
-        Route::delete('/{aluno}', [AlunoController::class, 'destroy'])->name('alunos.destroy');
-        });
+        ->resource('nucleos', NucleoController::class)->only(['index', 'show']);
         
-        Route::prefix('/users')->group(function () {
-        Route::get('/', [UserController::class, 'index'])->name('users.index');
-        Route::get('/create', [UserController::class, 'create'])->name('users.create');
-        Route::post('/', [UserController::class, 'store'])->name('users.store');
-        Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-        Route::post('/{user}', [UserController::class, 'update'])->name('users.update');
-        Route::get('/{user}', [UserController::class, 'show'])->name('users.show');
-        Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-    });
+    Route::resource('turmas', TurmaController::class)->only(['index', 'show']);
+    Route::resource('pacotes', PacoteController::class)->only(['index', 'show']);
+    Route::resource('periodos', PeriodoController::class)->only(['index', 'show']);
+    Route::resource('alunos', AlunoController::class);
+    Route::resource('users', UserController::class);
+});
+
+Route::get('/', function () {
+    return Inertia::render('welcome');
+})->name('home');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
