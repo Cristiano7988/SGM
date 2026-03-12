@@ -7,18 +7,19 @@ interface InputTextContentProps {
     column: string;
     error?: string;
     setData: Function;
+    required?: boolean;
 }
 
-export function InputTextContent({ titulo, column, value, error, setData }: InputTextContentProps) {
+export function InputTextContent({ titulo, column, value, error, setData, required = false }: InputTextContentProps) {
     return (
         <div className='flex flex-col gap-4 w-full'>
             <Label htmlFor={column} className='block font-medium text-white'>{titulo}</Label>
             <input
                 type="text"
                 name={column}
-                required
+                required={required}
                 value={value}
-                onChange={(e) => setData(column, e.target.value)}
+                onChange={setData}
                 className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <ErrorLabel error={error} />

@@ -6,8 +6,10 @@ use App\Helpers\Filtra;
 use App\Helpers\Trata;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Aluno;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Http\Requests\Settings\UserRequest;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -474,33 +476,49 @@ class UserController extends Controller
         }
     }
 
+    public function edit()
+    {
+        try {
+            $user = Auth::user();
+
+            $alunos = $user && $user->is_admin
+                ? Aluno::all()
+                : $user->alunos;
+
+            return Inertia::render('users/edit', [
+                'user' => $user->load(['alunos']),
+                'alunos' => $alunos
+            ]);
+        } catch (\Throwable $th) {
+            $mensagem = Trata::erro($th);
+            return isWeb()
+                ? redirect()->route('users.index')->with('error', $mensagem)
+                : response($mensagem, 500);
+        }
+    }
+
     /**
      * Update an user.
      *
      * @param  User  $user
-     * @param  Request  $request
-     * @return \App\Models\User
      */
-    protected function update(User $user, Request $request):Response
+    public function update(User $user, UserRequest $request)
     {
         try {
-            // Aqui validamos os dados da requisição
-            $validator = $this->validator($request->all(), $user);
-            if ($validator->fails()) return response($validator->errors(), 422);
-
             // Aqui validamos se o usuário a ser atualizado tem relação com o usuário logado
             $authUser = Auth::user();
             if ($authUser && !$authUser->is_admin) {
-                if (!$user->alunos->count()) return response('Adicione um aluno antes de prosseguir', 403); // Validação necessária pois são os alunos que ligam usuários a outros usuários!
-                
-                $usuariosRelacionados = false;
-                foreach($user->alunos as $aluno) if (in_array($authUser->id, $aluno->users->pluck('id')->toArray())) $usuariosRelacionados = true;
-                if (!$usuariosRelacionados) return response('Você não tem permissão para editar esse usuário', 403);
+                if (!$user->alunos->count()) return isWeb()
+                    ? redirect()->route('users.index')->with('error', 'Usuário sem permissão para acessar este recurso')
+                    : response('Usuário sem permissão para acessar este recurso', 403); // Validação necessária pois são os alunos que ligam usuários a outros usuários!
+                if (!$authUser->alunos->pluck('id')->intersect($user->alunos->pluck('id'))->count()) return isWeb()
+                    ? redirect()->route('users.index')->with('error', 'Usuário sem permissão para acessar este recurso')
+                    : response('Usuário sem permissão para acessar este recurso', 403);
             }
 
             DB::beginTransaction();
             if (!!$request['password']) $request['password'] = Hash::make($request['password']);
-            $user->update($request->all());
+            $user->update($request->validated());
 
             if (isset($request['tipos']) && !!count($request['tipos'])) {
                 $user->tipos()->detach();
@@ -512,10 +530,14 @@ class UserController extends Controller
             }
             DB::commit();
     
-            return response($user);
+            return isWeb()
+                ? redirect()->route('users.index')->with('success', 'Usuário atualizado com sucesso.')
+                : response($user);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+            return isWeb()
+                ? redirect()->route('users.index')->with('error', $mensagem)
+                : response($mensagem, 500);
         }
     }
 
