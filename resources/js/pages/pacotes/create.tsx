@@ -30,7 +30,7 @@ export default function Create(props: CreatePropsPacote) {
 
                 <FormPacoteContent
                     initialData={initialData}
-                    endpoint={route("pacote.store")}
+                    endpoint={route("pacotes.store")}
                     related={{ nucleos, periodos }}
                 />
             </div>

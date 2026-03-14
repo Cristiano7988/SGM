@@ -11,9 +11,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Edit(props: EditPropsNucleo) {
     const { nucleo, turmas, pacotes, session } = props;
-    const { data, setData, post, processing } = useForm();
 
-    const { processing: processingDeletion, delete: deleteNucleo } = useForm();
+    const { processing, delete: deleteNucleo } = useForm();
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -30,7 +29,7 @@ export default function Edit(props: EditPropsNucleo) {
 
                 <FormNucleoContent
                     initialData={nucleo}
-                    endpoint={route("nucleos.update")}
+                    endpoint={route("nucleos.update", nucleo.id)}
                     related={{ turmas, pacotes }}
                 />
 
@@ -41,7 +40,7 @@ export default function Edit(props: EditPropsNucleo) {
                             className="cursor-pointer bg-red-500 text-white px-4 py-2 rounded-md"
                             disabled={processing}
                         >
-                            {processingDeletion ? "Excluindo..." : "Excluir"}
+                            {processing ? "Excluindo..." : "Excluir"}
                         </button>
                     </div>
                 </form>

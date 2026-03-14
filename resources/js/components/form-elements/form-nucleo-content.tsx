@@ -12,58 +12,60 @@ import { InputDateContent } from "./input-date-content";
 import IdadeInputToggle from "../idade-input-toggle";
 
 export function FormNucleoContent({ initialData, endpoint, related }: FormContentProps<Nucleo>) {
-    const { data, setData, errors, clearErrors, hasErrors, processing, post } = useForm<FormProps<Nucleo>>(initialData);
+    const { data, setData, errors, clearErrors, hasErrors, processing, post, put } = useForm<FormProps<Nucleo>>(initialData);
+    const edit = location.pathname.includes("edit");
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        post(endpoint);
+        edit
+            ? put(endpoint)
+            : post(endpoint);
     };
 
-    const turmas = data.turmas.length ? data.turmas : [{ id: 0 }];
+    const turmas = edit ? data.turmas : [{ id: 0 }];
 
     const addTurma = () => {
-        setData("turma", [...turmas, { id: 0 }]);
+        setData("turmas", [...turmas, { id: 0 }]);
     };
 
     const removeTurma = (index: number) => {
-        const updatedTurmas = [...turmas];
-        updatedTurmas.splice(index, 1);
-        setData("turma", updatedTurmas);
-        clearErrors(`turma.${index}`);
-        clearErrors("turma");
+        const updatedTurmas = turmas.map((u: Turma, i: number) => i === index ? null : u).filter(Boolean);
+
+        setData("turmas", updatedTurmas);
+        clearErrors(`turmas.${index}`);
+        clearErrors("turmas");
     };
 
     const updateTurma = (index: number, id: number) => {
         const turma = related.turmas.find((u: Turma) => u.id === id);
         const updatedTurmas = [...turmas];
         updatedTurmas[index] = turma;
-        setData("turma", updatedTurmas);
-        clearErrors(`turma.${index}`);
-        clearErrors("turma");
+        setData("turmas", updatedTurmas);
+        clearErrors(`turmas.${index}`);
+        clearErrors("turmas");
     };
 
-    const pacotes = data.pacotes.length ? data.pacotes : [{ id: 0 }];
+    const pacotes = edit ? data.pacotes : [{ id: 0 }];
 
     const addPacote = () => {
-        setData("pacote", [...pacotes, { id: 0 }]);
+        setData("pacotes", [...pacotes, { id: 0 }]);
     };
 
     const removePacote = (index: number) => {
-        const updatedPacotes = [...pacotes];
-        updatedPacotes.splice(index, 1);
-        setData("pacote", updatedPacotes);
-        clearErrors(`pacote.${index}`);
-        clearErrors("pacote");
+        const updatedPacotes = pacotes.map((u: Pacote, i: number) => i === index ? null : u).filter(Boolean);
+        setData("pacotes", updatedPacotes);
+        clearErrors(`pacotes.${index}`);
+        clearErrors("pacotes");
     };
 
     const updatePacote = (index: number, id: number) => {
         const pacote = related.pacotes.find((u: Pacote) => u.id === id);
         const updatedPacotes = [...pacotes];
         updatedPacotes[index] = pacote;
-        setData("pacote", updatedPacotes);
-        clearErrors(`pacote.${index}`);
-        clearErrors("pacote");
+        setData("pacotes", updatedPacotes);
+        clearErrors(`pacotes.${index}`);
+        clearErrors("pacotes");
     };
 
     return (<>
@@ -147,15 +149,15 @@ export function FormNucleoContent({ initialData, endpoint, related }: FormConten
             <h2 className="text-lg font-semibold">Turmas vinculados a este núcleo</h2>
 
             {turmas.map((turma: Turma, index: number) => (
-                <div key={index} className="flex items-center gap-2">
+                <div key={turma.id} className="flex items-center gap-2">
 
                     <SelectModelContent
                         column="turma"
                         titulo={`Turma ${index + 1}`}
-                        id={turma?.id}
+                        id={turma.id}
                         array={related.turmas}
                         setData={(_: any, id: number) => updateTurma(index, id)}
-                        error={errors[`turma.${index}`]}
+                        error={errors[`turmas.${index}`]}
                     />
 
                     {index > 0 && (
@@ -167,22 +169,22 @@ export function FormNucleoContent({ initialData, endpoint, related }: FormConten
                 </div>
             ))}
 
-            {errors.turma && <ErrorLabel error={errors.turma} />}
+            {errors.turmas && <ErrorLabel error={errors.turmas} />}
 
             <hr />
 
             <h2 className="text-lg font-semibold">Pacotes vinculados a este núcleo</h2>
 
             {pacotes.map((pacote: Pacote, index: number) => (
-                <div key={index} className="flex items-center gap-2">
+                <div key={pacote.id } className="flex items-center gap-2">
 
                     <SelectModelContent
                         column="pacote"
                         titulo={`Pacote ${index + 1}`}
-                        id={pacote?.id}
+                        id={pacote.id}
                         array={related.pacotes}
                         setData={(_: any, id: number) => updatePacote(index, id)}
-                        error={errors[`pacote.${index}`]}
+                        error={errors[`pacotes.${index}`]}
                     />
 
                     {index > 0 && (
@@ -194,23 +196,23 @@ export function FormNucleoContent({ initialData, endpoint, related }: FormConten
                 </div>
             ))}
 
-            {errors.pacote && <ErrorLabel error={errors.pacote} />}
+            {errors.pacotes && <ErrorLabel error={errors.pacotes} />}
 
             <div className="bg-background bottom-4 fixed flex gap-4 items-center p-4 right-4">
                 <Link
-                    href="/turma/create"
+                    href="/turmas/create"
                     className="px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
-                    children="Criar novo turma"
+                    children="Criar nova turma"
                 />
 
                 <div
                     onClick={addTurma}
                     className="cursor-pointer px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
-                    children="Vincular outro turma"
+                    children="Vincular outra turma"
                 />
 
                 <Link
-                    href="/pacote/create"
+                    href="/pacotes/create"
                     className="px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
                     children="Criar novo pacote"
                 />

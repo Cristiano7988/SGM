@@ -9,6 +9,7 @@ use App\Models\Pacote;
 use App\Models\Turma;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Http\Requests\Settings\NucleoRequest;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -17,57 +18,6 @@ use Inertia\Inertia;
 
 class NucleoController extends Controller
 {
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function validator(array $data, $nucleoId = false)
-    {
-        return Validator::make($data, [
-                'nome' => [
-                    'string',
-                    'required',
-                    'min:3',
-                    'max:30',
-                    $nucleoId ? "unique:nucleos,nome,{$nucleoId}" : ''
-                ],
-                'descricao' => 'string|required|min:10|max:1500',
-                'imagem' => ['required', function ($attribute, $value, $fail) {
-                    $isUrl = filter_var($value, FILTER_VALIDATE_URL);
-                    $isFile = is_file($value);
-
-                    // Lista de extensões permitidas
-                    $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-
-                    // Se for um arquivo, verificar a extensão
-                    if ($isFile) {
-                        $extension = $value->getClientOriginalExtension();
-                        
-                        if (!in_array(strtolower($extension), $allowedExtensions)) {
-                            $fail($attribute . ' deve ser uma imagem válida (jpg, jpeg, png, gif, webp).');
-                        }
-                    }
-
-                    // Se for uma URL, garantir que termina com uma extensão permitida
-                    if ($isUrl) {
-                        $path = parse_url($value, PHP_URL_PATH);
-                        $extension = pathinfo($path, PATHINFO_EXTENSION);
-                        if (!in_array(strtolower($extension), $allowedExtensions)) {
-                            $fail($attribute . ' deve ser uma URL de imagem válida (jpg, jpeg, png, gif, webp).');
-                        }
-                    }
-
-                    if (!$isUrl && !$isFile) $fail($attribute.' deve ser uma URL válida ou um arquivo válido.');
-                }],
-                'idade_minima' => 'required|numeric|min:1|max:720',
-                'idade_maxima' => "required|numeric|min:{$data['idade_minima']}|max:720",
-                'inicio_matricula' => "required|date|date_format:Y-m-d|before_or_equal:fim_matricula",
-                'fim_matricula' => "required|date|date_format:Y-m-d|after_or_equal:inicio_matricula",
-            ]);   
-    } 
-
     /**
      * Exibe os núcleos registrados.
      * Se o id do aluno é passado na requisição então retorna somente os núcleos disponíveis para essa faixa etária
@@ -132,28 +82,20 @@ class NucleoController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      */
-    public function store(Request $request)
+    public function store(NucleoRequest $request)
     {
         try {
-            $validator = $this->validator($request->all());
-            if ($validator->fails()) {
-                session(['error' => "Há alguma informação incorreta, revise o formulário. "]);
-        
-                return isWeb()
-                    ? redirect()->back()->withErrors($validator)
-                    : response($validator->errors(), 422);
-            }
-
             DB::beginTransaction();
 
             $data = $request->hasFile('imagem')
-                ? $request->except('imagem')
-                : $request->all();
+                ? $request->safe()->except('imagem')
+                : $request->validated();
 
             $nucleo = Nucleo::create($data);
-            
+            Turma::whereIn('id', $request->turmas)->update(['nucleo_id' => $nucleo->id]);
+            Pacote::whereIn('id', $request->pacotes)->update(['nucleo_id' => $nucleo->id]);
+
             if ($request->hasFile('imagem')) {
                 $path = $request->imagem->store('nucleos', 'public');
                 $nucleo->imagem = env('APP_URL') . "/storage/" . $path;
@@ -206,39 +148,25 @@ class NucleoController extends Controller
     public function edit(Nucleo $nucleo)
     {
         try {
-            return isWeb()
-                ? Inertia::render('nucleos/edit', [
-                    'nucleo' => $nucleo
-                ])
-                : response($nucleo);
+            return Inertia::render('nucleos/edit', [
+                'nucleo' => $nucleo->load(['turmas', 'pacotes']),
+                'turmas' => Turma::all(),
+                'pacotes' => Pacote::all()
+            ]);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
     
-            return isWeb()
-                ? redirect()->route('nucleos.index')
-                : response($mensagem);
+            return redirect()->route('nucleos.index');
         }
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Nucleo  $nucleo
-     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Nucleo $nucleo)
+    public function update(NucleoRequest $request, Nucleo $nucleo)
     {
         try {
-            $validator = $this->validator($request->all());
-            if ($validator->fails()) {
-                session(['error' => "Há alguma informação incorreta, revise o formulário. "]);
-        
-                return isWeb()
-                    ? redirect()->back()->withErrors($validator)
-                    : response($validator->errors(), 422);
-            }
-
             DB::beginTransaction();
             $isAStorageFile = Str::contains($nucleo->imagem, 'storage');
             if ($nucleo->imagem && $isAStorageFile) {
@@ -249,9 +177,12 @@ class NucleoController extends Controller
             }
 
             $data = $request->hasFile('imagem')
-                ? $request->except('imagem')
-                : $request->all();
+                ? $request->safe()->except('imagem')
+                : $request->validated();
+
             $nucleo->update($data);
+            Turma::whereIn('id', $request->turmas)->update(['nucleo_id' => $nucleo->id]);
+            Pacote::whereIn('id', $request->pacotes)->update(['nucleo_id' => $nucleo->id]);
 
             if ($request->hasFile('imagem')) {
                 $path = $request->imagem->store('nucleos', 'public');

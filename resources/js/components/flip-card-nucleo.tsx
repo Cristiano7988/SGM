@@ -80,7 +80,7 @@ export default function FlipCardNucleo({ nucleo }: { nucleo: Nucleo }) {
             onClick={() => setFlipped(false)}
             className="cursor-pointer m-auto absolute left-0 top-1/2"
           />
-          <CarouselText paragraphs={nucleo.descricao} />
+          <CarouselText paragraphs={nucleo.paragrafos_da_descricao} />
         </div>
       </motion.div>
     </div>

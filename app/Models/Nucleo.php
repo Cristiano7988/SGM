@@ -24,7 +24,7 @@ class Nucleo extends Model
      * Mutators
      */
 
-    protected $appends = ['unidade_de_tempo_minima', 'unidade_de_tempo_maxima'];
+    protected $appends = ['unidade_de_tempo_minima', 'unidade_de_tempo_maxima', 'inicio_matricula_formatada', 'fim_matricula_formatada', 'paragrafos_da_descricao'];
 
     function getUnidadeDeTempoMinimaAttribute()
     {
@@ -36,24 +36,19 @@ class Nucleo extends Model
         return $this->attributes['idade_maxima'] > 12 ? 'anos' : 'meses';
     }
 
-    function getInicioMatriculaAttribute($value)
+    function getInicioMatriculaFormatadaAttribute()
     {
-        return Formata::data($value);
+        return Formata::data($this->attributes['inicio_matricula']);
     } 
 
-    function getFimMatriculaAttribute($value)
+    function getFimMatriculaFormatadaAttribute()
     {
-        return Formata::data($value);
+        return Formata::data($this->attributes['fim_matricula']);
     }
 
-    function getDescricaoAttribute(string $value): array
+    function getParagrafosDaDescricaoAttribute(): array
     {
-        return explode("\n\n", $value);
-    }
-
-    function setDescricaoAttribute(string $value)
-    {
-        return $this->attributes['descricao'] = $value;
+        return explode("\n\n", $this->attributes['descricao']);
     }
 
     /**

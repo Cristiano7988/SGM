@@ -32,7 +32,8 @@ export interface Nucleo {
     id: number;
     nome: string;
     imagem: string;
-    descricao: Array;
+    descricao: string;
+    paragrafos_da_descricao: string[];
     idade_minima: number;
     unidade_de_tempo_minima: string;
     unidade_de_tempo_maxima: string;
