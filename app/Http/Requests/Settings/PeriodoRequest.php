@@ -26,12 +26,6 @@ class PeriodoRequest extends FormRequest
                 'date_format:Y-m-d', // Assuming the date format is YYYY-MM-DD
                 'after_or_equal:inicio', // Ensure 'fim' is after or equal to 'inicio'
             ],
-
-            'pacote_id' => [
-                'required',
-                'numeric',
-                'exists:pacotes,id',
-            ],
         ];
     }
 }

@@ -22,6 +22,8 @@ class Aluno extends Model
     protected $appends = [
         'data_de_nascimento_formatada',
         'idade',
+        'meses',
+        'anos'
     ];
 
     public function getDataDeNascimentoAttribute($value)
@@ -47,6 +49,20 @@ class Aluno extends Model
             : number_format(floor($anos), 0, '', '');
 
         return $formatado . ' anos';
+    }
+
+    public function getMesesAttribute()
+    {
+        $data = Carbon::parse($this->attributes['data_de_nascimento']);
+
+        return $data->floatDiffInMonths(now());
+    }
+
+    public function getAnosAttribute()
+    {
+        $data = Carbon::parse($this->attributes['data_de_nascimento']);
+
+        return $data->floatDiffInYears(now());
     }
 
     public function users()

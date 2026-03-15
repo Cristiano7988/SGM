@@ -17,7 +17,6 @@ class CreatePeriodosTable extends Migration
             $table->id();
             $table->date('inicio');
             $table->date('fim');
-            $table->foreignId('pacote_id')->nullable();
             $table->timestamps();
         });
     }

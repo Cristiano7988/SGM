@@ -20,7 +20,9 @@ export default function FlipCardMatricula({ matricula }: { matricula: Matricula 
         {/* Frente do cartão */}
         <div className="absolute inset-0 border-sidebar-border/70 dark:border-sidebar-border rounded-xl border overflow-hidden backface-hidden">
           <div className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20 p-4 flex justify-center gap-4">
-            <div className="flex flex-col items-center m-auto gap-4">
+            <div className="flex flex-col items-center m-auto gap-2">
+              <p><b>Aluno:</b> {matricula.aluno.nome}</p>
+              <p><b>Turma:</b> {matricula.turma.nome}</p>
               <figure className="m-auto w-24 h-24 rounded-full overflow-hidden border border-gray-300">
                 <img
                   src={matricula.turma.imagem}
@@ -28,8 +30,6 @@ export default function FlipCardMatricula({ matricula }: { matricula: Matricula 
                   className="w-full h-full object-cover"
                 />
               </figure>
-              <p><b>Turma:</b> {matricula.turma.nome}</p>
-              <p><b>Aluno:</b> {matricula.aluno.nome}</p>
               
               <Link className="rounded-lg bg-blue-600 px-4 py-2 text-white font-medium transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" href={route('matriculas.edit', { id: matricula.id })} children="Editar" />
             </div>
@@ -42,19 +42,30 @@ export default function FlipCardMatricula({ matricula }: { matricula: Matricula 
 
         {/* Verso do cartão */}
         <div
-          className="overflow-hidden absolute inset-0 bg-gray-100 dark:bg-gray-900 rounded-xl shadow-lg flex flex-col items-center justify-center p-4 text-center backface-hidden"
+          className="overflow-hidden absolute inset-0 bg-gray-100 dark:bg-gray-900 rounded-xl shadow-lg flex flex-col items-center justify-center p-4 text-center backface-hidden gap-2"
           style={{ transform: "rotateY(180deg)" }}
         >
           <ChevronLeft
             onClick={() => setFlipped(false)}
             className="cursor-pointer m-auto absolute left-0 top-1/2"
           />
-          <b>{matricula.turma.dia.nome} às {matricula.turma.horario}</b>
-          
+          <b><span className="capitalize">{matricula.turma.dia.nome}</span> às {matricula.turma.horario}</b>
+
+          <hr className="border-gray-300 w-full" />
+
           <p><b>Pacote:</b></p>
-          <b>{matricula.pacote.nome}</b>
-          <b>{matricula.pacote.valor_formatado}</b>
-          <b>Pacote {matricula.pacote.ativo ? "Ativo" : "Inativo"}</b>
+          <b><Link href={`/pacotes/${matricula.pacote_id}`}>{matricula.pacote.nome} ({matricula.pacote.ativo ? "ativo" : "inativo"})</Link></b>
+          <p>{matricula.pacote.valor_formatado}</p>
+          <div className="flex gap-2">
+            <b>Vigência:</b>
+            <div>
+              {matricula.pacote.periodos.map((periodo: Periodo) => (
+                <p key={periodo.id} className="text-sm text-neutral-500">
+                  De {periodo.inicio_formatado} até {periodo.fim_formatado}
+                </p>
+              ))}
+            </div>
+          </div>
         </div>
       </motion.div>
     </div>

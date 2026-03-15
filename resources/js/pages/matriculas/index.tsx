@@ -35,6 +35,14 @@ export default function Index(props: IndexProps<Matricula & RelacionadasAMatricu
         },
         {
             tipo: 'select' as const,
+            label: 'Pacotes',
+            nome: 'pacotes',
+            valor: searchParams.get('pacotes') ?? undefined,
+            opcoes: props.pacotes,
+            ativo: Boolean(searchParams.get('pacotes')),
+        },
+        {
+            tipo: 'select' as const,
             label: 'Situações',
             nome: 'situacoes',
             valor: searchParams.get('situacoes') ?? undefined,
@@ -43,11 +51,11 @@ export default function Index(props: IndexProps<Matricula & RelacionadasAMatricu
         },
         {
             tipo: 'select' as const,
-            label: 'Pacotes',
-            nome: 'pacotes',
-            valor: searchParams.get('pacotes') ?? undefined,
-            opcoes: props.pacotes,
-            ativo: Boolean(searchParams.get('pacotes')),
+            label: 'Marcações',
+            nome: 'marcacoes',
+            valor: searchParams.get('marcacoes') ?? undefined,
+            opcoes: props.marcacoes,
+            ativo: Boolean(searchParams.get('marcacoes')),
         },
     ]
    

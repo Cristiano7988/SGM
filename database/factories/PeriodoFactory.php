@@ -19,7 +19,6 @@ class PeriodoFactory extends Factory
         return [
             'inicio' => $inicio,
             'fim' => $fim,
-            'pacote_id' => Pacote::inRandomOrder()->first()->id,
         ];
     }
 }

@@ -12,7 +12,6 @@ class Periodo extends Model
     protected $fillable = [
         'inicio',
         'fim',
-        'pacote_id',
     ];
 
     protected $casts = [
@@ -55,6 +54,6 @@ class Periodo extends Model
 
     public function pacote()
     {
-        return $this->belongsTo(Pacote::class);
+        return $this->belongsToMany(Pacote::class);
     }
 }

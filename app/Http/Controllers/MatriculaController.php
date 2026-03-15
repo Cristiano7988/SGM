@@ -8,10 +8,12 @@ use App\Models\Aluno;
 use App\Models\Dia;
 use App\Models\Turma;
 use App\Models\Situacao;
+use App\Models\Marcacao;
 use App\Models\Pacote;
 use App\Models\Matricula;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Http\Requests\Settings\MatriculaRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -79,12 +81,42 @@ class MatriculaController extends Controller
     }
 
     /**
+     * Show the form for creating a new resource.
+     *
+     */
+    public function create()
+    {
+        $user = Auth::user();
+        $isAdmin = true;//$user && $user->is_admin; 
+
+        $alunos = $isAdmin
+            ? Aluno::all()
+            : $user->alunos;
+
+        $turmas = Turma::all()->load(['nucleo']);
+
+        $pacotes = $isAdmin
+            ? Pacote::all()->load(['nucleo'])
+            : Pacote::where('ativo', true)->get()->load(['nucleo']);
+
+        $situacoes = Situacao::all();
+
+        $marcacoes = Marcacao::all();
+
+        return Inertia::render('matriculas/create', [
+            'alunos' => $alunos,
+            'turmas' => $turmas,
+            'pacotes' => $pacotes,
+            'situacoes' => $situacoes,
+            'marcacoes' => $marcacoes,
+        ]);
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
-    public function store(Request $request):Response
+    public function store(MatriculaRequest $request)
     {
         try {
             $user = Auth::user();
@@ -94,27 +126,41 @@ class MatriculaController extends Controller
             if ($user && !$user->is_admin) {                
                 $usuariosRelacionados = false;
                 if (in_array($user->id, $aluno->users->pluck('id')->toArray())) $usuariosRelacionados = true;
-                if (!$usuariosRelacionados) return response('Você não tem permissão para matricular esse aluno', 403);
+                if (!$usuariosRelacionados) {
+                        $mensagem = "Você não tem permissão para matricular esse aluno";
+                        return isWeb()
+                            ? redirect()->back()->with('errou', $mensagem)
+                            : response($mensagem, 403);
+                }
             }
 
-            // Aqui validamos se o usuário logado possui algum tipo de responsabilidade pelo aluno a ser matriculado
-            if (!$user->tipos->count()) return response("Atualize as suas informações de usuário para sabermos qual será sua participação na vida letiva de {$aluno->nome} dentro da Toca.");
-            
-            $temAcompanhante = false;
-            $temAcompananhteReserva = false;
-            foreach ($aluno->users as $user) {
-                if (count($user->tipos->where('nome', 'acompanhante'))) $temAcompanhante = true;
-                if (count($user->tipos->where('nome', 'acompanhante reserva'))) $temAcompananhteReserva = true;
-            }
+            // // Aqui validamos se o usuário logado possui algum tipo de responsabilidade pelo aluno a ser matriculado
+            // if (!$user->tipos->count()) {
+            //     $mensagem = "Atualize as suas informações de usuário para sabermos qual será sua participação na vida letiva de {$aluno->nome} dentro da Toca.";
+            //     return isWeb()
+            //         ? redirect()->back()->with('errou', $mensagem)
+            //         : response($mensagem);
+            // }
 
-            if (!$temAcompanhante) return response("Informe quem acompanhará {$aluno->nome} nas aulas.", 403);
-            if (!$temAcompananhteReserva) return response("Informe quem acompanhará {$aluno->nome} nas aulas quando o principal acompanhante não puder.", 403);
+            // $temAcompanhante = false;
+            // $temAcompananhteReserva = false;
+            // foreach ($aluno->users as $user) {
+            //     if (count($user->tipos->where('nome', 'acompanhante'))) $temAcompanhante = true;
+            //     if (count($user->tipos->where('nome', 'acompanhante reserva'))) $temAcompananhteReserva = true;
+            // }
 
-            $matricula = Matricula::create($request->except('situacao_id', 'marcacao_id'));
-            return response($matricula);
+            // if (!$temAcompanhante) return response("Informe quem acompanhará {$aluno->nome} nas aulas.", 403);
+            // if (!$temAcompananhteReserva) return response("Informe quem acompanhará {$aluno->nome} nas aulas quando o principal acompanhante não puder.", 403);
+
+            $matricula = Matricula::create($request->validated());
+            return isWeb()
+                ? redirect()->route("matriculas.index")
+                : response($matricula);
         } catch(\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+            return isWeb()
+                ? redirect()->route("matriculas.index")
+                : response($mensagem);
         }
     }
 

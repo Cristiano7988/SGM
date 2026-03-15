@@ -15,6 +15,10 @@ class Pacote extends Model
         'nucleo_id',
     ];
 
+    protected $with = [
+        'periodos'
+    ];
+
     protected $appends = [
         'valor_formatado',
     ];
@@ -31,7 +35,7 @@ class Pacote extends Model
 
     public function periodos()
     {
-        return $this->hasMany(Periodo::class);
+        return $this->belongsToMany(Periodo::class);
     }
 
     public function matriculas()

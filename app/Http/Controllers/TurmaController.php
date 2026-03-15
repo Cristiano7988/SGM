@@ -98,20 +98,16 @@ class TurmaController extends Controller
     public function create(Turma $turma)
     {
         try {
-            return isWeb()
-                ? Inertia::render('turmas/create', [
-                    'turma' => $turma,
-                    'nucleos' => Nucleo::all(),
-                    'dias' => Dia::all(),
-                    'tipos_de_aula' => TipoDeAula::all()
-                ])
-                : response($turma);
+            return Inertia::render('turmas/create', [
+                'turma' => $turma,
+                'nucleos' => Nucleo::all(),
+                'dias' => Dia::all(),
+                'tipos_de_aula' => TipoDeAula::all()
+            ]);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
 
-            return isWeb()
-                ? redirect()->route('turmas.index')
-                : response($mensagem);
+            return redirect()->route('turmas.index');
         }
     }
 

@@ -60,7 +60,6 @@ class PacoteController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
      */
     public function create()
     {
@@ -124,18 +123,15 @@ class PacoteController extends Controller
     public function edit(Pacote $pacote)
     {
         try {
-            return isWeb()
-                ? Inertia::render('pacotes/edit', [
-                    'pacote' => $pacote,
-                    'nucleos' => Nucleo::all(),
-                ])
-                : response($pacote);
+            return Inertia::render('pacotes/edit', [
+                'pacote' => $pacote,
+                'nucleos' => Nucleo::all(),
+                'periodos' => Periodo::all()
+            ]);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
 
-            return isWeb()
-                ? redirect()->route('pacotes.index')
-                : response($mensagem);
+            return redirect()->route('pacotes.index');
         }
     }
 
@@ -149,6 +145,7 @@ class PacoteController extends Controller
     {
         try {
             $pacote->update($request->validated());
+            if (isset($request->periodos) && !!count($request->periodos)) $pacote->periodos()->sync($request->periodos);
 
             return isWeb()
                 ? redirect()->route('pacotes.index')->with('success', "O pacote de nº {$pacote->id}, {$pacote->nome}, foi atualizado.")

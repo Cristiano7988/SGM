@@ -14,23 +14,33 @@ interface SelectContentProps {
 export function SelectModelContent({ titulo, column, id, array, error, setData }: SelectContentProps) {
     return (
         <div className='flex flex-col w-full gap-4'>
-            <Label htmlFor={column} className='block font-medium text-white'>{titulo}</Label>
-            <Select
-                onValueChange={(value) => setData(column, Number(value))}
-                defaultValue={String(id)}
-            >
-                <SelectTrigger className="gap-2 min-w-56 cursor-pointer h-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    <SelectValue placeholder="Filtrar" />
-                </SelectTrigger>
-                <SelectContent>
-                    {array.map(item => <SelectItem
-                        key={item.id}
-                        value={String(item.id)}
-                        children={item.nome ?? item.tipo}
-                    /> )}
-                </SelectContent>
-            </Select>
-            <ErrorLabel error={error} />
+            <Label htmlFor={column} className='capitalize block font-medium text-white'>{titulo}</Label>
+            {array.length
+                ? <Select
+                    onValueChange={(value) => setData(column, Number(value))}
+                    defaultValue={String(id)}
+                >
+                    <SelectTrigger className="gap-2 min-w-56 cursor-pointer h-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <SelectValue placeholder="Filtrar" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {array.map(item => {
+                            const valor = 'valor' in item && "- " + item.valor_formatado;
+                            const label = item.nome ?? item.tipo ?? item.esta ?? item.observacao;
+                            const inativo = !item.ativo && 'ativo' in item;
+                            const indisponivel = !item.disponivel && 'disponivel' in item;
+
+                            return <SelectItem
+                            key={item.id}
+                            value={String(item.id)}
+                            className={inativo || indisponivel ? "opacity-50" : ""}
+                        >
+                            {label} {valor} {inativo && "(inativo)"} {indisponivel && "(indisponível)"}
+                        </SelectItem>})}
+                    </SelectContent>
+                </Select>
+                : <p className="text-red-400">Não há {titulo}s disponíveis no momento.</p>}
+                <ErrorLabel error={error} />
         </div>
     );
 }
