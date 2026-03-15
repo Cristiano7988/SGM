@@ -158,15 +158,29 @@ export interface Matricula {
 }
 
 export interface RelacionadasAMatricula {
-    turma?: Turma;
     aluno?: Aluno | null;
-    situacao?: Situacao;
+    turma?: Turma 
     pacote?: Pacote;
+    situacao?: Situacao;
+    marcacao?: Marcacao;
     // Para o filtro de Matrícula
-    turmas: Turma[];
     alunos: Aluno[];
-    situacoes: Situacao[];
+    turmas: Turma[];
     pacotes: Pacote[];
+    situacoes: Situacao[];
+    marcacoes: Marcacao[];
+}
+
+export interface Situacao {
+    id: number,
+    esta: string
+}
+
+export interface Marcacao {
+    id: number,
+    observacao: string,
+    cor: string,
+    key_code: string
 }
 
 export interface FormContentProps<T> {
