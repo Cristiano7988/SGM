@@ -27,7 +27,7 @@ export default function Create(props: { session: any, alunos: Aluno[], turmas: T
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title='Criar Matricula' />
+            <Head title='Criar Matrícula' />
             <Session session={session}  />
 
             <div className="w-full mx-auto p-6 rounded-lg shadow">

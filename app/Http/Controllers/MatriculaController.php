@@ -5,13 +5,11 @@ namespace App\Http\Controllers;
 use App\Helpers\Filtra;
 use App\Helpers\Trata;
 use App\Models\Aluno;
-use App\Models\Dia;
 use App\Models\Turma;
 use App\Models\Situacao;
 use App\Models\Marcacao;
 use App\Models\Pacote;
 use App\Models\Matricula;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Requests\Settings\MatriculaRequest;
 use Illuminate\Support\Facades\Auth;
@@ -87,7 +85,7 @@ class MatriculaController extends Controller
     public function create()
     {
         $user = Auth::user();
-        $isAdmin = true;//$user && $user->is_admin; 
+        $isAdmin = $user && $user->is_admin; 
 
         $alunos = $isAdmin
             ? Aluno::all()
@@ -128,8 +126,10 @@ class MatriculaController extends Controller
                 if (in_array($user->id, $aluno->users->pluck('id')->toArray())) $usuariosRelacionados = true;
                 if (!$usuariosRelacionados) {
                         $mensagem = "Você não tem permissão para matricular esse aluno";
+                        session(['error' => $mensagem]);
+
                         return isWeb()
-                            ? redirect()->back()->with('errou', $mensagem)
+                            ? redirect()->back()
                             : response($mensagem, 403);
                 }
             }
@@ -153,6 +153,9 @@ class MatriculaController extends Controller
             // if (!$temAcompananhteReserva) return response("Informe quem acompanhará {$aluno->nome} nas aulas quando o principal acompanhante não puder.", 403);
 
             $matricula = Matricula::create($request->validated());
+
+            session(['success' => "Matrícula do {$matricula->aluno->nome} na turma {$matricula->turma->nome} criada."]);
+
             return isWeb()
                 ? redirect()->route("matriculas.index")
                 : response($matricula);
@@ -181,43 +184,90 @@ class MatriculaController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Show the form for editing the specified resource.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Matricula  $matricula
-     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Matricula $matricula):Response
+    public function edit(Matricula $matricula)
     {
         try {
-            $matricula->update($request->all());
+            $user = Auth::user();
+            $isAdmin = $user && $user->is_admin; 
+
+            $alunos = $isAdmin
+                ? Aluno::all()
+                : $user->alunos;
+
+            $turmas = Turma::all()->load(['nucleo']);
+
+            $pacotes = $isAdmin
+                ? Pacote::all()->load(['nucleo'])
+                : Pacote::where('ativo', true)->get()->load(['nucleo']);
+
+            $situacoes = Situacao::all();
+
+            $marcacoes = Marcacao::all();
+
+            return Inertia::render('matriculas/edit', [
+                'matricula' => $matricula,
+                'alunos' => $alunos,
+                'turmas' => $turmas,
+                'pacotes' => $pacotes,
+                'situacoes' => $situacoes,
+                'marcacoes' => $marcacoes,
+            ]);
+        } catch (\Throwable $th) {
+            $mensagem = Trata::erro($th);
+            return redirect()->route('matriculas.index');
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     */
+    public function update(MatriculaRequest $request, Matricula $matricula)
+    {
+        try {
+            $matricula->update($request->validated());
             $matricula->turma->vagas_preenchidas = $matricula->turma->matriculas()->count();
             $matricula->turma->save();
 
-            return response($matricula);
-        } catch(\Throwable $th) {
-            $mensagem = Trata::erro($th);
-            return $mensagem;
+            session(['success' => "Matrícula do {$matricula->aluno->nome} na turma {$matricula->turma->nome} editada."]);
+
+            return isWeb()
+                ? redirect()->back()
+                : response($matricula);
+            } catch(\Throwable $th) {
+                $mensagem = Trata::erro($th);
+
+                return isWeb()
+                    ? redirect()->route("matriculas.index")
+                    : response($mensagem);
         }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Matricula  $matricula
-     * @return \Illuminate\Http\Response
      */
-    public function destroy(Matricula $matricula):Response
+    public function destroy(Matricula $matricula)
     {
         try {
             DB::beginTransaction();
             $excluido = Trata::exclusao($matricula, 'Matrícula');
             if ($excluido) DB::commit(); // Exclui somente se conseguir notificar o cliente
 
-            return response("A matrícula de nº {$matricula->id}, de {$matricula->aluno->nome},  foi deletada.");
+            $mensagem = "A matrícula de nº {$matricula->id}, de {$matricula->aluno->nome}, foi deletada.";
+            session(['success' => $mensagem]);
+            
+            return isWeb()
+                ? redirect()->route("matriculas.index")
+                : response($mensagem);
         } catch(\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+            return isWeb()
+                ? redirect()->route("matriculas.index")
+                : response($mensagem);
         }
     }
 }
