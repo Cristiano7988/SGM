@@ -24,7 +24,7 @@ class PacoteController extends Controller
             $pacotes = Pacote::query();
 
             $pacotes
-                ->leftJoin('periodos', 'pacotes.id', 'periodos.pacote_id')
+                // ->leftJoin('periodos', 'pacotes.id', 'periodos.pacote_id')
                 ->leftJoin('matriculas', 'pacotes.id', 'matriculas.pacote_id')
                 ->leftJoin('nucleos', 'pacotes.nucleo_id', 'nucleos.id')
                 ->select(['pacotes.*'])->groupBy('pacotes.id');
@@ -124,7 +124,7 @@ class PacoteController extends Controller
     {
         try {
             return Inertia::render('pacotes/edit', [
-                'pacote' => $pacote,
+                'pacote' => $pacote->load(['periodos']),
                 'nucleos' => Nucleo::all(),
                 'periodos' => Periodo::all()
             ]);

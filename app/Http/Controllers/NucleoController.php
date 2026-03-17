@@ -93,8 +93,8 @@ class NucleoController extends Controller
                 : $request->validated();
 
             $nucleo = Nucleo::create($data);
-            Turma::whereIn('id', $request->turmas)->update(['nucleo_id' => $nucleo->id]);
-            Pacote::whereIn('id', $request->pacotes)->update(['nucleo_id' => $nucleo->id]);
+            if ($request->turmas) Turma::whereIn('id', $request->turmas)->update(['nucleo_id' => $nucleo->id]);
+            if ($request->pacotes) Pacote::whereIn('id', $request->pacotes)->update(['nucleo_id' => $nucleo->id]);
 
             if ($request->hasFile('imagem')) {
                 $path = $request->imagem->store('nucleos', 'public');

@@ -19,10 +19,10 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
         post(endpoint);
     };
 
-    const alunos = data.alunos.length ? data.alunos : [{ id: 0 }];
+    const alunos = data.alunos.length ? data.alunos : [{ aluno_id: 0, vinculo: "" }];
 
     const addAluno = () => {
-        setData("alunos", [...alunos, { id: 0 }]);
+        setData("alunos", [...alunos, { aluno_id: 0, vinculo: "" }]);
     };
 
     const removeAluno = (index: number) => {
@@ -33,13 +33,27 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
         clearErrors("alunos");
     };
 
-    const updateAluno = (index: number, id: number) => {
-        const aluno = related.alunos.find((u: Aluno) => u.id === id);
+    const updateAluno = (index: number, aluno_id: number) => {
         const updatedAlunos = [...alunos];
-        updatedAlunos[index] = aluno;
+        updatedAlunos[index] = {
+            ...updatedAlunos[index],
+            aluno_id
+        };
+
         setData("alunos", updatedAlunos);
         clearErrors(`alunos.${index}`);
         clearErrors("alunos");
+    };
+
+    const updateVinculo = (index: number, value: string) => {
+        const updatedAlunos = [...alunos];
+        updatedAlunos[index] = {
+            ...updatedAlunos[index],
+            vinculo: value
+        };
+
+        setData("alunos", updatedAlunos);
+        clearErrors(`alunos.${index}.vinculo`);
     };
 
     return (<>
@@ -98,13 +112,6 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
                     />
                 </div>
             </div>
-            {/* <InputTextContent
-                column="vinculo"
-                titulo="Vínculo"
-                value={data.vinculo}
-                setData={setData}
-                error={errors.vinculo}
-                /> */}
 
             <hr />
 
@@ -216,15 +223,14 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
 
             <h2 className="text-lg font-semibold">Alunos vinculados a este usuário</h2>
 
-            {alunos.map((aluno: Aluno, index: number) => (
-                <div key={index} className="flex items-center gap-2">
-
+            {alunos.map((aluno: Aluno, index: number) => (<div key={index} className="flex gap-2">
+                <div className="flex items-center gap-2 w-full">
                     <SelectModelContent
                         column="alunos"
                         titulo={`Aluno ${index + 1}`}
                         id={aluno?.id}
                         array={related.alunos}
-                        setData={(_: any, id: number) => updateAluno(index, id)}
+                        setData={(_: any, aluno_id: number) => updateAluno(index, aluno_id)}
                         error={errors[`alunos.${index}`]}
                     />
 
@@ -235,7 +241,15 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
                         />
                     )}
                 </div>
-            ))}
+                <InputTextContent
+                    column="vinculo"
+                    titulo="Vínculo"
+                    value={related?.alunos[index]?.vinculo ?? ""}
+                    setData={(_: any, value: string) => updateVinculo(index, value)}
+                    error={errors[`alunos.${index}.vinculo`]}
+                    clearErrors={clearErrors}
+                />
+            </div>))}
 
             {errors.alunos && <ErrorLabel error={errors.alunos} />}
 

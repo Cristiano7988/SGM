@@ -17,12 +17,14 @@ class UserRequest extends FormRequest
     public function rules($user = false): array
     {
         // Transformar request em um array de integers
-        if ($this->has('alunos')) {
-            $this->merge([
-                'alunos' => array_map(function ($item) {
-                    return is_array($item) && isset($item['id']) ? $item['id'] : $item;
-                }, $this->input('alunos')),
-            ]);
+        if ($this->input('alunos')) {
+            $users = collect($this->input('alunos'))
+                ->mapWithKeys(function ($pivot) {
+                    return [
+                        $pivot['aluno_id'] => ['vinculo' => $pivot['vinculo'] ?? null]
+                    ];
+                })
+                ->toArray();
         }
 
         $id = $user ? $user->id : null;
@@ -37,14 +39,16 @@ class UserRequest extends FormRequest
                 'whatsapp' => ['string', 'min:3', 'max:100', Rule::unique('users')->ignore($id)],
                 'instagram' => ['nullable', 'string', 'url', 'min:5', 'max:255', Rule::unique('users')->ignore($id)],
                 'cep' => ['nullable', 'string', 'min:8', 'max:9'],
-                // 'vinculo' => ['string', 'min:2', 'max:30'],
                 'pais' => ['string', 'min:2', 'max:50'],
                 'estado' => ['string', 'min:2', 'max:70'],
                 'cidade' => ['string', 'min:2', 'max:255'],
                 'bairro' => ['string', 'min:2', 'max:255'],
                 'logradouro' => ['string', 'min:2', 'max:255'],
                 'numero' => ['integer', 'min:1', 'max:999999'],
-                'complemento' => ['string', 'min:1', 'max:999999']
+                'complemento' => ['string', 'min:1', 'max:999999'],
+                'alunos' => ['array'],
+                'alunos.*.aluno_id' => ['integer', 'exists:alunos,id'],
+                'alunos.*.vinculo' => ['string', 'nullable'],
             ]
             : [
                 'nome' => ['required', 'string', 'min:2', 'max:255'],

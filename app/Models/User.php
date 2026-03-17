@@ -64,7 +64,7 @@ class User extends Authenticatable
 
     public function alunos()
     {
-        return $this->belongsToMany(Aluno::class)->withTimestamps();
+        return $this->belongsToMany(Aluno::class)->withPivot('vinculo')->withTimestamps();
     }
 
     public function transacoes()

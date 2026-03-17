@@ -13,13 +13,11 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function Create(props: { session: any, alunos: Aluno[] }) {
     const { session, alunos } = props;
     const initialData: User & RelacionadasAoUser = {
-        id: 0,
         nome: '',
         email: '',
         email_nf: '',
         cpf: '',
         cnpj: '',
-        vinculo: '',
         whatsapp: '',
         instagram: '',
         cep: '',
@@ -30,7 +28,7 @@ export default function Create(props: { session: any, alunos: Aluno[] }) {
         logradouro: '',
         numero: undefined,
         complemento: '',
-        alunos: props.alunos,
+        alunos: props.alunos.map((aluno: Aluno) => ({ aluno_id: aluno.id, vinculo: "" })),
     };
 
     return (

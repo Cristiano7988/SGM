@@ -17,10 +17,10 @@ export function FormAlunoContent({ initialData, endpoint, related }: FormContent
         post(endpoint);
     };
 
-    const users = data.users.length ? data.users : [{ id: 0 }];
+    const users = data.users?.length ? data.users : [{ user_id: 0, vinculo: "" }];
 
     const addResponsavel = () => {
-        setData("users", [...users, { id: 0 }]);
+        setData("users", [...users, { user_id: 0, vinculo: "" }]);
     };
 
     const removeResponsavel = (index: number) => {
@@ -31,45 +31,64 @@ export function FormAlunoContent({ initialData, endpoint, related }: FormContent
         clearErrors("users");
     };
 
-    const updateResponsavel = (index: number, id: number) => {
-        const user = related.users.find((u: User) => u.id === id);
+    const updateResponsavel = (index: number, user_id: number) => {
         const updatedUsers = [...users];
-        updatedUsers[index] = user;
+        updatedUsers[index] = {
+            ...updatedUsers[index],
+            user_id,
+        };
+
         setData("users", updatedUsers);
         clearErrors(`users.${index}`);
         clearErrors("users");
     };
 
+    const updateVinculo = (index: number, value: string) => {
+        const updatedUsers = [...users];
+
+        updatedUsers[index] = {
+            ...updatedUsers[index],
+            vinculo: value
+        };
+
+        setData("users", updatedUsers);
+        clearErrors(`users.${index}.vinculo`);
+    };
+
     return (<>
         <form onSubmit={submit} className="flex flex-col gap-6 space-y-4">
+            <div className="flex gap-2">
+                <InputTextContent
+                    column="nome"
+                    titulo="Nome"
+                    value={data.nome}
+                    setData={setData}
+                    error={errors.nome}
+                    clearErrors={clearErrors}
+                />
 
-            <InputTextContent
-                column="nome"
-                titulo="Nome"
-                value={data.nome}
-                setData={setData}
-                error={errors.nome}
-                clearErrors={clearErrors}
-            />
+                <InputDateContent
+                    column="data_de_nascimento"
+                    titulo="Data de Nascimento"
+                    value={data.data_de_nascimento}
+                    setData={setData}
+                    error={errors.data_de_nascimento}
+                    clearErrors={clearErrors}
+                />
+            </div>
 
-            <InputDateContent
-                column="data_de_nascimento"
-                titulo="Data de Nascimento"
-                value={data.data_de_nascimento}
-                setData={setData}
-                error={errors.data_de_nascimento}
-                clearErrors={clearErrors}
-            />
+            <hr />
 
-            {users.map((user: User, index: number) => (
-                <div key={index} className="flex items-center gap-2">
+            <h2 className="text-lg font-semibold">Usuários vinculados a este aluno</h2>
 
+            {users.map((user: User, index: number) => (<div key={index} className="flex gap-2">
+                <div className="flex items-center gap-2 w-full">
                     <SelectModelContent
                         column="users"
                         titulo={`Responsável ${index + 1}`}
                         id={user?.id}
                         array={related.users}
-                        setData={(_: any, id: number) => updateResponsavel(index, id)}
+                        setData={(_: any, user_id: number) => updateResponsavel(index, user_id)}
                         error={errors[`users.${index}`]}
                     />
 
@@ -80,7 +99,15 @@ export function FormAlunoContent({ initialData, endpoint, related }: FormContent
                         />
                     )}
                 </div>
-            ))}
+                <InputTextContent
+                    column="vinculo"
+                    titulo="Vínculo"
+                    value={users[index]?.vinculo ?? ""}
+                    setData={(_: any, value: string) => updateVinculo(index, value)}
+                    error={errors[`users.${index}.vinculo`]}
+                    clearErrors={clearErrors}
+                />
+            </div>))}
 
             {errors.users && <ErrorLabel error={errors.users} />}
 

@@ -39,7 +39,7 @@ export function SelectModelContent({ titulo, column, id, array, error, setData }
                         </SelectItem>})}
                     </SelectContent>
                 </Select>
-                : <p className="text-red-400">Não há {titulo}s disponíveis no momento.</p>}
+                : <p className="text-red-400">Não há {titulo} disponível no momento.</p>}
                 <ErrorLabel error={error} />
         </div>
     );

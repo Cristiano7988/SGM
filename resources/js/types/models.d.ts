@@ -7,7 +7,6 @@ export interface User {
     email_nf: string;
     cpf: string;
     cnpj: string;
-    vinculo: string;
     whatsapp: string;
     instagram: string;
     cep: string;
@@ -18,6 +17,14 @@ export interface User {
     logradouro: string;
     numero: number | undefined;
     complemento: string;
+    pivot: AlunoUser
+}
+
+export interface AlunoUser {
+    id: number,
+    aluno_id: number,
+    user_id: number,
+    vinculo: string
 }
 
 export interface RelacionadasAoUser {
@@ -142,6 +149,7 @@ export interface Aluno {
     data_de_nascimento: string;
     data_de_nascimento_formatada: string;
     idade: string
+    pivot: AlunoUser
 }
 
 export interface RelacionadasAoAluno {

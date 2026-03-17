@@ -133,18 +133,18 @@ class MatriculaController extends Controller
                             : response($mensagem, 403);
                 }
             }
-
-            // // Aqui validamos se o usuário logado possui algum tipo de responsabilidade pelo aluno a ser matriculado
-            // if (!$user->tipos->count()) {
-            //     $mensagem = "Atualize as suas informações de usuário para sabermos qual será sua participação na vida letiva de {$aluno->nome} dentro da Toca.";
-            //     return isWeb()
-            //         ? redirect()->back()->with('errou', $mensagem)
-            //         : response($mensagem);
-            // }
+            $pivot = $user->pivot;
+            // Aqui validamos se o usuário logado possui algum tipo de responsabilidade pelo aluno a ser matriculado
+            if ($pivot && !$pivot->vinculo) {
+                $mensagem = "Atualize as suas informações de usuário para sabermos qual será sua participação na vida letiva de {$aluno->nome} dentro da Toca.";
+                return isWeb()
+                    ? redirect()->back()->with('errou', $mensagem)
+                    : response($mensagem);
+            }
 
             // $temAcompanhante = false;
             // $temAcompananhteReserva = false;
-            // foreach ($aluno->users as $user) {
+            // foreach ($aluno->users as $user) la{
             //     if (count($user->tipos->where('nome', 'acompanhante'))) $temAcompanhante = true;
             //     if (count($user->tipos->where('nome', 'acompanhante reserva'))) $temAcompananhteReserva = true;
             // }

@@ -14,15 +14,16 @@ class AlunoRequest extends FormRequest
      */
     public function rules($aluno = false): array
     {
-        // Transformar request em um array de integers
-        if ($this->has('users')) {
-            $this->merge([
-                'users' => array_map(function ($item) {
-                    return is_array($item) && isset($item['id']) ? $item['id'] : $item;
-                }, $this->input('users')),
-            ]);
+        if ($this->input('users')) {
+            $users = collect($this->input('users'))
+                ->mapWithKeys(function ($pivot) {
+                    return [
+                        $pivot['user_id'] => ['vinculo' => $pivot['vinculo'] ?? null]
+                    ];
+                })
+                ->toArray();
         }
-
+        
         return [
             'nome' => [
                 $aluno ? 'nullable' : 'required',
@@ -35,8 +36,9 @@ class AlunoRequest extends FormRequest
                 'date_format:Y-m-d',
                 'before:'.date('d/m/Y', strtotime('-30 days')) // Deve ter no mínimo 1 mês de idade
             ],
-            'users' => ['required'],
-            'users.*' => ['integer', 'exists:users,id'],
+            'users' => ['required', 'array'],
+            'users.*.user_id' => ['integer', 'exists:users,id'],
+            'users.*.vinculo' => ['string', 'nullable'],
         ];
     }
 }

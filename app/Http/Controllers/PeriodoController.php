@@ -26,7 +26,7 @@ class PeriodoController extends Controller
 
             $periodos
                 ->with('pacote') // Carrega o pacote relacionado ao período
-                ->leftJoin('pacotes', 'pacotes.id', 'periodos.pacote_id')
+                // ->leftJoin('pacotes', 'pacotes.id', 'periodos.pacote_id')
                 ->select(['periodos.*'])->groupBy('periodos.id');
 
             if (isset($pacoteId)) $periodos = Filtra::resultado($periodos, $pacoteId, 'pacotes.id')->with('pacote');
@@ -60,9 +60,7 @@ class PeriodoController extends Controller
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
 
-            return isWeb()
-                ? redirect()->route('periodos.index')->with('error', $mensagem)
-                : response($mensagem, 500);
+            return redirect()->route('periodos.index')->with('error', $mensagem);
         }
     }
     
@@ -119,18 +117,14 @@ class PeriodoController extends Controller
     public function edit(Periodo $periodo)
     {
         try {
-            return isWeb()
-                ? Inertia::render('periodos/edit', [
-                    'periodo' => $periodo,
-                    'pacotes' => \App\Models\Pacote::all(),
-                ])
-                : response($periodo);
+            return Inertia::render('periodos/edit', [
+                'periodo' => $periodo,
+                'pacotes' => Pacote::all(),
+            ]);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
 
-            return isWeb()
-                ? redirect()->route('periodos.index')->with('error', $mensagem)
-                : response($mensagem, 500);
+            return redirect()->route('periodos.index')->with('error', $mensagem);
         }
     }
 

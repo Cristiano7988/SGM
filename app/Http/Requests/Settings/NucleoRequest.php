@@ -67,10 +67,12 @@ class NucleoRequest extends FormRequest
 
                 if (!$isUrl && !$isFile) $fail($attribute.' deve ser uma URL válida ou um arquivo válido.');
             }],
-            'idade_minima' => 'required|numeric|min:1|max:720',
-            'idade_maxima' => "required|numeric|min:{$this->input('idade_minima')}|max:720",
+            'idade_minima' => 'required|numeric|min:1|max:1320',
+            'idade_maxima' => "required|numeric|min:{$this->input('idade_minima')}|max:1320",
             'inicio_matricula' => "required|date|date_format:Y-m-d|before_or_equal:fim_matricula",
             'fim_matricula' => "required|date|date_format:Y-m-d|after_or_equal:inicio_matricula",
+            'turmas' => 'array',
+            'pacotes' => 'array'
         ];
     }
 }

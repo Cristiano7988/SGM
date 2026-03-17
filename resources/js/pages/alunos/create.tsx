@@ -1,7 +1,7 @@
 import { Head } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
-import { Aluno, RelacionadasAoAluno, Matricula, User } from '@/types/models';
+import { Aluno, RelacionadasAoAluno, Matricula, User, AlunoUser } from '@/types/models';
 import Session from '@/components/session';
 import { FormAlunoContent } from '@/components/form-elements/form-aluno-content';
 
@@ -12,13 +12,12 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Create(props: { session: any, users: User[], matriculas: Matricula[] }) {
     const { users, matriculas } = props;
-    const initialData: Aluno & RelacionadasAoAluno = {
-        id: 0,
+    const initialData: Aluno & RelacionadasAoAluno  = {
         nome: '',
         data_de_nascimento: '',
         data_de_nascimento_formatada: '',
         idade: '',
-        users,
+        users: users.map((user: User) => ({ user_id: user.id, vinculo: "" })),
         matriculas,
     };
 

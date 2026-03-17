@@ -59,7 +59,7 @@ class UserController extends Controller
                 // Matrículas
                 ->leftJoin('matriculas', isset($transacoes_feitas_pelo_usuario) ? 'transacoes.matricula_id' : 'alunos.id', isset($transacoes_feitas_pelo_usuario) ? 'matriculas.id' : 'matriculas.aluno_id')
                 ->leftJoin('pacotes', 'matriculas.pacote_id', 'pacotes.id')
-                ->leftJoin('periodos', 'periodos.pacote_id', 'pacotes.id')
+                // ->leftJoin('periodos', 'periodos.pacote_id', 'pacotes.id')
                 ->leftJoin('situacoes', 'matriculas.situacao_id', 'situacoes.id')
                 ->leftJoin('marcacoes', 'matriculas.marcacao_id', 'marcacoes.id')
                 // Turmas

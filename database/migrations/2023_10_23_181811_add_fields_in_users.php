@@ -17,7 +17,6 @@ class AddFieldsInUsers extends Migration
             $table->string('email_nf')->nullable();
             $table->string('cpf')->unique()->nullable();
             $table->string('cnpj')->unique()->nullable();
-            $table->string('vinculo')->nullable();
             $table->string('whatsapp')->unique()->nullable();
             $table->string('instagram')->unique()->nullable();
             $table->string('cep')->nullable();
