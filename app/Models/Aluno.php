@@ -65,11 +65,19 @@ class Aluno extends Model
         return $data->floatDiffInYears(now());
     }
 
+    public static function allWithHisPivot($userId)
+    {
+        return self::get()
+            ->map(function ($aluno) use ($userId) {
+                $aluno->pivot = $aluno->users->find($userId)->pivot ?? (object)['id' => 0, 'vinculo' => "", 'user_id' => 0, 'aluno_id' => 0];
+                return $aluno;
+            });
+    }
+
     public function users()
     {
         return $this->belongsToMany(User::class)->withPivot('vinculo')->withTimestamps();
     }
-
 
     public function matriculas()
     {

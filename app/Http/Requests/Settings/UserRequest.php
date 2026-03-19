@@ -18,21 +18,26 @@ class UserRequest extends FormRequest
     {
         // Transformar request em um array de integers
         if ($this->input('alunos')) {
-            $users = collect($this->input('alunos'))
-                ->mapWithKeys(function ($pivot) {
-                    return [
-                        $pivot['aluno_id'] => ['vinculo' => $pivot['vinculo'] ?? null]
-                    ];
-                })
-                ->toArray();
+            $this->merge([
+                'alunos' => collect($this->input('alunos'))
+                    ->unique('id')
+                    ->mapWithKeys(function ($aluno) {
+                        return [
+                            $aluno['id'] => [
+                                'vinculo' => $aluno['pivot']['vinculo']
+                            ]
+                        ];
+                    })
+                    ->toArray()
+            ]);
         }
 
-        $id = $user ? $user->id : null;
+        $id = $this->input('id');
             
         return !request()->password
             ? [
                 'nome' => ['required', 'string', 'min:2', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($id)],
+                'email' => [$user ? 'nullable' : 'required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($id)],
                 'email_nf' => ['string', 'email', 'max:255'],
                 'cpf' => ['nullable', 'string', 'min:11', 'max:14', Rule::unique('users')->ignore($id)],
                 'cnpj' => ['nullable', 'string', 'min:14', 'max:18', Rule::unique('users')->ignore($id)],

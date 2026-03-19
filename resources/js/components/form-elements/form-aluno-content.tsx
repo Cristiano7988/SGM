@@ -9,19 +9,21 @@ import { FormProps } from "@/types/index";
 import ErrorLabel from "../error-label";
 
 export function FormAlunoContent({ initialData, endpoint, related }: FormContentProps<Aluno>) {
-    const { data, setData, errors, clearErrors, hasErrors, processing, post } = useForm<FormProps<Aluno>>(initialData);
+    const { data, setData, errors, clearErrors, hasErrors, processing, post, put } = useForm<FormProps<Aluno>>(initialData);
+    const edit = location.pathname.includes("edit");
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        post(endpoint);
+        edit
+            ? put(endpoint)
+            : post(endpoint);
     };
 
-    const users = data.users?.length ? data.users : [{ user_id: 0, vinculo: "" }];
+    const userInicial = { id: 0, pivot: { vinculo: "" }};
+    const users = data.users?.length ? data.users : [userInicial];
 
-    const addResponsavel = () => {
-        setData("users", [...users, { user_id: 0, vinculo: "" }]);
-    };
+    const addResponsavel = () => setData("users", [...users, userInicial]);
 
     const removeResponsavel = (index: number) => {
         const updatedUsers = [...users];
@@ -33,9 +35,10 @@ export function FormAlunoContent({ initialData, endpoint, related }: FormContent
 
     const updateResponsavel = (index: number, user_id: number) => {
         const updatedUsers = [...users];
+        const user = related.users.find((u: User) => u.id == user_id);
+
         updatedUsers[index] = {
-            ...updatedUsers[index],
-            user_id,
+            ...user
         };
 
         setData("users", updatedUsers);
@@ -45,14 +48,10 @@ export function FormAlunoContent({ initialData, endpoint, related }: FormContent
 
     const updateVinculo = (index: number, value: string) => {
         const updatedUsers = [...users];
-
-        updatedUsers[index] = {
-            ...updatedUsers[index],
-            vinculo: value
-        };
+        updatedUsers[index].pivot.vinculo = value;
 
         setData("users", updatedUsers);
-        clearErrors(`users.${index}.vinculo`);
+        clearErrors(`users.${index}.pivot.vinculo`);
     };
 
     return (<>
@@ -88,7 +87,7 @@ export function FormAlunoContent({ initialData, endpoint, related }: FormContent
                         titulo={`Responsável ${index + 1}`}
                         id={user?.id}
                         array={related.users}
-                        setData={(_: any, user_id: number) => updateResponsavel(index, user_id)}
+                        setData={(column: string, user_id: number) => updateResponsavel(index, user_id)}
                         error={errors[`users.${index}`]}
                     />
 
@@ -102,9 +101,9 @@ export function FormAlunoContent({ initialData, endpoint, related }: FormContent
                 <InputTextContent
                     column="vinculo"
                     titulo="Vínculo"
-                    value={users[index]?.vinculo ?? ""}
-                    setData={(_: any, value: string) => updateVinculo(index, value)}
-                    error={errors[`users.${index}.vinculo`]}
+                    value={user.pivot.vinculo}
+                    setData={(column: string, value: string) => updateVinculo(index, value)}
+                    error={errors[`users.${index}.pivot.vinculo`]}
                     clearErrors={clearErrors}
                 />
             </div>))}

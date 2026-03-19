@@ -10,7 +10,6 @@ use App\Models\Situacao;
 use App\Models\Marcacao;
 use App\Models\Pacote;
 use App\Models\Matricula;
-use Illuminate\Http\Response;
 use App\Http\Requests\Settings\MatriculaRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -126,10 +125,9 @@ class MatriculaController extends Controller
                 if (in_array($user->id, $aluno->users->pluck('id')->toArray())) $usuariosRelacionados = true;
                 if (!$usuariosRelacionados) {
                         $mensagem = "Você não tem permissão para matricular esse aluno";
-                        session(['error' => $mensagem]);
 
                         return isWeb()
-                            ? redirect()->back()
+                            ? redirect()->back()->with('error', $mensagem)
                             : response($mensagem, 403);
                 }
             }
@@ -138,7 +136,7 @@ class MatriculaController extends Controller
             if ($pivot && !$pivot->vinculo) {
                 $mensagem = "Atualize as suas informações de usuário para sabermos qual será sua participação na vida letiva de {$aluno->nome} dentro da Toca.";
                 return isWeb()
-                    ? redirect()->back()->with('errou', $mensagem)
+                    ? redirect()->back()->with('error', $mensagem)
                     : response($mensagem);
             }
 
@@ -154,11 +152,11 @@ class MatriculaController extends Controller
 
             $matricula = Matricula::create($request->validated());
 
-            session(['success' => "Matrícula do {$matricula->aluno->nome} na turma {$matricula->turma->nome} criada."]);
+            $mensagem = "Matrícula do {$matricula->aluno->nome} na turma {$matricula->turma->nome} criada.";
 
             return isWeb()
-                ? redirect()->route("matriculas.index")
-                : response($matricula);
+                ? redirect()->route("matriculas.index")->with("success", $mensagem)
+                : response($mensagem);
         } catch(\Throwable $th) {
             $mensagem = Trata::erro($th);
             return isWeb()
@@ -170,16 +168,14 @@ class MatriculaController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Matricula  $matricula
-     * @return \Illuminate\Http\Response
      */
-    public function show(Matricula $matricula):Response
+    public function show(Matricula $matricula)
     {
         try {
             return response($matricula);
         } catch(\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return $mensagem;
+            return response($mensagem);
         }
     }
 
@@ -232,11 +228,11 @@ class MatriculaController extends Controller
             $matricula->turma->vagas_preenchidas = $matricula->turma->matriculas()->count();
             $matricula->turma->save();
 
-            session(['success' => "Matrícula do {$matricula->aluno->nome} na turma {$matricula->turma->nome} editada."]);
-
+            $mensagem = "Matrícula do {$matricula->aluno->nome} na turma {$matricula->turma->nome} editada.";
+            
             return isWeb()
-                ? redirect()->back()
-                : response($matricula);
+                ? redirect()->route("matriculas.index")->with("success", $mensagem)
+                : response($mensagem);
             } catch(\Throwable $th) {
                 $mensagem = Trata::erro($th);
 
@@ -258,10 +254,9 @@ class MatriculaController extends Controller
             if ($excluido) DB::commit(); // Exclui somente se conseguir notificar o cliente
 
             $mensagem = "A matrícula de nº {$matricula->id}, de {$matricula->aluno->nome}, foi deletada.";
-            session(['success' => $mensagem]);
             
             return isWeb()
-                ? redirect()->route("matriculas.index")
+                ? redirect()->route("matriculas.index")->with(['success' => $mensagem])
                 : response($mensagem);
         } catch(\Throwable $th) {
             $mensagem = Trata::erro($th);

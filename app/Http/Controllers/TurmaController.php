@@ -8,48 +8,13 @@ use App\Models\Dia;
 use App\Models\Nucleo;
 use App\Models\TipoDeAula;
 use App\Models\Turma;
-use Illuminate\Http\Request;
+use App\Http\Requests\Settings\TurmaRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
 class TurmaController extends Controller
 {
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function validator(array $data)
-    {
-        return Validator::make($data, [
-                'nome' => [
-                    'string',
-                    'required',
-                    'min:3',
-                    'max:30',
-                ],
-                'descricao' => 'string|min:10|max:1500',
-                'imagem' => ['required', function($attribute, $value, $fail) {
-                    validaImagem($attribute, $value, $fail);
-                }],
-                'vagas_fora_do_site' => ['numeric', "max:{$data['vagas_ofertadas']}"],
-                'vagas_ofertadas' => ['numeric', "min:{$data['vagas_fora_do_site']}"],
-                'horario' => ['required', 'regex:/^([01]\d|2[0-3]):([0-5]\d)$/'], // Valida HH:MM
-                'disponivel' => 'boolean',
-                'zoom' => 'url',
-                'zoom_id' => 'string',
-                'zoom_senha' => 'string|min:3',
-                'whatsapp' => 'url',
-                'spotify' => 'url',
-                'nucleo_id' => 'required|numeric|min:1',
-                'dia_id' => 'required|numeric|min:1',
-                'tipo_de_aula_id' => 'required|numeric|min:1',
-            ]);   
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -114,42 +79,31 @@ class TurmaController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      */
-    public function store(Request $request)
+    public function store(TurmaRequest $request)
     {
         try {
-            $validator = $this->validator($request->all());
-            if ($validator->fails()) {
-                session(['error' => "Há alguma informação incorreta, revise o formulário. "]);
-        
-                return isWeb()
-                    ? redirect()->back()->withErrors($validator)
-                    : response($validator->errors(), 422);
-            }
-
             DB::beginTransaction();
             $data = request()->hasFile('imagem')
-                ? request()->except('imagem')
-                : request()->all();
+                ? $request->safe()->except('imagem')
+                : $request->validated();
 
             $turma = Turma::create($data);
 
             salvaImagem($turma, 'turmas');
             DB::commit();
 
-            session(['success' => "A turma de nº {$turma->id}, {$turma->nome}, foi criada."]);
+            $mensagem = "Turma {$turma->nome} criada.";
 
             return isWeb()
-                ? redirect()->route('turmas.index')
-                : response($turma);
+                ? redirect()->route('turmas.index')->with('success', $mensagem)
+                : response($mensagem);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
 
             return isWeb()
                 ? redirect()->route('turmas.index')
                 : response($mensagem);
-            return $mensagem;
         }
     }
 
@@ -183,56 +137,41 @@ class TurmaController extends Controller
     public function edit(Turma $turma)
     {
         try {
-            return isWeb()
-                ? Inertia::render('turmas/edit', [
-                    'turma' => $turma,
-                    'nucleos' => Nucleo::all(),
-                    'dias' => Dia::all(),
-                    'tipos_de_aula' => TipoDeAula::all()
-                ])
-                : response($turma);
+            return Inertia::render('turmas/edit', [
+                'turma' => $turma,
+                'nucleos' => Nucleo::all(),
+                'dias' => Dia::all(),
+                'tipos_de_aula' => TipoDeAula::all()
+            ]);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
 
-            return isWeb()
-                ? redirect()->route('turmas.index')
-                : response($mensagem);
+            return redirect()->route('turmas.index');
         }
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Turma  $turma
      */
-    public function update(Request $request, Turma $turma)
+    public function update(TurmaRequest $request, Turma $turma)
     {
         try {
-            $validator = $this->validator($request->all());
-            if ($validator->fails()) {
-                session(['error' => "Há alguma informação incorreta, revise o formulário. "]);
-        
-                return isWeb()
-                    ? redirect()->back()->withErrors($validator)
-                    : response($validator->errors(), 422);
-            }
-
             DB::beginTransaction();
-            $data = request()->hasFile('imagem')
-                ? request()->except('imagem')
-                : request()->all();
+            $data = $request->hasFile('imagem')
+                ? $request->safe()->except('imagem')
+                : $request->validated();
 
             $turma->update($data);
 
             salvaImagem($turma, 'turmas');
             DB::commit();
 
-            session(['success' => "A turma de nº {$turma->id}, {$turma->nome}, foi atualizada."]);
+            $mensagem = "Turma {$turma->nome} editada.";
 
             return isWeb()
-                ? redirect()->route('turmas.index')
-                : response($turma);
+                ? redirect()->route('turmas.index')->with('success', $mensagem)
+                : response($mensagem);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
 
@@ -255,11 +194,10 @@ class TurmaController extends Controller
             $turma->delete();
             DB::commit();
 
-            $mensagem = "A turma de nº {$turma->id}, {$turma->nome}, foi excluída.";
-            session(['success' => $mensagem]);
+            $mensagem = "Turma {$turma->nome} deletada.";
 
             return isWeb()
-                ? redirect()->route('turmas.index')
+                ? redirect()->route('turmas.index')->with('success', $mensagem)
                 : response($mensagem);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);

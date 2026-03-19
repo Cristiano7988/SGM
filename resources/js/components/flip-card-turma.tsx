@@ -80,7 +80,7 @@ export default function FlipCardTurma({ turma }: { turma: Turma & RelacionadasAT
             onClick={() => setFlipped(false)}
             className="cursor-pointer m-auto absolute left-0 top-1/2"
           />
-          <CarouselText paragraphs={turma.descricao} />
+          <CarouselText paragraphs={turma.paragrafos_da_descricao} />
         </div>
       </motion.div>
     </div>

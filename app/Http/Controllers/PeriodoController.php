@@ -60,7 +60,7 @@ class PeriodoController extends Controller
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
 
-            return redirect()->route('periodos.index')->with('error', $mensagem);
+            return redirect()->route('periodos.index');
         }
     }
     
@@ -74,13 +74,15 @@ class PeriodoController extends Controller
         try {
             $periodo = Periodo::create($request->validated());
 
+            $mensagem = "Período de {$periodo->inicio} à {$periodo->fim} criado.";
+
             return isWeb()
-                ? redirect()->route('periodos.index')->with('success', "O período de nº {$periodo->id}, de {$periodo->inicio} à {$periodo->fim}, foi criado com sucesso.")
-                : response($periodo);
+                ? redirect()->route('periodos.index')->with('success', $mensagem)
+                : response($mensagem);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return isWeb()
-                ? redirect()->route('periodos.index')->with('error', $mensagem)
+                ? redirect()->route('periodos.index')
                 : response($mensagem);
         }
     }
@@ -104,8 +106,8 @@ class PeriodoController extends Controller
         } catch(\Throwable $th) {
             $mensagem = Trata::erro($th);
             return isWeb()
-                ? redirect()->route('periodos.index')->with('error', $mensagem)
-                : response($mensagem, 500);
+                ? redirect()->route('periodos.index')
+                : response($mensagem);
         }
     }
 
@@ -124,7 +126,7 @@ class PeriodoController extends Controller
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
 
-            return redirect()->route('periodos.index')->with('error', $mensagem);
+            return redirect()->route('periodos.index');
         }
     }
 
@@ -139,15 +141,17 @@ class PeriodoController extends Controller
         try {
             $periodo->update($request->validated());
 
+            $mensagem = "Período de {$periodo->inicio} à {$periodo->fim} editado.";
+
             return isWeb()
-                ? redirect()->route('periodos.index')->with('success', "O período de nº {$periodo->id}, de {$periodo->inicio} à {$periodo->fim}, foi atualizado com sucesso.")
-                : response($periodo);
+                ? redirect()->route('periodos.index')->with('success', $mensagem)
+                : response($mensagem);
         } catch(\Throwable $th) {
             $mensagem = Trata::erro($th);
 
             return isWeb()
                 ? redirect()->route('periodos.index')->with('error', $mensagem)
-                : response($mensagem, 500);
+                : response($mensagem);
         }
     }
 
@@ -163,15 +167,17 @@ class PeriodoController extends Controller
             $excluido = Trata::exclusao($periodo, 'Período');
             if ($excluido) DB::commit(); // Exclui somente se conseguir notificar o cliente
 
+            $mensagem = "Período de {$periodo->inicio} à {$periodo->fim} deletado.";
+
             return isWeb()
-                ? redirect()->route('periodos.index')->with('success', "O período de nº {$periodo->id}, de {$periodo->inicio} à {$periodo->fim}, foi deletado.")
-                : response("O período de nº {$periodo->id}, de {$periodo->inicio} à {$periodo->fim},  foi deletado.");;
+                ? redirect()->route('periodos.index')->with('success', $mensagem)
+                : response($mensagem);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
 
             return isWeb()
-                ? redirect()->route('periodos.index')->with('error', $mensagem)
-                : response($mensagem, 500);
+                ? redirect()->route('periodos.index')
+                : response($mensagem);
         }
     }
 }

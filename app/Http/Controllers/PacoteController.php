@@ -78,15 +78,16 @@ class PacoteController extends Controller
     {
         try {
             $pacote = Pacote::create($request->validated());
+            $mensagem = "Pacote {$pacote->nome} criado.";
 
             return isWeb()
-                ? redirect()->route('pacotes.index')->with('success', "O pacote de nº {$pacote->id}, {$pacote->nome}, foi criado.")
-                : response($pacote, 201);
+                ? redirect()->route('pacotes.index')->with('success', $mensagem)
+                : response($mensagem);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return isWeb()
                 ? redirect()->route('pacotes.index')
-                : response($mensagem, 500);
+                : response($mensagem);
         }
     }
 
@@ -111,7 +112,7 @@ class PacoteController extends Controller
 
             return isWeb()
                 ? redirect()->route('pacotes.index')
-                : $mensagem;
+                : response($mensagem);
         }
     }
 
@@ -147,9 +148,11 @@ class PacoteController extends Controller
             $pacote->update($request->validated());
             if (isset($request->periodos) && !!count($request->periodos)) $pacote->periodos()->sync($request->periodos);
 
+            $mensagem = "Pacote {$pacote->nome} editado.";
+
             return isWeb()
-                ? redirect()->route('pacotes.index')->with('success', "O pacote de nº {$pacote->id}, {$pacote->nome}, foi atualizado.")
-                : response('');
+                ? redirect()->route('pacotes.index')->with('success', $mensagem)
+                : response($mensagem);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
 
@@ -171,14 +174,17 @@ class PacoteController extends Controller
             $excluido = Trata::exclusao($pacote, 'Pacote');
             if ($excluido) DB::commit(); // Exclui somente se conseguir notificar o cliente
 
+            $mensagem = "Pacote {$pacote->nome} deletado.";
+
             return isWeb()
-                ? redirect()->route('pacotes.index')->with('success', "O pacote de nº {$pacote->id}, {$pacote->nome}, foi deletado.")
-                : response("O pacote de nº {$pacote->id}, {$pacote->nome},  foi deletado.");
+                ? redirect()->route('pacotes.index')->with('success', $mensagem)
+                : response($mensagem);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
+
             return isWeb()
-                ? redirect()->route('pacotes.index')->with('error', $mensagem)
-                : response($mensagem, 500);
+                ? redirect()->route('pacotes.index')
+                : response($mensagem);
         }
     }
 }

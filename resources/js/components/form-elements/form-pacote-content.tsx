@@ -7,6 +7,7 @@ import { SwitchContent } from "./switch-content";
 import { FormContentProps, Pacote, Periodo } from "@/types/models";
 import { FormProps } from "@/types";
 import { Unlink } from "lucide-react";
+import ErrorLabel from "../error-label";
 
 export function FormPacoteContent({ initialData, endpoint, related }: FormContentProps<Pacote>) {
     const { data, setData, errors, clearErrors, hasErrors, processing, post, put } = useForm<FormProps<Pacote>>(initialData);
@@ -86,6 +87,8 @@ export function FormPacoteContent({ initialData, endpoint, related }: FormConten
 
             <hr />
 
+            <h2 className="text-lg font-semibold">Períodos vinculados a este pacote</h2>
+
             {periodos.map((periodo: Periodo, index: number) => (
                 <div key={index} className="flex items-center gap-2">
 
@@ -106,6 +109,8 @@ export function FormPacoteContent({ initialData, endpoint, related }: FormConten
                     )}
                 </div>
             ))}
+
+            {errors.periodos && <ErrorLabel error={errors.periodos} />}
 
             <div className="bg-background bottom-4 fixed flex gap-4 items-center p-4 right-4">
                 <Link

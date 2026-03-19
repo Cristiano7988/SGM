@@ -7,10 +7,8 @@ use App\Models\Aluno;
 use App\Models\User;
 use App\Models\Matricula;
 use App\Http\Requests\Settings\AlunoRequest;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
 class AlunoController extends Controller
@@ -70,7 +68,7 @@ class AlunoController extends Controller
         $user = Auth::user();
 
         $users = $user && $user->is_admin
-            ? User::all()
+            ? User::allWithHisPivot(false)
             : $user->alunos->flatMap->users->unique('id');
 
         return Inertia::render('alunos/create', [ 'users' => $users ]);
@@ -89,14 +87,16 @@ class AlunoController extends Controller
             if (isset($request->users) && !!count($request->users)) $aluno->users()->sync($request->users);
             DB::commit();
 
+            $mensagem = "Aluno {$aluno->nome} criado.";
+
             return isWeb()
-                ? redirect()->route('alunos.index')->with('success', 'Aluno criado com sucesso.')
-                : response($aluno);
+                ? redirect()->route('alunos.index')->with('success', $mensagem)
+                : response($mensagem);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return isWeb()
-                ? redirect()->route('alunos.index')->with('error', $mensagem)
-                : response($mensagem, 500);
+                ? redirect()->route('alunos.index')
+                : response($mensagem);
         }
     }
 
@@ -116,8 +116,8 @@ class AlunoController extends Controller
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return isWeb()
-                ? redirect()->route('alunos.index')->with('error', $mensagem)
-                : response($mensagem, 500);
+                ? redirect()->route('alunos.index')
+                : response($mensagem);
         }
     }
 
@@ -132,8 +132,8 @@ class AlunoController extends Controller
             $user = Auth::user();
 
             $users = $user && $user->is_admin
-                ? User::all()
-                : $user->alunos->flatMap->users->unique('id');
+                ? User::allWithHisPivot($aluno->id)
+                : $aluno->users;
 
             $matriculas = $user && $user->is_admin
                 ? Matricula::all()
@@ -146,7 +146,7 @@ class AlunoController extends Controller
             ]);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return redirect()->route('alunos.index')->with('error', $mensagem);
+            return redirect()->route('alunos.index');
         }
     }
 
@@ -166,16 +166,18 @@ class AlunoController extends Controller
             }
             // Aqui atualizamos os dados
             $aluno->update($request->validated());
-            if (isset($request->users) && !!count($request->users)) $aluno->users()->sync($request->users);
+            if ($request->users) $aluno->users()->sync($request->users);
+
+            $mensagem = "Aluno {$aluno->nome} editado.";
 
             return isWeb()
-                ? redirect()->route('alunos.index')->with('success', 'Aluno atualizado com sucesso.')
-                : response($aluno);
+                ? redirect()->route('alunos.index')->with('success', $mensagem)
+                : response($mensagem);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return isWeb()
-                ? redirect()->route('alunos.index')->with('error', $mensagem)
-                : response($mensagem, 500);
+                ? redirect()->route('alunos.index')
+                : response($mensagem);
         }
     }
 
@@ -189,14 +191,17 @@ class AlunoController extends Controller
         try {
             $aluno->users()->detach();
             $aluno->delete();
+
+            $mensagem = "Aluno {$aluno->nome} deletado.";
+
             return isWeb()
-                ? redirect()->route('alunos.index')->with('success', 'Aluno deletado com sucesso.')
-                : response("Aluno deletado com sucesso.");
+                ? redirect()->route('alunos.index')->with('success', $mensagem)
+                : response($mensagem);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return isWeb()
-                ? redirect()->route('alunos.index')->with('error', $mensagem)
-                : response($mensagem, 500);
+                ? redirect()->route('alunos.index')
+                : response($mensagem);
         }
     }
 }

@@ -57,6 +57,15 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public static function allWithHisPivot($alunoId)
+    {
+        return self::get()
+            ->map(function ($user) use ($alunoId) {
+                $user->pivot = $user->alunos->find($alunoId)->pivot ?? (object)['id' => 0, 'vinculo' => "", 'user_id' => 0, 'aluno_id' => 0];
+                return $user;
+            });
+    }
+
     public function tipos()
     {
         return $this->belongsToMany(Tipo::class);

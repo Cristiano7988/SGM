@@ -14,10 +14,12 @@ class CreateAlunoUserTable extends Migration
     public function up()
     {
         Schema::create('aluno_user', function (Blueprint $table) {
-            $table->foreignId('aluno_id')->nullable();
-            $table->foreignId('user_id')->nullable();
+            $table->foreignId('aluno_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string("vinculo")->nullable();
             $table->timestamps();
+
+            $table->unique(['aluno_id', 'user_id']);
         });
     }
 

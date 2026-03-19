@@ -17,7 +17,7 @@ export default function Create(props: { session: any, users: User[], matriculas:
         data_de_nascimento: '',
         data_de_nascimento_formatada: '',
         idade: '',
-        users: users.map((user: User) => ({ user_id: user.id, vinculo: "" })),
+        users,
         matriculas,
     };
 

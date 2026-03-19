@@ -9,21 +9,21 @@ import ErrorLabel from "../error-label";
 import { InputNumberContent } from "./input-number-content";
 
 export function FormUserContent({ initialData, endpoint, related }: FormContentProps<User>) {
-    const { data, setData, errors, clearErrors, hasErrors, processing, post } = useForm<FormProps<User>>(initialData);
-
-    const editing = location.pathname.includes("edit");
+    const { data, setData, errors, clearErrors, hasErrors, processing, post, put } = useForm<FormProps<User>>(initialData);
+    const edit = location.pathname.includes("edit");
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        post(endpoint);
+        edit
+            ? put(endpoint)
+            : post(endpoint);
     };
 
-    const alunos = data.alunos.length ? data.alunos : [{ aluno_id: 0, vinculo: "" }];
+    const alunoInicial = { id: 0, pivot: { vinculo: "" }};
+    const alunos = data.alunos.length ? data.alunos : [alunoInicial];
 
-    const addAluno = () => {
-        setData("alunos", [...alunos, { aluno_id: 0, vinculo: "" }]);
-    };
+    const addAluno = () => setData("alunos", [...alunos, alunoInicial]);
 
     const removeAluno = (index: number) => {
         const updatedAlunos = [...alunos];
@@ -35,9 +35,10 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
 
     const updateAluno = (index: number, aluno_id: number) => {
         const updatedAlunos = [...alunos];
+        const aluno = related.alunos.find((a: Aluno) => a.id == aluno_id);
+        
         updatedAlunos[index] = {
-            ...updatedAlunos[index],
-            aluno_id
+            ...aluno
         };
 
         setData("alunos", updatedAlunos);
@@ -47,13 +48,10 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
 
     const updateVinculo = (index: number, value: string) => {
         const updatedAlunos = [...alunos];
-        updatedAlunos[index] = {
-            ...updatedAlunos[index],
-            vinculo: value
-        };
+        updatedAlunos[index].pivot.vinculo = value;
 
         setData("alunos", updatedAlunos);
-        clearErrors(`alunos.${index}.vinculo`);
+        clearErrors(`alunos.${index}.pivot.vinculo`);
     };
 
     return (<>
@@ -79,7 +77,7 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
                 />
             </div>
 
-            {!editing && <InputTextContent
+            {!edit && <InputTextContent
                 column="email"
                 titulo="Email de acesso"
                 value={data.email}
@@ -230,7 +228,7 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
                         titulo={`Aluno ${index + 1}`}
                         id={aluno?.id}
                         array={related.alunos}
-                        setData={(_: any, aluno_id: number) => updateAluno(index, aluno_id)}
+                        setData={(column: string, aluno_id: number) => updateAluno(index, aluno_id)}
                         error={errors[`alunos.${index}`]}
                     />
 
@@ -244,9 +242,9 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
                 <InputTextContent
                     column="vinculo"
                     titulo="Vínculo"
-                    value={related?.alunos[index]?.vinculo ?? ""}
-                    setData={(_: any, value: string) => updateVinculo(index, value)}
-                    error={errors[`alunos.${index}.vinculo`]}
+                    value={aluno.pivot.vinculo}
+                    setData={(column: string, value: string) => updateVinculo(index, value)}
+                    error={errors[`alunos.${index}.pivot.vinculo`]}
                     clearErrors={clearErrors}
                 />
             </div>))}

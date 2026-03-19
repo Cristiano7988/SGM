@@ -6,12 +6,15 @@ import { InputDateContent } from "./input-date-content";
 import { useForm } from "@inertiajs/react";
 
 export function FormPeriodoContent({ initialData, endpoint, related }: FormContentProps<Periodo>) {
-    const { data, setData, errors, clearErrors, hasErrors, processing, post } = useForm<FormProps<Periodo>>(initialData);
+    const { data, setData, errors, clearErrors, hasErrors, processing, post, put } = useForm<FormProps<Periodo>>(initialData);
+    const edit = location.pathname.includes("edit");
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        post(endpoint);
+        edit
+            ? put(endpoint)
+            : post(endpoint);
     };
 
     return (

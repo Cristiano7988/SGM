@@ -36,11 +36,11 @@ class Turma extends Model
         'descricao' => 'string'
     ];
 
-    protected $appends = ['vagas_preenchidas'];
+    protected $appends = ['vagas_preenchidas', 'paragrafos_da_descricao'];
 
-    function getDescricaoAttribute(string $value): array
+    function getParagrafosDaDescricaoAttribute(): array
     {
-        return explode("\n\n", $value);
+        return explode("\n\n", $this->attributes['descricao']);
     }
 
     function getVagasPreenchidasAttribute(): int

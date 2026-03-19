@@ -363,7 +363,7 @@ class UserController extends Controller
             if(!$user) return redirect()->route('login')->with('error', 'Usuário sem permissão para acessar este recurso');
 
             $alunos = $user->is_admin
-                ? Aluno::all()
+                ? Aluno::allWithHisPivot(false)
                 : $user->alunos;
 
             return Inertia::render('users/create', [
@@ -371,7 +371,7 @@ class UserController extends Controller
             ]);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
-            return redirect()->route('users.create')->with('error', $mensagem);
+            return redirect()->route('users.index');
         }
     }
 
@@ -401,15 +401,17 @@ class UserController extends Controller
             if (isset($request['tipos']) && !!count($request['tipos'] ?? [])) $newUser->tipos()->attach($request['tipos']);
             $newUser->alunos()->attach($request->alunos);
             DB::commit();
+
+            $mensagem = "Usuário {$newUser->nome} criado.";
     
             return isWeb()
-                ? redirect()->route('users.index')->with('success', 'Usuário criado com sucesso.')
-                : response($newUser);
+                ? redirect()->route('users.index')->with('success', $mensagem)
+                : response($mensagem);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return isWeb()
-                ? redirect()->route('users.index')->with('error', $mensagem)
-                : response($mensagem, 500);
+                ? redirect()->route('users.index')
+                : response($mensagem);
         }
     }
 
@@ -429,8 +431,8 @@ class UserController extends Controller
         } catch(\Throwable $th) {
             $mensagem = Trata::erro($th);
             return isWeb()
-                ? redirect()->route('users.index')->with('error', $mensagem)
-                : response($mensagem, 500);
+                ? redirect()->route('users.index')
+                : response($mensagem);
         }
     }
 
@@ -440,16 +442,16 @@ class UserController extends Controller
             $authUser = Auth::user();
 
             $alunos = $authUser && $authUser->is_admin
-                ? Aluno::all()
-                : $authUser->alunos;
+                ? Aluno::allWithHisPivot($user->id)
+                : $user->alunos;
 
             return Inertia::render('users/edit', [
                 'user' => $user->load(['alunos']),
                 'alunos' => $alunos
             ]);
         } catch (\Throwable $th) {
-            $mensagem = Trata::erro($th);
-            return redirect()->route('users.index')->with('error', $mensagem);
+            Trata::erro($th);
+            return redirect()->route('users.index');
         }
     }
 
@@ -480,20 +482,19 @@ class UserController extends Controller
                 $user->tipos()->detach();
                 $user->tipos()->attach($request['tipos']);
             }
-            if (isset($request['alunos']) && !!count($request['alunos'])) {
-                $user->alunos()->detach();
-                $user->alunos()->attach($request['alunos']);
-            }
+            if (isset($request['alunos']) && !!count($request['alunos'])) $user->alunos()->sync($request->alunos);
             DB::commit();
     
+            $mensagem = "Usuário {$user->nome} editado.";
+
             return isWeb()
-                ? redirect()->route('users.index')->with('success', 'Usuário atualizado com sucesso.')
-                : response($user);
+                ? redirect()->route('users.index')->with('success', $mensagem)
+                : response($mensagem);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return isWeb()
-                ? redirect()->route('users.index')->with('error', $mensagem)
-                : response($mensagem, 500);
+                ? redirect()->route('users.index')
+                : response($mensagem);
         }
     }
 
@@ -511,14 +512,16 @@ class UserController extends Controller
             $excluido = Trata::exclusao($user, 'Usuário');
             if ($excluido) DB::commit(); // Exclui somente se conseguir notificar o cliente
         
+            $mensagem = "Usuário {$user->nome} deletado.";
+
             return isWeb()
-                ? redirect()->route('users.index')->with('success', $excluido)
-                : response("O usuário de id {$user->id} foi excluído com sucesso.");
+                ? redirect()->route('users.index')->with('success', $mensagem)
+                : response($mensagem);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return isWeb()
-                ? redirect()->route('users.index')->with('error', $mensagem)
-                : response($mensagem, 500);
+                ? redirect()->route('users.index')
+                : response($mensagem);
         }
     }
 }

@@ -8,12 +8,10 @@ use App\Models\Nucleo;
 use App\Models\Pacote;
 use App\Models\Turma;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use App\Http\Requests\Settings\NucleoRequest;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
 class NucleoController extends Controller
@@ -103,11 +101,11 @@ class NucleoController extends Controller
             }
             DB::commit();
 
-            session(['success' => "Núcleo {$nucleo->nome} criado."]);
+            $mensagem = "Núcleo {$nucleo->nome} criado.";
 
             return isWeb()
-                ? redirect()->route('nucleos.index')
-                : response($nucleo);
+                ? redirect()->route('nucleos.index')->with('success', $mensagem)
+                : response($mensagem);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
 
@@ -191,11 +189,11 @@ class NucleoController extends Controller
             }
             DB::commit();
 
-            session(['success' => "Núcleo {$nucleo->nome} editado."]);
+            $mensagem = "Núcleo {$nucleo->nome} editado.";
 
             return isWeb()
-                ? redirect()->route('nucleos.index')
-                : response($nucleo);
+                ? redirect()->route('nucleos.index')->with('success', $mensagem)
+                : response($mensagem);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
         
@@ -218,11 +216,10 @@ class NucleoController extends Controller
             $nucleo->delete();
             DB::commit();
 
-            $mensagem = "O núcleo de nº {$nucleo->id}, {$nucleo->nome},  foi deletado.";
-            session(['success' => $mensagem]);
+            $mensagem = "Núcleo {$nucleo->nome} deletado.";
 
             return isWeb()
-                ? redirect()->route('nucleos.index')
+                ? redirect()->route('nucleos.index')->with('success', $mensagem)
                 : response($mensagem);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);

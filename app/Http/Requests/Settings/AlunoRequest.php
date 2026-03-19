@@ -15,13 +15,18 @@ class AlunoRequest extends FormRequest
     public function rules($aluno = false): array
     {
         if ($this->input('users')) {
-            $users = collect($this->input('users'))
-                ->mapWithKeys(function ($pivot) {
-                    return [
-                        $pivot['user_id'] => ['vinculo' => $pivot['vinculo'] ?? null]
-                    ];
-                })
-                ->toArray();
+            $this->merge([
+                'users' => collect($this->input('users'))
+                    ->unique('id')
+                    ->mapWithKeys(function ($user) {
+                        return [
+                            $user['id'] => [
+                                'vinculo' => $user['pivot']['vinculo']
+                            ]
+                        ];
+                    })
+                    ->toArray()
+            ]);
         }
         
         return [

@@ -45,7 +45,7 @@ export default function FlipCardUser({ user }: { user: User & RelacionadasAoUser
           <p><b>Alunos:</b></p>
           {user.alunos.map((aluno: Aluno) => <p key={aluno.id} className="text-sm text-neutral-500">
             <Link href={route('alunos.show', { id: aluno.id })} className="text-blue-600 hover:underline">
-              {aluno.nome}
+              {aluno.nome} ({aluno.pivot.vinculo})
             </Link>
           </p>)}
         </div>
