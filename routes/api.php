@@ -103,11 +103,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{tipo_de_aula}', [TipoDeAulaController::class, 'show']);
     });
 
-    Route::prefix('/tipos')->group(function () {
-        Route::get('/', [TipoController::class, 'index']);
-        Route::get('/{tipo}', [TipoController::class, 'show']);
-    });
-
     Route::prefix('/transacoes')->group(function () {
         Route::get('/', [TransacaoController::class, 'index']);
         Route::middleware(CalculaDescontoAntesDaController::class)->post('/', [TransacaoController::class, 'store'])->middleware(preparaBackupDaTransacao::class);
@@ -202,12 +197,6 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/', [TipoDeAulaController::class, 'store']);
             Route::patch('/{tipo_de_aula}', [TipoDeAulaController::class, 'update']);
             Route::delete('/{tipo_de_aula}', [TipoDeAulaController::class, 'destroy']);
-        });
-
-        Route::prefix('/tipos')->group(function () {
-            Route::post('/', [TipoController::class, 'store']);
-            Route::patch('/{tipo}', [TipoController::class, 'update']);
-            Route::delete('/{tipo}', [TipoController::class, 'destroy']);
         });
 
         Route::prefix('/transacoes')->group(function () {

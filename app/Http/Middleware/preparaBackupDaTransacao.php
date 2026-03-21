@@ -31,7 +31,6 @@ class preparaBackupDaTransacao
             if (!count($matricula->pacote->periodos)) return response("Periodos não encontrados", 403);
             if (!$matricula->aluno) return response("Aluno não encontrado", 403);
             if (!$forma_de_pagamento) return response("Forma de pagamento não encontrada", 403);
-            if (!count($user->tipos->where('nome', 'pagante'))) return response("O usuário deve ser do tipo pagante", 403);
             if ($request->valor_pago < 0) return response("Não é possível aplicar este desconto", 403);
     
             return $next($request);

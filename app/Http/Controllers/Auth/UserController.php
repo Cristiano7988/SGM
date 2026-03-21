@@ -44,7 +44,6 @@ class UserController extends Controller
                 // Tipos
             $users
                 ->leftJoin('tipo_user', 'users.id', 'tipo_user.user_id' )
-                ->leftJoin('tipos', 'tipo_user.tipo_id', 'tipos.id')
                 // Emails
                 ->leftJoin('email_user', 'users.id', 'email_user.user_id')
                 ->leftJoin('emails', 'email_user.email_id', 'emails.id')
@@ -75,7 +74,6 @@ class UserController extends Controller
             
             // Aqui filtramos os usuários de acordo com suas relações
             if (isset($usuarios))                       $users = Filtra::resultado($users, $usuarios, 'users.id');
-            if (isset($tipos))                          $users = Filtra::resultado($users, $tipos, 'tipo_id')->with('tipos');
             if (isset($emails))                         $users = Filtra::resultado($users, $emails, 'emails.id')->with('emails:id,assunto,anexo');
             if (isset($transacoes_feitas_pelo_usuario)) $users = Filtra::resultado($users, $transacoes_feitas_pelo_usuario, 'transacoes.id');
             else if (isset($transacoes))                $users = Filtra::resultado($users, $transacoes, 'transacoes.id');
@@ -342,7 +340,6 @@ class UserController extends Controller
             return isWeb()
                 ? Inertia::render('users/index', [
                     'pagination' => $pagination,
-                    // 'tipos' => $user->is_admin ? User::select('tipos.id', 'tipos.nome')->join('tipo_user', 'users.id', 'tipo_user.user_id')->join('tipos', 'tipo_user.tipo_id', 'tipos.id')->groupBy('tipos.id')->get() : $user->tipos,
                     'emails' => $user->is_admin ? User::select('emails.id', 'emails.assunto')->join('email_user', 'users.id', 'email_user.user_id')->join('emails', 'email_user.email_id', 'emails.id')->groupBy('emails.id')->get() : $user->emails,
                     'alunos' => $user->alunos,
                 ])
@@ -398,7 +395,6 @@ class UserController extends Controller
 
             DB::beginTransaction();
             $newUser = User::create($data);
-            if (isset($request['tipos']) && !!count($request['tipos'] ?? [])) $newUser->tipos()->attach($request['tipos']);
             $newUser->alunos()->attach($request->alunos);
             DB::commit();
 
@@ -478,10 +474,6 @@ class UserController extends Controller
             if (!!$request['password']) $request['password'] = Hash::make($request['password']);
             $user->update($request->validated());
 
-            if (isset($request['tipos']) && !!count($request['tipos'])) {
-                $user->tipos()->detach();
-                $user->tipos()->attach($request['tipos']);
-            }
             if (isset($request['alunos']) && !!count($request['alunos'])) $user->alunos()->sync($request->alunos);
             DB::commit();
     
@@ -507,7 +499,6 @@ class UserController extends Controller
     {
         try {
             DB::beginTransaction();
-            $user->tipos()->detach();
             $user->alunos()->detach();
             $excluido = Trata::exclusao($user, 'Usuário');
             if ($excluido) DB::commit(); // Exclui somente se conseguir notificar o cliente

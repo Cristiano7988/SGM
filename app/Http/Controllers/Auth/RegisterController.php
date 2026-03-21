@@ -77,7 +77,6 @@ class RegisterController extends Controller
             if (!!$request['password']) $request['password'] = Hash::make($request['password']);
             $user = User::create($request->all());
             
-            if (isset($request['tipos']) && !!count($request['tipos'])) $user->tipos()->attach($request['tipos']);
             if (isset($request['alunos']) && !!count($request['alunos'])) $user->alunos()->attach($request['alunos']);
             DB::commit();
     
