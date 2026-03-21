@@ -125,26 +125,16 @@ class MatriculaController extends Controller
         try {
             $user = Auth::user();
             
-            // Aqui validamos se o aluno a ser matrículado tem relação com o usuário logado
             $aluno = Aluno::find($request->aluno_id);
-            // if ($user && !$user->is_admin) {                
-            //     $usuariosRelacionados = false;
-            //     if (in_array($user->id, $aluno->users->pluck('id')->toArray())) $usuariosRelacionados = true;
-            //     if (!$usuariosRelacionados) {
-            //             $mensagem = "Você não tem permissão para matricular esse aluno";
+            $isAdmin = $user && !$user->is_admin;             
+            
+            // Validando se o aluno a ser matrículado tem relação com o usuário logado
+            if (!$isAdmin && !$aluno->users->find($user->id)) {
+                $mensagem = "Você não tem permissão para matricular esse aluno";
 
-            //             return isWeb()
-            //                 ? redirect()->back()->with('error', $mensagem)
-            //                 : response($mensagem, 403);
-            //     }
-            // }
-            $pivot = $user->pivot;
-            // Aqui validamos se o usuário logado possui algum tipo de responsabilidade pelo aluno a ser matriculado
-            if ($pivot && !$pivot->vinculo) {
-                $mensagem = "Atualize as suas informações de usuário para sabermos qual será sua participação na vida letiva de {$aluno->nome} dentro da Toca.";
                 return isWeb()
                     ? redirect()->back()->with('error', $mensagem)
-                    : response($mensagem);
+                    : response($mensagem, 403);
             }
 
             $matricula = Matricula::create($request->validated());
