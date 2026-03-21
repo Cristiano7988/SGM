@@ -14,7 +14,7 @@ class Matricula extends Model
         'turma_id',
         'situacao_id',
         'marcacao_id',
-        'pacote_id'
+        'pacote_id',
     ];
 
     public function aluno()
@@ -40,6 +40,11 @@ class Matricula extends Model
     public function pacote()
     {
         return $this->belongsTo(Pacote::class);
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class)->withTimestamps();
     }
 
     public function transacoes()

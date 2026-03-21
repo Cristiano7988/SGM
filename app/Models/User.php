@@ -11,8 +11,6 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    public $with = ['tipos'];
-
     /**
      * The attributes that are mass assignable.
      *
@@ -66,11 +64,6 @@ class User extends Authenticatable
             });
     }
 
-    public function tipos()
-    {
-        return $this->belongsToMany(Tipo::class);
-    }
-
     public function alunos()
     {
         return $this->belongsToMany(Aluno::class)->withPivot('vinculo')->withTimestamps();
@@ -84,6 +77,11 @@ class User extends Authenticatable
     public function emails()
     {
         return $this->belongsToMany(Email::class)->withTimestamps();
+    }
+
+    public function matriculas()
+    {
+        return $this->belongsToMany(Matricula::class)->withTimestamps();
     }
 
     public function erros()

@@ -1,7 +1,7 @@
 import { Head } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
-import { Aluno, Marcacao, Matricula, Pacote, RelacionadasAMatricula, Situacao, Turma } from '@/types/models';
+import { BreadcrumbItem, Props } from '@/types';
+import { Matricula, RelacionadasAMatricula } from '@/types/models';
 import Session from '@/components/session';
 import { FormMatriculaContent } from '@/components/form-elements/form-matricula-content';
 
@@ -10,8 +10,8 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Criar Matrícula', href: '#' },
 ];
 
-export default function Create(props: { session: any, alunos: Aluno[], turmas: Turma[], pacotes: Pacote[], situacoes: Situacao[], marcacoes: Marcacao[] }) {
-    const { alunos, turmas, pacotes, situacoes, marcacoes, session } = props;
+export default function Create(props: RelacionadasAMatricula & Props) {
+    const { alunos, turmas, pacotes, situacoes, marcacoes, users, session } = props;
     const initialData: Matricula & RelacionadasAMatricula = {
         id: 0,
         aluno_id: 0,
@@ -22,7 +22,8 @@ export default function Create(props: { session: any, alunos: Aluno[], turmas: T
         turmas,
         pacotes,
         situacoes,
-        marcacoes
+        marcacoes,
+        users
     };
 
     return (
@@ -36,7 +37,7 @@ export default function Create(props: { session: any, alunos: Aluno[], turmas: T
                 <FormMatriculaContent
                     initialData={initialData}
                     endpoint={route("matriculas.store")}
-                    related={{ alunos, turmas, pacotes, situacoes, marcacoes }}
+                    related={{ alunos, turmas, pacotes, situacoes, marcacoes, users }}
                 />
             </div>
         </AppLayout>

@@ -15,11 +15,11 @@ class CreateMatriculasTable extends Migration
     {
         Schema::create('matriculas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('aluno_id')->nullable();
-            $table->foreignId('turma_id')->nullable();
-            $table->foreignId('situacao_id')->nullable();
-            $table->foreignId('marcacao_id')->nullable();
-            $table->foreignId('pacote_id')->nullable();
+            $table->foreignId('aluno_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('turma_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('situacao_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('marcacao_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('pacote_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

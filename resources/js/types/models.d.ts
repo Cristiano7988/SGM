@@ -31,7 +31,6 @@ export interface RelacionadasAoUser {
     alunos: Aluno[],
     // transacoes: Transacao[],
     // emails: Email[],
-    // tipos: Tipo[],
     // erros: Erro[]
 }
 
@@ -118,10 +117,10 @@ export interface Periodo {
     id: number;
     inicio: string;
     fim: string;
-    // inicio_formatado: string;
-    // fim_formatado: string;
-    // pacote_id: number;
-    // pacote: Pacote;
+    inicio_formatado: string;
+    fim_formatado: string;
+    pacote_id: number;
+    pacote: Pacote;
 }
 
 export interface RelacionadasAoPeriodo {
@@ -169,15 +168,16 @@ export interface Matricula {
 export interface RelacionadasAMatricula {
     aluno?: Aluno | null;
     turma?: Turma 
-    pacote?: Pacote;
+    pacote?: Pacote & RelacionadasAoPacote;
     situacao?: Situacao;
     marcacao?: Marcacao;
     // Para o filtro de Matrícula
-    alunos: Aluno[];
-    turmas: Turma[];
-    pacotes: Pacote[];
-    situacoes: Situacao[];
-    marcacoes: Marcacao[];
+    alunos?: Aluno[];
+    turmas?: Turma[];
+    pacotes?: Pacote[];
+    situacoes?: Situacao[];
+    marcacoes?: Marcacao[];
+    users?: User[]
 }
 
 export interface Situacao {

@@ -1,7 +1,7 @@
 import { Head, useForm } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
-import { Aluno, Marcacao, Matricula, Pacote, Situacao, Turma } from '@/types/models';
+import { BreadcrumbItem, Props } from '@/types';
+import { Matricula, RelacionadasAMatricula } from '@/types/models';
 import Session from '@/components/session';
 import { FormMatriculaContent } from '@/components/form-elements/form-matricula-content';
 import { ButtonSubmitContent } from '@/components/form-elements/button-submit-content';
@@ -11,8 +11,8 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Editar Matrícula', href: '#' },
 ];
 
-export default function Edit(props: { session: any, matricula: Matricula, alunos: Aluno[], turmas: Turma[], pacotes: Pacote[], situacoes: Situacao[], marcacoes: Marcacao[] }) {
-    const { matricula, alunos, turmas, pacotes, situacoes, marcacoes, session } = props;
+export default function Edit(props: RelacionadasAMatricula & Props & { matricula: Matricula }) {
+    const { matricula, alunos, turmas, pacotes, situacoes, marcacoes, users, session } = props;
     const { processing, delete: deleteMatricula } = useForm();
 
     const submit = (e: React.FormEvent) => {
@@ -31,7 +31,7 @@ export default function Edit(props: { session: any, matricula: Matricula, alunos
                 <FormMatriculaContent
                     initialData={matricula}
                     endpoint={route("matriculas.update", matricula.id)}
-                    related={{ alunos, turmas, pacotes, situacoes, marcacoes }}
+                    related={{ alunos, turmas, pacotes, situacoes, marcacoes, users }}
                 />
 
                 <form onSubmit={submit} className='mt-4'>

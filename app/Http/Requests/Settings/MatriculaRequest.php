@@ -14,6 +14,14 @@ class MatriculaRequest extends FormRequest
      */
     public function rules($aluno = false): array
     {
+        if ($this->has('users')) {
+            $this->merge([
+                'users' => array_map(function ($item) {
+                    return is_array($item) && isset($item['id']) ? $item['id'] : $item;
+                }, $this->input('users')),
+            ]);
+        }
+                        
         return [
             'aluno_id' => [
                 'integer',
@@ -40,6 +48,11 @@ class MatriculaRequest extends FormRequest
                 'required',
                 'exists:marcacoes,id'
             ],
+            'users' => ['array'],
+            'users.*.user_id' => [
+                'integer',
+                'exists:users,id'
+            ]
         ];
     }
 }

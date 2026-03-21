@@ -10,6 +10,7 @@ use App\Models\Situacao;
 use App\Models\Marcacao;
 use App\Models\Pacote;
 use App\Models\Matricula;
+use App\Models\User;
 use App\Http\Requests\Settings\MatriculaRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -33,6 +34,7 @@ class MatriculaController extends Controller
                 'situacao',
                 'marcacao',
                 'pacote',
+                'users'
             ]);
 
             $matriculas
@@ -100,12 +102,17 @@ class MatriculaController extends Controller
 
         $marcacoes = Marcacao::all();
 
+        $users = $isAdmin
+            ? User::all()
+            : $user->alunos->flatmap->users->unique("id");
+
         return Inertia::render('matriculas/create', [
             'alunos' => $alunos,
             'turmas' => $turmas,
             'pacotes' => $pacotes,
             'situacoes' => $situacoes,
             'marcacoes' => $marcacoes,
+            'users' => $users
         ]);
     }
 
@@ -120,17 +127,17 @@ class MatriculaController extends Controller
             
             // Aqui validamos se o aluno a ser matrículado tem relação com o usuário logado
             $aluno = Aluno::find($request->aluno_id);
-            if ($user && !$user->is_admin) {                
-                $usuariosRelacionados = false;
-                if (in_array($user->id, $aluno->users->pluck('id')->toArray())) $usuariosRelacionados = true;
-                if (!$usuariosRelacionados) {
-                        $mensagem = "Você não tem permissão para matricular esse aluno";
+            // if ($user && !$user->is_admin) {                
+            //     $usuariosRelacionados = false;
+            //     if (in_array($user->id, $aluno->users->pluck('id')->toArray())) $usuariosRelacionados = true;
+            //     if (!$usuariosRelacionados) {
+            //             $mensagem = "Você não tem permissão para matricular esse aluno";
 
-                        return isWeb()
-                            ? redirect()->back()->with('error', $mensagem)
-                            : response($mensagem, 403);
-                }
-            }
+            //             return isWeb()
+            //                 ? redirect()->back()->with('error', $mensagem)
+            //                 : response($mensagem, 403);
+            //     }
+            // }
             $pivot = $user->pivot;
             // Aqui validamos se o usuário logado possui algum tipo de responsabilidade pelo aluno a ser matriculado
             if ($pivot && !$pivot->vinculo) {
@@ -140,17 +147,8 @@ class MatriculaController extends Controller
                     : response($mensagem);
             }
 
-            // $temAcompanhante = false;
-            // $temAcompananhteReserva = false;
-            // foreach ($aluno->users as $user) la{
-            //     if (count($user->tipos->where('nome', 'acompanhante'))) $temAcompanhante = true;
-            //     if (count($user->tipos->where('nome', 'acompanhante reserva'))) $temAcompananhteReserva = true;
-            // }
-
-            // if (!$temAcompanhante) return response("Informe quem acompanhará {$aluno->nome} nas aulas.", 403);
-            // if (!$temAcompananhteReserva) return response("Informe quem acompanhará {$aluno->nome} nas aulas quando o principal acompanhante não puder.", 403);
-
             $matricula = Matricula::create($request->validated());
+            if ($request->users) $matricula->users()->sync($request->users);
 
             $mensagem = "Matrícula do {$matricula->aluno->nome} na turma {$matricula->turma->nome} criada.";
 
@@ -203,6 +201,10 @@ class MatriculaController extends Controller
 
             $marcacoes = Marcacao::all();
 
+            $users = $isAdmin
+                ? User::all()
+                : $user->alunos->flatmap->users->unique("id");
+
             return Inertia::render('matriculas/edit', [
                 'matricula' => $matricula,
                 'alunos' => $alunos,
@@ -210,6 +212,7 @@ class MatriculaController extends Controller
                 'pacotes' => $pacotes,
                 'situacoes' => $situacoes,
                 'marcacoes' => $marcacoes,
+                'users' => $users
             ]);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
@@ -227,6 +230,7 @@ class MatriculaController extends Controller
             $matricula->update($request->validated());
             $matricula->turma->vagas_preenchidas = $matricula->turma->matriculas()->count();
             $matricula->turma->save();
+            if ($request->users) $matricula->users()->sync($request->users);
 
             $mensagem = "Matrícula do {$matricula->aluno->nome} na turma {$matricula->turma->nome} editada.";
             

@@ -1,9 +1,11 @@
 import { Link, useForm } from "@inertiajs/react";
 import { ButtonSubmitContent } from "./button-submit-content";
 import { SelectModelContent } from "./select-model-content"
-import { FormContentProps, Matricula, Aluno, Turma, Nucleo, Pacote } from "@/types/models";
+import { FormContentProps, Matricula, Aluno, Turma, Nucleo, Pacote, User } from "@/types/models";
 import { FormProps } from "@/types/index";
 import { useEffect, useState } from "react";
+import { Unlink } from "lucide-react";
+import ErrorLabel from "../error-label";
 
 export function FormMatriculaContent({ initialData, endpoint, related }: FormContentProps<Matricula>) {
     const { data, setData, errors, clearErrors, hasErrors, processing, post, put } = useForm<FormProps<Matricula>>(initialData);
@@ -59,6 +61,32 @@ export function FormMatriculaContent({ initialData, endpoint, related }: FormCon
         setPacotes(pacotesFiltrados);
     }, [data.aluno_id]);
 
+        const userInicial = { id: 0, pivot: { vinculo: "" }};
+        const users = data.users?.length ? data.users : [userInicial];
+    
+        const addResponsavel = () => setData("users", [...users, userInicial]);
+    
+        const removeResponsavel = (index: number) => {
+            const updatedUsers = [...users];
+            updatedUsers.splice(index, 1);
+            setData("users", updatedUsers);
+            clearErrors(`users.${index}`);
+            clearErrors("users");
+        };
+    
+        const updateResponsavel = (index: number, user_id: number) => {
+            const updatedUsers = [...users];
+            const user = related.users.find((u: User) => u.id == user_id);
+    
+            updatedUsers[index] = {
+                ...user
+            };
+    
+            setData("users", updatedUsers);
+            clearErrors(`users.${index}`);
+            clearErrors("users");
+        };
+
     return (<>
         <form onSubmit={submit} className="flex flex-col gap-6 space-y-4">
             <SelectModelContent
@@ -105,8 +133,46 @@ export function FormMatriculaContent({ initialData, endpoint, related }: FormCon
                 setData={(_: any, id: number) => handleUpdate(id, related.situacoes, 'situacao_id')}
                 error={errors["situacao_id"]}
             />
+            
+            <hr />
+
+            <h2 className="text-lg font-semibold">Usuários que acompanharão o aluno</h2>
+
+            {users.map((user: User, index: number) => (<div key={index} className="flex gap-2">
+                <div className="flex items-center gap-2 w-full">
+                    <SelectModelContent
+                        column="users"
+                        titulo={`Responsável ${index + 1}`}
+                        id={user?.id}
+                        array={related.users}
+                        setData={(column: string, user_id: number) => updateResponsavel(index, user_id)}
+                        error={errors[`users.${index}`]}
+                    />
+
+                    {index > 0 && (
+                        <Unlink
+                            className="cursor-pointer text-red-500 hover:text-red-700"
+                            onClick={() => removeResponsavel(index)}
+                        />
+                    )}
+                </div>
+            </div>))}
+
+            {errors.users && <ErrorLabel error={errors.users} />}
 
             <div className="bg-background bottom-4 fixed flex gap-4 items-center p-4 right-4">
+                <Link
+                    href="/users/create"
+                    className="px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
+                    children="Criar novo usuário"
+                />
+
+                <div
+                    onClick={addResponsavel}
+                    className="cursor-pointer px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
+                    children="Vincular outro usuário"
+                />
+
                 <Link
                     href="/alunos/create"
                     className="px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"

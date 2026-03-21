@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Matricula, RelacionadasAMatricula } from "@/types/models";
+import { Matricula, Periodo, RelacionadasAMatricula, User } from "@/types/models";
 import { Link } from "@inertiajs/react";
 
 export default function FlipCardMatricula({ matricula }: { matricula: Matricula & RelacionadasAMatricula }) {
@@ -19,19 +19,22 @@ export default function FlipCardMatricula({ matricula }: { matricula: Matricula 
       >
         {/* Frente do cartão */}
         <div className="absolute inset-0 border-sidebar-border/70 dark:border-sidebar-border rounded-xl border overflow-hidden backface-hidden">
-          <div className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20 p-4 flex justify-center gap-4">
-            <div className="flex flex-col items-center m-auto gap-2">
-              <p><b>Aluno:</b> {matricula.aluno.nome}</p>
-              <p><b>Turma:</b> {matricula.turma.nome}</p>
+          <div className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20 p-4 flex justify-center items-center gap-4">
+            <div className="flex flex-col gap-4">
               <figure className="m-auto w-24 h-24 rounded-full overflow-hidden border border-gray-300">
                 <img
-                  src={matricula.turma.imagem}
-                  alt={matricula.turma.nome}
+                  src={matricula.turma?.imagem}
+                  alt={matricula.turma?.nome}
                   className="w-full h-full object-cover"
                 />
               </figure>
               
-              <Link className="rounded-lg bg-blue-600 px-4 py-2 text-white font-medium transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" href={route('matriculas.edit', { id: matricula.id })} children="Editar" />
+              <Link className="rounded-lg bg-blue-600 px-4 py-2 text-white font-medium transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 m-auto" href={route('matriculas.edit', { id: matricula.id })} children="Editar" />
+            </div>
+            <div className="flex flex-col items-center m-auto gap-2">
+              <p><b>Aluno:</b> <Link className="tex-sm" href={`/alunos/${matricula.aluno_id}`}>{matricula.aluno?.nome}</Link></p>
+              <p><b>Turma:</b> <Link className="tex-sm" href={`/turmas/${matricula.turma_id}`}>{matricula.turma?.nome}</Link></p>
+              <b><span className="capitalize">{matricula.turma?.dia.nome}</span> às {matricula.turma?.horario}</b>
             </div>
             <ChevronRight
               onClick={() => setFlipped(true)}
@@ -49,23 +52,33 @@ export default function FlipCardMatricula({ matricula }: { matricula: Matricula 
             onClick={() => setFlipped(false)}
             className="cursor-pointer m-auto absolute left-0 top-1/2"
           />
-          <b><span className="capitalize">{matricula.turma.dia.nome}</span> às {matricula.turma.horario}</b>
 
-          <hr className="border-gray-300 w-full" />
-
-          <p><b>Pacote:</b></p>
-          <b><Link href={`/pacotes/${matricula.pacote_id}`}>{matricula.pacote.nome} ({matricula.pacote.ativo ? "ativo" : "inativo"})</Link></b>
-          <p>{matricula.pacote.valor_formatado}</p>
-          <div className="flex gap-2">
+          <p>
+            <b>Pacote: </b>
+            <Link href={`/pacotes/${matricula.pacote_id}`}>{matricula.pacote?.nome} ({matricula.pacote?.ativo ? "ativo" : "inativo"})</Link>
+          </p>
+          <p>{matricula.pacote?.valor_formatado}</p>
+          <div className="flex items-center gap-2">
             <b>Vigência:</b>
             <div>
-              {matricula.pacote.periodos.map((periodo: Periodo) => (
-                <p key={periodo.id} className="text-sm text-neutral-500">
+              {matricula.pacote?.periodos.map((periodo: Periodo) => (
+                <p key={periodo.id} className="text-sm">
                   De {periodo.inicio_formatado} até {periodo.fim_formatado}
                 </p>
               ))}
             </div>
           </div>
+          <hr className="border-gray-300 w-3/4" />
+          {!!matricula.users?.length &&<div className="flex flex-col gap-2">
+            <b>Acompanhantes:</b>
+            <div className="mt-2 flex flex-col">
+              {matricula.users.map((user: User) => (
+                <Link href={`/users/${user.id}`} key={user.id} className="text-sm">
+                  {user.nome}
+                </Link>
+              ))}
+            </div>
+          </div>}
         </div>
       </motion.div>
     </div>
