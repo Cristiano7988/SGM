@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { User, RelacionadasAoUser, Aluno } from "@/types/models";
 import { Link } from "@inertiajs/react";
+import { Tag } from "./ui/tag";
 
 export default function FlipCardUser({ user }: { user: User & RelacionadasAoUser }) {
   const [flipped, setFlipped] = useState(false);
@@ -43,11 +44,16 @@ export default function FlipCardUser({ user }: { user: User & RelacionadasAoUser
             className="cursor-pointer m-auto absolute left-0 top-1/2"
           />
           <p><b>Alunos:</b></p>
-          {user.alunos.map((aluno: Aluno) => <p key={aluno.id} className="text-sm text-neutral-500">
-            <Link href={route('alunos.show', { id: aluno.id })} className="text-blue-600 hover:underline">
-              {aluno.nome} ({aluno.pivot.vinculo})
-            </Link>
-          </p>)}
+          <div className="flex flex-col gap-1">
+            {user.alunos.map((aluno: Aluno) => {
+              const acompanha = user.matriculas?.filter((matricula) => matricula.aluno_id  == aluno.id);
+              return <div key={aluno.id} className="flex items-center gap-1"><Link className="text-sm" href={route('alunos.show', { id: aluno.id })}>
+                {aluno.nome}
+              </Link>
+              <Tag background="darkcyan" children={aluno.pivot.vinculo} title="Vínculo" />
+              <Tag background="orange" children={acompanha && "Acompanha"} title={`Este aluno é acompanhado pelo usuário ${user.nome} nas aulas`} />
+            </div>})}
+          </div>
         </div>
       </motion.div>
     </div>

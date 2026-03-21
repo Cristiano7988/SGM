@@ -38,7 +38,8 @@ class UserController extends Controller
             $users = User::query();
 
             $users->with([
-                "alunos"
+                "alunos",
+                "matriculas"
             ]);
             
                 // Tipos
