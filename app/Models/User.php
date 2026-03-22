@@ -36,6 +36,10 @@ class User extends Authenticatable
         'complemento'
     ];
 
+    protected $with = [
+        'alunos'
+    ];
+
     /**
      * The attributes that should be hidden for serialization.
      *

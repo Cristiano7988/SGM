@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Matricula, Periodo, RelacionadasAMatricula, User } from "@/types/models";
+import { Aluno, Matricula, Periodo, RelacionadasAMatricula, User } from "@/types/models";
 import { Link } from "@inertiajs/react";
+import { Tag } from "./ui/tag";
 
 export default function FlipCardMatricula({ matricula }: { matricula: Matricula & RelacionadasAMatricula }) {
   const [flipped, setFlipped] = useState(false);
@@ -71,12 +72,14 @@ export default function FlipCardMatricula({ matricula }: { matricula: Matricula 
           <hr className="border-gray-300 w-3/4" />
           {!!matricula.users?.length &&<div className="flex flex-col gap-2">
             <b>Acompanhantes:</b>
-            <div className="mt-2 flex flex-col">
-              {matricula.users.map((user: User) => (
-                <Link href={`/users/${user.id}`} key={user.id} className="text-sm">
+            <div className="flex flex-col gap-1">
+              {matricula.users.map((user: User) => {
+                const [alunoVinculado] = user.alunos?.filter((a: Aluno) => a.id == matricula.aluno_id);
+                return <div key={user.id} className="flex items-center gap-1"><Link className="text-sm" href={route('users.show', { id: user.id })}>
                   {user.nome}
                 </Link>
-              ))}
+                <Tag background="darkcyan" children={alunoVinculado?.pivot?.vinculo} title="Vínculo" />
+              </div>})}
             </div>
           </div>}
         </div>
