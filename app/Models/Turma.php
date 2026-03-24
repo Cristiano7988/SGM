@@ -40,7 +40,8 @@ class Turma extends Model
 
     function getParagrafosDaDescricaoAttribute(): array
     {
-        return explode("\n\n", $this->attributes['descricao']);
+        $descricao = $this->attributes['descricao'] ?? "";
+        return explode("\n\n", $descricao);
     }
 
     function getVagasPreenchidasAttribute(): int

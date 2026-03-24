@@ -21,7 +21,7 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
     };
 
     const alunoInicial = { id: 0, pivot: { vinculo: "" }};
-    const alunos = data.alunos.length ? data.alunos : [alunoInicial];
+    const alunos = edit ? data.alunos : [alunoInicial];
 
     const addAluno = () => setData("alunos", [...alunos, alunoInicial]);
 
@@ -205,6 +205,7 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
                         setData={setData}
                         clearErrors={clearErrors}
                         error={errors.numero}
+                        max={999999}
                     />
                     <InputTextContent
                         column="complemento"
@@ -221,14 +222,14 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
 
             <h2 className="text-lg font-semibold">Alunos vinculados a este usuário</h2>
 
-            {alunos.map((aluno: Aluno, index: number) => (<div key={index} className="flex gap-2">
+            {alunos.map((aluno: { id: number, pivot: { vinculo: string } }, index: number) => (<div key={index} className="flex gap-2">
                 <div className="flex items-center gap-2 w-full">
                     <SelectModelContent
                         column="alunos"
                         titulo={`Aluno ${index + 1}`}
                         id={aluno?.id}
                         array={related.alunos}
-                        setData={(column: string, aluno_id: number) => updateAluno(index, aluno_id)}
+                        setData={(_column: string, aluno_id: number) => updateAluno(index, aluno_id)}
                         error={errors[`alunos.${index}`]}
                     />
 
@@ -243,7 +244,7 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
                     column="vinculo"
                     titulo="Vínculo"
                     value={aluno.pivot.vinculo}
-                    setData={(column: string, value: string) => updateVinculo(index, value)}
+                    setData={(_column: string, value: string) => updateVinculo(index, value)}
                     error={errors[`alunos.${index}.pivot.vinculo`]}
                     clearErrors={clearErrors}
                 />

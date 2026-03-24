@@ -62,7 +62,7 @@ export function FormMatriculaContent({ initialData, endpoint, related }: FormCon
     }, [data.aluno_id]);
 
         const userInicial = { id: 0, pivot: { vinculo: "" }};
-        const users = data.users?.length ? data.users : [userInicial];
+        const users = edit ? data.users : [userInicial];
     
         const addResponsavel = () => setData("users", [...users, userInicial]);
     
@@ -149,12 +149,10 @@ export function FormMatriculaContent({ initialData, endpoint, related }: FormCon
                         error={errors[`users.${index}`]}
                     />
 
-                    {index > 0 && (
-                        <Unlink
-                            className="cursor-pointer text-red-500 hover:text-red-700"
-                            onClick={() => removeResponsavel(index)}
-                        />
-                    )}
+                    <Unlink
+                        className="cursor-pointer text-red-500 hover:text-red-700"
+                        onClick={() => removeResponsavel(index)}
+                    />
                 </div>
             </div>))}
 

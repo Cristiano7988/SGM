@@ -21,7 +21,7 @@ export function FormAlunoContent({ initialData, endpoint, related }: FormContent
     };
 
     const userInicial = { id: 0, pivot: { vinculo: "" }};
-    const users = data.users?.length ? data.users : [userInicial];
+    const users = edit ? data.users : [userInicial];
 
     const addResponsavel = () => setData("users", [...users, userInicial]);
 

@@ -14,7 +14,6 @@ class TurmaRequest extends FormRequest
      */
     public function rules($turma = false): array
     {
-
         return [
             'nome' => [
                 'string',
@@ -30,14 +29,14 @@ class TurmaRequest extends FormRequest
             'vagas_ofertadas' => ['required', 'numeric', 'gte:vagas_fora_do_site'],
             'horario' => ['required', 'regex:/^([01]\d|2[0-3]):([0-5]\d)$/'], // Valida HH:MM
             'disponivel' => 'boolean',
-            'zoom' => 'url',
-            'zoom_id' => 'string',
-            'zoom_senha' => 'string|min:3',
-            'whatsapp' => 'url',
-            'spotify' => 'url',
-            'nucleo_id' => 'required|numeric|min:1',
-            'dia_id' => 'required|numeric|min:1',
-            'tipo_de_aula_id' => 'required|numeric|min:1',
+            'zoom' => ['nullable', 'url'],
+            'zoom_id' => ['nullable', 'string'],
+            'zoom_senha' => ['nullable', 'string', 'min:3'],
+            'whatsapp' => ['nullable', 'url'],
+            'spotify' => ['nullable', 'url'],
+            'nucleo_id' => ['required', 'numeric', 'min:1', 'exists:nucleos,id'],
+            'dia_id' => ['required', 'numeric', 'min:1', 'exists:dias,id'],
+            'tipo_de_aula_id' => ['required', 'numeric', 'min:1', 'exists:tipos_de_aula,id'],
         ];
     }
 }
