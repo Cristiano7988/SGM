@@ -66,7 +66,6 @@ export interface Turma {
     imagem: string;
     descricao: string;
     paragrafos_da_descricao: string[];
-    vagas_fora_do_site: number,
     // vagas_preenchidas: number
     vagas_ofertadas: number,
     horario: string,

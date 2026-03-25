@@ -155,18 +155,6 @@ export function FormTurmaContent({ initialData, endpoint, related }: FormContent
                         value={data.vagas_ofertadas}
                         setData={setData}
                         error={errors.vagas_ofertadas}
-                        min={data.vagas_fora_do_site}
-                        clearErrors={clearErrors}
-                    />
-
-                    <InputNumberContent
-                        titulo='Fora do site'
-                        column='vagas_fora_do_site'
-                        value={data.vagas_fora_do_site}
-                        setData={setData}
-                        error={errors.vagas_fora_do_site}
-                        min={0}
-                        max={data.vagas_ofertadas}
                         clearErrors={clearErrors}
                     />
                 </div>

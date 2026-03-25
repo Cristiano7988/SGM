@@ -25,8 +25,7 @@ class TurmaRequest extends FormRequest
             'imagem' => ['required', function($attribute, $value, $fail) {
                 validaImagem($attribute, $value, $fail);
             }],
-            'vagas_fora_do_site' => ['nullable', 'numeric', 'lte:vagas_ofertadas'],
-            'vagas_ofertadas' => ['required', 'numeric', 'gte:vagas_fora_do_site'],
+            'vagas_ofertadas' => ['required', 'numeric'],
             'horario' => ['required', 'regex:/^([01]\d|2[0-3]):([0-5]\d)$/'], // Valida HH:MM
             'disponivel' => 'boolean',
             'zoom' => ['nullable', 'url'],

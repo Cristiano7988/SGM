@@ -54,13 +54,6 @@ export default function FlipCardTurma({ turma }: { turma: Turma & RelacionadasAT
                       {turma.vagas_ofertadas}
                     </span>
                   </p>
-
-                  <p>
-                    <strong>Fora do site: </strong>
-                    <span>
-                      {turma.vagas_fora_do_site}
-                    </span>
-                  </p>
                 </div>
               </div>
             </div>

@@ -14,7 +14,6 @@ class Turma extends Model
         'descricao',
         'imagem',
         'vagas_preenchidas',
-        'vagas_fora_do_site',
         'vagas_ofertadas',
         'horario',
         'disponivel',
@@ -30,7 +29,6 @@ class Turma extends Model
 
     protected $casts = [
         'disponivel' => 'boolean',
-        'vagas_fora_do_site' => 'integer',
         'vagas_ofertadas' => 'integer',
         'vagas_preenchidas' => 'integer',
         'descricao' => 'string'

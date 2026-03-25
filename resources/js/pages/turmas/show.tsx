@@ -66,7 +66,6 @@ export default function Show({ turma }: ShowPropsTurma) {
                         <p><strong>Vagas:</strong></p>
                         <div>
                             <p><strong>Ofertadas:</strong> {turma.vagas_ofertadas}</p>
-                            <p><strong>Fora do Site:</strong> {turma.vagas_fora_do_site}</p>
                             <p><strong>Preenchidas:</strong> {turma.vagas_preenchidas}</p>
                         </div>
                     </div>

@@ -16,7 +16,6 @@ export default function Create(props: CreatePropsTurma) {
         nome: '',
         imagem: '',
         descricao: '',
-        vagas_fora_do_site: 0,
         vagas_ofertadas: 0,
         horario: '',
         dia_id: null,
