@@ -62,7 +62,6 @@ class UserController extends Controller
                 ->leftJoin('marcacoes', 'matriculas.marcacao_id', 'marcacoes.id')
                 // Turmas
                 ->leftJoin('turmas', 'matriculas.turma_id', 'turmas.id')
-                ->leftJoin('tipos_de_aula', 'turmas.tipo_de_aula_id', 'tipos_de_aula.id')
                 ->leftJoin('dias', 'turmas.dia_id', 'dias.id')
                 // Núcleos
                 ->leftJoin('nucleos', 'turmas.nucleo_id', 'nucleos.id')
@@ -85,7 +84,6 @@ class UserController extends Controller
             if (isset($situacoes))                      $users = Filtra::resultado($users, $situacoes, 'situacoes.id');
             if (isset($marcacoes))                      $users = Filtra::resultado($users, $marcacoes, 'marcacoes.id');
             if (isset($turmas))                         $users = Filtra::resultado($users, $turmas, 'turmas.id');
-            if (isset($tipos_de_aula))                  $users = Filtra::resultado($users, $tipos_de_aula, 'tipos_de_aula.id');
             if (isset($dias))                           $users = Filtra::resultado($users, $dias, 'dias.id');
             if (isset($nucleos))                        $users = Filtra::resultado($users, $nucleos, 'nucleos.id');
             if (isset($alunos))                         $users = Filtra::resultado($users, $alunos, 'alunos.id');
@@ -196,7 +194,7 @@ class UserController extends Controller
                                         'turma' => function ($query) {
                                             extract(request()->all());
                                             if ($turmas != '*') $query->whereIn('turmas.id', explode(',', $turmas));
-                                            // Tipos de aula e Dias vem por padrão da model
+                                            // Dias vem por padrão da model
 
                                             // Núcleos
                                             if (isset($nucleos)) {
@@ -296,7 +294,7 @@ class UserController extends Controller
                                         'turma' => function ($query) {
                                             extract(request()->all());
                                             if ($turmas != '*') $query->whereIn('turmas.id', explode(',', $turmas));
-                                            // Tipos de aula e Dias vem por padrão da model
+                                            // Dias vem por padrão da model
 
                                             // Núcleos
                                             if (isset($nucleos)) {

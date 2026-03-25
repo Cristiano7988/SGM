@@ -40,15 +40,7 @@ export default function Index(props: IndexPropsTurma) {
             valor: searchParams.get('diaId') ?? undefined,
             opcoes: props.dias,
             ativo: Boolean(searchParams.get('diaId')),
-        },
-        {
-            tipo: 'select' as const,
-            label: 'Tipo de Aula',
-            nome: 'tipoDeAulaId',
-            valor: searchParams.get('tipoDeAulaId') ?? undefined,
-            opcoes: props.tipos_de_aula,
-            ativo: Boolean(searchParams.get('tipoDeAulaId')),
-        },
+        }
     ]
    
     return (

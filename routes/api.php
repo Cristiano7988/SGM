@@ -17,7 +17,6 @@ use App\Http\Controllers\PeriodoController;
 use App\Http\Controllers\SituacaoController;
 use App\Http\Controllers\TipoController;
 use App\Http\Controllers\TurmaController;
-use App\Http\Controllers\TipoDeAulaController;
 use App\Http\Controllers\TransacaoController;
 use App\Http\Middleware\CalculaDescontoAntesDaController;
 use App\Http\Middleware\CalculaDescontoDepoisDaController;
@@ -96,11 +95,6 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::prefix('/situacoes')->group(function () {
         Route::get('/{situacao}', [SituacaoController::class, 'show']);
-    });
-
-    Route::prefix('/tipos_de_aula')->group(function () {
-        Route::get('/', [TipoDeAulaController::class, 'index']);
-        Route::get('/{tipo_de_aula}', [TipoDeAulaController::class, 'show']);
     });
 
     Route::prefix('/transacoes')->group(function () {
@@ -191,12 +185,6 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/', [SituacaoController::class, 'store']);
             Route::patch('/{situacao}', [SituacaoController::class, 'update']);
             Route::delete('/{situacao}', [SituacaoController::class, 'destroy']);
-        });
-
-        Route::prefix('/tipos_de_aula')->group(function () {
-            Route::post('/', [TipoDeAulaController::class, 'store']);
-            Route::patch('/{tipo_de_aula}', [TipoDeAulaController::class, 'update']);
-            Route::delete('/{tipo_de_aula}', [TipoDeAulaController::class, 'destroy']);
         });
 
         Route::prefix('/transacoes')->group(function () {

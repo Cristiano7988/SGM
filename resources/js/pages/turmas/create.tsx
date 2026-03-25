@@ -10,7 +10,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Create(props: CreatePropsTurma) {
-    const { session, nucleos, dias, tipos_de_aula } = props;
+    const { session, nucleos, dias } = props;
     const initialData = {
         id: null,
         nome: '',
@@ -20,7 +20,6 @@ export default function Create(props: CreatePropsTurma) {
         horario: '',
         dia_id: null,
         nucleo_id: null,
-        tipo_de_aula_id: null,
         disponivel: false,
         zoom: '',
         zoom_id: '',
@@ -40,7 +39,7 @@ export default function Create(props: CreatePropsTurma) {
                 <FormTurmaContent
                     initialData={initialData}
                     endpoint={route('turmas.store')}
-                    related={{ nucleos, dias, tipos_de_aula }}
+                    related={{ nucleos, dias }}
                 />
             </div>
         </AppLayout>

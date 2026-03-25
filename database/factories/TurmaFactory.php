@@ -3,7 +3,6 @@ namespace Database\Factories;
 
 use App\Models\Dia;
 use App\Models\Nucleo;
-use App\Models\TipoDeAula;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Http;
 
@@ -36,8 +35,7 @@ class TurmaFactory extends Factory
             'whatsapp' => $this->faker->url(),
             'spotify' => $this->faker->url(),
             'nucleo_id' => Nucleo::inRandomOrder()->first()->id,
-            'dia_id' => Dia::inRandomOrder()->first()->id,
-            'tipo_de_aula_id' => TipoDeAula::inRandomOrder()->first()->id,
+            'dia_id' => Dia::inRandomOrder()->first()->id
         ];
     }
 }

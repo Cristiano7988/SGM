@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Turma extends Model
 {
     use HasFactory;
-    public $with = ['tipo_de_aula', 'dia'];
+    public $with = ['dia'];
     protected $fillable = [
         'nome',
         'descricao',
@@ -23,8 +23,7 @@ class Turma extends Model
         'whatsapp',
         'spotify',
         'nucleo_id',
-        'dia_id',
-        'tipo_de_aula_id'
+        'dia_id'
     ];
 
     protected $casts = [
@@ -63,11 +62,6 @@ class Turma extends Model
     public function dia()
     {
         return $this->belongsTo(Dia::class);
-    }
-
-    public function tipo_de_aula()
-    {
-        return $this->belongsTo(TipoDeAula::class);
     }
 
     public function matriculas()

@@ -19,7 +19,6 @@ class DatabaseSeeder extends Seeder
             MarcacaoSeeder::class,
             MedidaSeeder::class,
             SituacaoSeeder::class,
-            TipoDeAulaSeeder::class,
             UserSeeder::class,
         ]);
     }

@@ -43,7 +43,6 @@ export default function Show({ turma }: ShowPropsTurma) {
                     <div className="flex flex-col gap-1">
                         <div>
                             <p><strong>Núcleo:</strong> <Link href={"/nucleos/" + turma.nucleo_id} children={turma.nucleo.nome} /></p>
-                            <p><strong>Tipo de aula:</strong> {turma.tipo_de_aula.tipo}</p>
                             <p><strong>Disponível:</strong> {turma.disponivel ? "Sim" : "Não"}</p>
                         </div>
                     </div>

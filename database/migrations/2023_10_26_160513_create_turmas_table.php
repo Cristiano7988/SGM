@@ -29,7 +29,6 @@ class CreateTurmasTable extends Migration
             $table->string('spotify')->nullable();
             $table->foreignId('nucleo_id')->nullable();
             $table->foreignId('dia_id')->nullable();
-            $table->foreignId('tipo_de_aula_id')->nullable();
             $table->timestamps();
         });
     }
@@ -42,7 +41,6 @@ class CreateTurmasTable extends Migration
     public function down()
     {
         Schema::dropIfExists('dias');
-        Schema::dropIfExists('tipos_de_aula');
         Schema::dropIfExists('turmas');
     }
 }

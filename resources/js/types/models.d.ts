@@ -79,18 +79,14 @@ export interface Turma {
     nucleo: Nucleo;
     dia_id: number,
     dia: Dia;
-    tipo_de_aula_id: number,
-    tipo_de_aula: TipoDeAula;
 }
 
 export interface RelacionadasATurma {
     nucleo: Nucleo;
     dia: Dia;
-    tipo_de_aula: TipoDeAula;
     // Para o filtro de Turma
     nucleos: Nucleo[];
     dias: Dia[];
-    tipos_de_aula: TipoDeAula[];
 }
 
 // Pacote
@@ -133,13 +129,6 @@ export interface RelacionadasAoPeriodo {
 export interface Dia {
     id: number,
     nome: string
-}
-
-// Tipo de Aula
-
-export interface TipoDeAula {
-    id: number,
-    tipo: string
 }
 
 // Aluno

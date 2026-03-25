@@ -35,10 +35,6 @@ export default function FlipCardTurma({ turma }: { turma: Turma & RelacionadasAT
             <div className="flex flex-col m-auto gap-2">
               <p>{turma.dia.nome} às {turma.horario}</p>
               <div>
-                <strong>Aula: </strong>
-                <span>{turma.tipo_de_aula.tipo}</span>
-              </div>
-              <div>
                 <strong>Vagas: </strong>
                 <div className="flex flex-col m-auto bg-gray-100 dark:bg-gray-900 p-4">
                   <p>

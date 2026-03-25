@@ -57,15 +57,6 @@ export function FormTurmaContent({ initialData, endpoint, related }: FormContent
                     setData={setData}
                     error={errors.nucleo_id}
                 />
-
-                <SelectModelContent
-                    column="tipo_de_aula_id"
-                    titulo="Tipo de aula"
-                    id={data.tipo_de_aula_id}
-                    array={related.tipos_de_aula}
-                    setData={setData}
-                    error={errors.tipo_de_aula_id}
-                />
             </div>
             
             <div className="flex gap-4">

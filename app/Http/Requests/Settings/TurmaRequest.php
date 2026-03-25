@@ -35,7 +35,6 @@ class TurmaRequest extends FormRequest
             'spotify' => ['nullable', 'url'],
             'nucleo_id' => ['required', 'numeric', 'min:1', 'exists:nucleos,id'],
             'dia_id' => ['required', 'numeric', 'min:1', 'exists:dias,id'],
-            'tipo_de_aula_id' => ['required', 'numeric', 'min:1', 'exists:tipos_de_aula,id'],
         ];
     }
 }
