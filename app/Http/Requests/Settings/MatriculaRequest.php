@@ -39,14 +39,12 @@ class MatriculaRequest extends FormRequest
                 'exists:pacotes,id'
             ],
             'situacao_id' => [
+                'nullable',
                 'integer',
-                'required',
-                'exists:situacoes,id'
             ],
             'marcacao_id' => [
+                'nullable',
                 'integer',
-                'required',
-                'exists:marcacoes,id'
             ],
             'users' => ['array'],
             'users.*.user_id' => [

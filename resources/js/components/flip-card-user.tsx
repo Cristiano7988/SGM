@@ -46,12 +46,12 @@ export default function FlipCardUser({ user }: { user: User & RelacionadasAoUser
           <p><b>Alunos:</b></p>
           <div className="flex flex-col gap-1">
             {user.alunos.map((aluno: Aluno) => {
-              const acompanha = user.matriculas?.filter((matricula) => matricula.aluno_id  == aluno.id);
+              const matricula = user.matriculas?.find((matricula) => matricula.aluno_id == aluno.id);
               return <div key={aluno.id} className="flex items-center gap-1"><Link className="text-sm" href={route('alunos.show', { id: aluno.id })}>
                 {aluno.nome}
               </Link>
               <Tag background="darkcyan" children={aluno.pivot.vinculo} title="Vínculo" />
-              <Tag background="orange" children={acompanha && "Acompanha"} title={`Este aluno é acompanhado pelo usuário ${user.nome} nas aulas`} />
+              <Tag background="orange" children={matricula && "Acompanha"} title={`Este aluno é acompanhado pelo usuário ${user.nome} nas aulas`} />
             </div>})}
           </div>
         </div>

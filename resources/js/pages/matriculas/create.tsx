@@ -13,17 +13,12 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function Create(props: RelacionadasAMatricula & Props) {
     const { alunos, turmas, pacotes, situacoes, marcacoes, users, session } = props;
     const initialData: Matricula & RelacionadasAMatricula = {
-        id: 0,
-        aluno_id: 0,
-        turma_id: 0,
-        pacote_id: 0,
-        situacao_id: 0,
-        alunos,
-        turmas,
-        pacotes,
-        situacoes,
-        marcacoes,
-        users
+        id: null,
+        aluno_id: null,
+        turma_id: null,
+        pacote_id: null,
+        situacao_id: null,
+        users: []
     };
 
     return (

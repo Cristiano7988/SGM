@@ -17,8 +17,7 @@ export default function Create(props: { session: any, users: User[], matriculas:
         data_de_nascimento: '',
         data_de_nascimento_formatada: '',
         idade: '',
-        users,
-        matriculas,
+        users: []
     };
 
     return (

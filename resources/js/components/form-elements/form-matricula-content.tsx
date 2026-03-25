@@ -30,8 +30,9 @@ export function FormMatriculaContent({ initialData, endpoint, related }: FormCon
 
     function checarDisponibilidadeNucleo({ nucleo }: { nucleo: Nucleo }) {
         const now = new Date();
-        const inicioMatricula = new Date(nucleo.inicio_matricula);
-        const fimMatricula = new Date(nucleo.fim_matricula);
+        const horarioLocal = "T00:00:00";
+        const inicioMatricula = new Date(nucleo.inicio_matricula + horarioLocal);
+        const fimMatricula = new Date(nucleo.fim_matricula + horarioLocal);
         const aluno = related.alunos.find((aluno: Aluno) => aluno.id == data.aluno_id);
 
         if (!aluno) return false;
@@ -61,31 +62,31 @@ export function FormMatriculaContent({ initialData, endpoint, related }: FormCon
         setPacotes(pacotesFiltrados);
     }, [data.aluno_id]);
 
-        const userInicial = { id: 0, pivot: { vinculo: "" }};
-        const users = edit ? data.users : [userInicial];
+    const userInicial = { id: null, pivot: { vinculo: "" }};
+    const users = edit ? data.users : [userInicial];
+
+    const addResponsavel = () => setData("users", [...users, userInicial]);
+
+    const removeResponsavel = (index: number) => {
+        const updatedUsers = users.filter((u: any, i: number) => i !== index);
+
+        setData("users", updatedUsers);
+        clearErrors(`users.${index}`);
+        clearErrors("users");
+    };
     
-        const addResponsavel = () => setData("users", [...users, userInicial]);
-    
-        const removeResponsavel = (index: number) => {
-            const updatedUsers = [...users];
-            updatedUsers.splice(index, 1);
-            setData("users", updatedUsers);
-            clearErrors(`users.${index}`);
-            clearErrors("users");
+    const updateResponsavel = (index: number, user_id: number) => {
+        const updatedUsers = [...users];
+        const user = related.users.find((u: User) => u.id == user_id);
+
+        updatedUsers[index] = {
+            ...user
         };
-    
-        const updateResponsavel = (index: number, user_id: number) => {
-            const updatedUsers = [...users];
-            const user = related.users.find((u: User) => u.id == user_id);
-    
-            updatedUsers[index] = {
-                ...user
-            };
-    
-            setData("users", updatedUsers);
-            clearErrors(`users.${index}`);
-            clearErrors("users");
-        };
+
+        setData("users", updatedUsers);
+        clearErrors(`users.${index}`);
+        clearErrors("users");
+    };
 
     return (<>
         <form onSubmit={submit} className="flex flex-col gap-6 space-y-4">
@@ -138,11 +139,11 @@ export function FormMatriculaContent({ initialData, endpoint, related }: FormCon
 
             <h2 className="text-lg font-semibold">Usuários que acompanharão o aluno</h2>
 
-            {users.map((user: User, index: number) => (<div key={index} className="flex gap-2">
+            {users.map((user: User, index: number) => (<div key={index + user.id} className="flex gap-2">
                 <div className="flex items-center gap-2 w-full">
                     <SelectModelContent
                         column="users"
-                        titulo={`Responsável ${index + 1}`}
+                        titulo="Responsável"
                         id={user?.id}
                         array={related.users}
                         setData={(column: string, user_id: number) => updateResponsavel(index, user_id)}

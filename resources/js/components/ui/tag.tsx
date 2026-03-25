@@ -1,4 +1,4 @@
-export function Tag({ background, children, title }: { background: string, children: string, title: string }) {
+export function Tag({ background, children, title }: { background: string, children: string | undefined, title: string }) {
   if (!children) return;
 
   return (

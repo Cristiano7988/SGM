@@ -16,7 +16,7 @@ export default function Create(props: CreatePropsPacote) {
         valor_formatado: '',
         tipo: '',
         ativo: false,
-        nucleo_id: 0,
+        nucleo_id: null,
         periodos,
         nucleos
     }

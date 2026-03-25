@@ -12,16 +12,16 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function Create(props: CreatePropsTurma) {
     const { session, nucleos, dias, tipos_de_aula } = props;
     const initialData = {
-        id: 0,
+        id: null,
         nome: '',
         imagem: '',
         descricao: '',
         vagas_fora_do_site: 0,
         vagas_ofertadas: 0,
         horario: '',
-        dia_id: 0,
-        nucleo_id: 0,
-        tipo_de_aula_id: 0,
+        dia_id: null,
+        nucleo_id: null,
+        tipo_de_aula_id: null,
         disponivel: false,
         zoom: '',
         zoom_id: '',

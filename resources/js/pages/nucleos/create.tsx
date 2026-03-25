@@ -12,7 +12,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function Create(props: CreatePropsNucleo) {
     const { session, turmas, pacotes } = props;
     const initialData = {
-        id: 0,
+        id: null,
         nome: '',
         imagem: '',
         descricao: '',

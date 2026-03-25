@@ -29,6 +29,7 @@ export interface AlunoUser {
 
 export interface RelacionadasAoUser {
     alunos: Aluno[],
+    matriculas: Matricula[]
     // transacoes: Transacao[],
     // emails: Email[],
     // erros: Erro[]
@@ -45,9 +46,9 @@ export interface Nucleo {
     unidade_de_tempo_maxima: string;
     idade_maxima: number;
     inicio_matricula: string;
+    inicio_matricula_formatada: string;
     fim_matricula: string;
-    // created_at: string;
-    // updated_at: string;
+    fim_matricula_formatada: string;
     unidade_de_tempo_minima: string;
     unidade_de_tempo_maxima: string;
 }

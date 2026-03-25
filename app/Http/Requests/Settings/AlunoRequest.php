@@ -41,7 +41,7 @@ class AlunoRequest extends FormRequest
                 'date_format:Y-m-d',
                 'before:'.date('d/m/Y', strtotime('-30 days')) // Deve ter no mínimo 1 mês de idade
             ],
-            'users' => ['required', 'array'],
+            'users' => ['array'],
             'users.*.user_id' => ['integer', 'exists:users,id'],
             'users.*.vinculo' => ['string', 'nullable'],
         ];

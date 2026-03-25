@@ -11,10 +11,10 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function Create(props: CreatePropsPeriodo) {
     const { session, pacotes } = props;
     const initialData = {
-        id: 0,
+        id: null,
         inicio: '',
         fim: '',
-        pacote_id: 0,
+        pacote_id: null,
     };
 
     return (

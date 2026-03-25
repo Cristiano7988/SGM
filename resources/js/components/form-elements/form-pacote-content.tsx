@@ -21,24 +21,25 @@ export function FormPacoteContent({ initialData, endpoint, related }: FormConten
             : post(endpoint);
     };
 
-    const periodos = data.periodos.length ? data.periodos : [{ id: 0 }];
+    const periodos = data.periodos.length ? data.periodos : [{ id: null }];
     
     const addPeriodo = () => {
-        setData("periodos", [...periodos, { id: 0 }]);
+        setData("periodos", [...periodos, { id: null }]);
     };
 
     const removePeriodo = (index: number) => {
-        const updatedPeriodos = [...periodos];
-        updatedPeriodos.splice(index, 1);
+        const updatedPeriodos = periodos.filter((u: any, i: number) => i !== index);
+
         setData("periodos", updatedPeriodos);
         clearErrors(`periodos.${index}`);
         clearErrors("periodos");
     };
 
     const updatePeriodo = (index: number, id: number) => {
-        const user = related.periodos.find((u: Periodo) => u.id === id);
         const updatedPeriodos = [...periodos];
+        const user = related.periodos.find((u: Periodo) => u.id === id);
         updatedPeriodos[index] = user;
+    
         setData("periodos", updatedPeriodos);
         clearErrors(`periodos.${index}`);
         clearErrors("periodos");
@@ -90,11 +91,11 @@ export function FormPacoteContent({ initialData, endpoint, related }: FormConten
             <h2 className="text-lg font-semibold">Períodos vinculados a este pacote</h2>
 
             {periodos.map((periodo: Periodo, index: number) => (
-                <div key={index} className="flex items-center gap-2">
+                <div key={index + periodo.id} className="flex items-center gap-2">
 
                     <SelectModelContent
                         column="periodos"
-                        titulo={`Período ${index + 1}`}
+                        titulo="Período"
                         id={periodo?.id}
                         array={related.periodos}
                         setData={(_: any, id: number) => updatePeriodo(index, id)}

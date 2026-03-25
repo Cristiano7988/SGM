@@ -1,4 +1,4 @@
-import { Nucleo } from "@/types";
+import { Nucleo } from "@/types/models";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import CarouselText from "./carousel-text";
@@ -55,8 +55,8 @@ export default function FlipCardNucleo({ nucleo }: { nucleo: Nucleo }) {
               <div className="flex flex-col gap-1 bg-gray-100 dark:bg-gray-900 p-4 rounded-md">
                 <p><strong>Matrículas:</strong></p>
                 <div>
-                  <p><strong>De:</strong> {nucleo.inicio_matricula}</p>
-                  <p><strong>Até:</strong> {nucleo.fim_matricula}</p>
+                  <p><strong>De:</strong> {nucleo.inicio_matricula_formatada}</p>
+                  <p><strong>Até:</strong> {nucleo.fim_matricula_formatada}</p>
                 </div>
               </div>
             </div>

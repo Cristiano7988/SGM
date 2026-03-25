@@ -42,9 +42,7 @@ class UserController extends Controller
                 "matriculas"
             ]);
             
-                // Tipos
             $users
-                ->leftJoin('tipo_user', 'users.id', 'tipo_user.user_id' )
                 // Emails
                 ->leftJoin('email_user', 'users.id', 'email_user.user_id')
                 ->leftJoin('emails', 'email_user.email_id', 'emails.id')

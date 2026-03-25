@@ -49,6 +49,14 @@ class Turma extends Model
         return $this->matriculas()->count();
     }
 
+    public static function allDisponiveis()
+    {
+        return self::withCount('matriculas')
+            ->whereRaw('matriculas_count < vagas_ofertadas')
+            ->where('disponivel', true)
+            ->get();
+    }
+
     public function nucleo()
     {
         return $this->belongsTo(Nucleo::class);

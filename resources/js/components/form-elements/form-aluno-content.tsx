@@ -20,14 +20,14 @@ export function FormAlunoContent({ initialData, endpoint, related }: FormContent
             : post(endpoint);
     };
 
-    const userInicial = { id: 0, pivot: { vinculo: "" }};
+    const userInicial = { id: null, pivot: { vinculo: "" }};
     const users = edit ? data.users : [userInicial];
 
     const addResponsavel = () => setData("users", [...users, userInicial]);
 
     const removeResponsavel = (index: number) => {
-        const updatedUsers = [...users];
-        updatedUsers.splice(index, 1);
+        const updatedUsers = users.filter((u: any, i: number) => i !== index);
+
         setData("users", updatedUsers);
         clearErrors(`users.${index}`);
         clearErrors("users");
@@ -47,7 +47,7 @@ export function FormAlunoContent({ initialData, endpoint, related }: FormContent
     };
 
     const updateVinculo = (index: number, value: string) => {
-        const updatedUsers = [...users];
+        const updatedUsers = [...data.users];
         updatedUsers[index].pivot.vinculo = value;
 
         setData("users", updatedUsers);
@@ -80,11 +80,11 @@ export function FormAlunoContent({ initialData, endpoint, related }: FormContent
 
             <h2 className="text-lg font-semibold">Usuários vinculados a este aluno</h2>
 
-            {users.map((user: User, index: number) => (<div key={index} className="flex gap-2">
+            {users.map((user: User, index: number) => (<div key={index + user.id} className="flex gap-2">
                 <div className="flex items-center gap-2 w-full">
                     <SelectModelContent
                         column="users"
-                        titulo={`Responsável ${index + 1}`}
+                        titulo="Responsável"
                         id={user?.id}
                         array={related.users}
                         setData={(column: string, user_id: number) => updateResponsavel(index, user_id)}
@@ -98,14 +98,15 @@ export function FormAlunoContent({ initialData, endpoint, related }: FormContent
                         />
                     )}
                 </div>
-                <InputTextContent
+                {!!data.users?.length && <InputTextContent
                     column="vinculo"
                     titulo="Vínculo"
-                    value={user.pivot.vinculo}
+                    title="O que este usuário é deste aluno? Mãe? Pai? ..."
+                    value={data.users[index].pivot.vinculo}
                     setData={(column: string, value: string) => updateVinculo(index, value)}
                     error={errors[`users.${index}.pivot.vinculo`]}
                     clearErrors={clearErrors}
-                />
+                />}
             </div>))}
 
             {errors.users && <ErrorLabel error={errors.users} />}

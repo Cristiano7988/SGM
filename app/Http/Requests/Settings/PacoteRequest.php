@@ -38,7 +38,7 @@ class PacoteRequest extends FormRequest
                 'numeric',
                 'exists:nucleos,id',
             ],
-            'periodos' => ['required'],
+            'periodos' => ['array'],
             'periodos.*' => ['integer', 'exists:periodos,id'],
         ];
     }

@@ -43,7 +43,7 @@ class MatriculaController extends Controller
                 ->leftJoin('alunos', 'matriculas.aluno_id', 'alunos.id')
                 ->leftJoin('turmas', 'matriculas.turma_id', 'turmas.id')
                 ->leftJoin('pacotes', 'matriculas.pacote_id', 'pacotes.id')
-                ->select(['matriculas.*'])->groupBy('matriculas.id');
+                ->select(['matriculas.*', 'alunos.nome'])->groupBy('matriculas.id');
 
             $user = Auth::user();
             $alunosDoUsuario = $user->alunos->pluck('id');
@@ -92,7 +92,7 @@ class MatriculaController extends Controller
             ? Aluno::all()
             : $user->alunos;
 
-        $turmas = Turma::all()->load(['nucleo']);
+        $turmas = Turma::allDisponiveis()->load(['nucleo']);
 
         $pacotes = $isAdmin
             ? Pacote::all()->load(['nucleo'])
@@ -126,7 +126,7 @@ class MatriculaController extends Controller
             $user = Auth::user();
             
             $aluno = Aluno::find($request->aluno_id);
-            $isAdmin = $user && !$user->is_admin;             
+            $isAdmin = $user && $user->is_admin;
             
             // Validando se o aluno a ser matrículado tem relação com o usuário logado
             if (!$isAdmin && !$aluno->users->find($user->id)) {
@@ -192,11 +192,11 @@ class MatriculaController extends Controller
             $marcacoes = Marcacao::all();
 
             $users = $isAdmin
-                ? User::all()
-                : $user->alunos->flatmap->users->unique("id");
+                ? User::allWithHisPivot($matricula->aluno_id)
+                : $matricula->aluno->users;
 
             return Inertia::render('matriculas/edit', [
-                'matricula' => $matricula,
+                'matricula' => $matricula->load(['users']),
                 'alunos' => $alunos,
                 'turmas' => $turmas,
                 'pacotes' => $pacotes,
@@ -220,7 +220,7 @@ class MatriculaController extends Controller
             $matricula->update($request->validated());
             $matricula->turma->vagas_preenchidas = $matricula->turma->matriculas()->count();
             $matricula->turma->save();
-            if ($request->users) $matricula->users()->sync($request->users);
+            $matricula->users()->sync($request->users);
 
             $mensagem = "Matrícula do {$matricula->aluno->nome} na turma {$matricula->turma->nome} editada.";
             

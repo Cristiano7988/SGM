@@ -28,7 +28,7 @@ export default function Create(props: { session: any, alunos: Aluno[] }) {
         logradouro: '',
         numero: undefined,
         complemento: '',
-        alunos
+        alunos: []
     };
 
     return (

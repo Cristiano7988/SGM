@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
             MedidaSeeder::class,
             SituacaoSeeder::class,
             TipoDeAulaSeeder::class,
-            TipoSeeder::class,
             UserSeeder::class,
         ]);
     }

@@ -20,14 +20,14 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
             : post(endpoint);
     };
 
-    const alunoInicial = { id: 0, pivot: { vinculo: "" }};
+    const alunoInicial = { id: null, pivot: { vinculo: "" }};
     const alunos = edit ? data.alunos : [alunoInicial];
 
     const addAluno = () => setData("alunos", [...alunos, alunoInicial]);
 
     const removeAluno = (index: number) => {
-        const updatedAlunos = [...alunos];
-        updatedAlunos.splice(index, 1);
+        const updatedAlunos = alunos.filter((u: any, i: number) => i !== index);
+
         setData("alunos", updatedAlunos);
         clearErrors(`alunos.${index}`);
         clearErrors("alunos");
@@ -36,10 +36,7 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
     const updateAluno = (index: number, aluno_id: number) => {
         const updatedAlunos = [...alunos];
         const aluno = related.alunos.find((a: Aluno) => a.id == aluno_id);
-        
-        updatedAlunos[index] = {
-            ...aluno
-        };
+        updatedAlunos[index] = aluno;
 
         setData("alunos", updatedAlunos);
         clearErrors(`alunos.${index}`);
@@ -47,7 +44,7 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
     };
 
     const updateVinculo = (index: number, value: string) => {
-        const updatedAlunos = [...alunos];
+        const updatedAlunos = [...data.alunos];
         updatedAlunos[index].pivot.vinculo = value;
 
         setData("alunos", updatedAlunos);
@@ -222,11 +219,11 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
 
             <h2 className="text-lg font-semibold">Alunos vinculados a este usuário</h2>
 
-            {alunos.map((aluno: { id: number, pivot: { vinculo: string } }, index: number) => (<div key={index} className="flex gap-2">
+            {alunos.map((aluno: Aluno, index: number) => (<div key={index + aluno.id} className="flex gap-2">
                 <div className="flex items-center gap-2 w-full">
                     <SelectModelContent
                         column="alunos"
-                        titulo={`Aluno ${index + 1}`}
+                        titulo="Aluno"
                         id={aluno?.id}
                         array={related.alunos}
                         setData={(_column: string, aluno_id: number) => updateAluno(index, aluno_id)}
@@ -240,14 +237,15 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
                         />
                     )}
                 </div>
-                <InputTextContent
+                {!!data.alunos?.length && <InputTextContent
                     column="vinculo"
                     titulo="Vínculo"
-                    value={aluno.pivot.vinculo}
+                    title="O que este usuário é deste aluno? Mãe? Pai? ..."
+                    value={data.alunos[index].pivot.vinculo}
                     setData={(_column: string, value: string) => updateVinculo(index, value)}
                     error={errors[`alunos.${index}.pivot.vinculo`]}
                     clearErrors={clearErrors}
-                />
+                />}
             </div>))}
 
             {errors.alunos && <ErrorLabel error={errors.alunos} />}

@@ -17,6 +17,10 @@ class Matricula extends Model
         'pacote_id',
     ];
 
+    protected $with = [
+        'users'
+    ];
+
     public function aluno()
     {
         return $this->belongsTo(Aluno::class);
