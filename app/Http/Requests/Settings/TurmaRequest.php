@@ -26,15 +26,13 @@ class TurmaRequest extends FormRequest
                 validaImagem($attribute, $value, $fail);
             }],
             'vagas_ofertadas' => ['required', 'numeric'],
-            'horario' => ['required', 'regex:/^([01]\d|2[0-3]):([0-5]\d)$/'], // Valida HH:MM
             'disponivel' => 'boolean',
             'zoom' => ['nullable', 'url'],
             'zoom_id' => ['nullable', 'string'],
             'zoom_senha' => ['nullable', 'string', 'min:3'],
             'whatsapp' => ['nullable', 'url'],
             'spotify' => ['nullable', 'url'],
-            'nucleo_id' => ['required', 'numeric', 'min:1', 'exists:nucleos,id'],
-            'dia_id' => ['required', 'numeric', 'min:1', 'exists:dias,id'],
+            'nucleo_id' => ['nullable', 'numeric', 'min:1', 'exists:nucleos,id'],
         ];
     }
 }

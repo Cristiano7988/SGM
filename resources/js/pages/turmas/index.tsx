@@ -32,14 +32,6 @@ export default function Index(props: IndexPropsTurma) {
             valor: searchParams.get('nucleoId') ?? undefined,
             opcoes: props.nucleos,
             ativo: Boolean(searchParams.get('nucleoId')),
-        },
-        {
-            tipo: 'select' as const,
-            label: 'Dia',
-            nome: 'diaId',
-            valor: searchParams.get('diaId') ?? undefined,
-            opcoes: props.dias,
-            ativo: Boolean(searchParams.get('diaId')),
         }
     ]
    

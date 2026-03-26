@@ -35,7 +35,6 @@ export default function FlipCardMatricula({ matricula }: { matricula: Matricula 
             <div className="flex flex-col items-center m-auto gap-2">
               <p><b>Aluno:</b> <Link className="tex-sm" href={`/alunos/${matricula.aluno_id}`}>{matricula.aluno?.nome}</Link></p>
               <p><b>Turma:</b> <Link className="tex-sm" href={`/turmas/${matricula.turma_id}`}>{matricula.turma?.nome}</Link></p>
-              <b><span className="capitalize">{matricula.turma?.dia.nome}</span> às {matricula.turma?.horario}</b>
             </div>
             <ChevronRight
               onClick={() => setFlipped(true)}

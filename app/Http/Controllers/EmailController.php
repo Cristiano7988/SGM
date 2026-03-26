@@ -95,7 +95,7 @@ class EmailController extends Controller
     /**
      * Envia email populado com as informações específicadas na requisição
      * de acordo com a convenção {{model-propriedade}} especificada no corpo ou assunto do email.
-     * ex.: aluno-nome | matricula-nucleo-turma-horario
+     * ex.: aluno-nome | matricula-nucleo-turma
      *
      * @param  Illuminate\Http\Request  $request
      * @param  \App\Models\Email  $email

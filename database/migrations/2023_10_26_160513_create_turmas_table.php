@@ -20,7 +20,6 @@ class CreateTurmasTable extends Migration
             $table->string('imagem')->nullable();
             $table->integer('vagas_preenchidas')->default(0);
             $table->integer('vagas_ofertadas')->default(6);
-            $table->time('horario')->nullable();
             $table->boolean('disponivel')->default(false);
             $table->string('zoom')->nullable();
             $table->string('zoom_id')->nullable();
@@ -28,7 +27,6 @@ class CreateTurmasTable extends Migration
             $table->string('whatsapp')->nullable();
             $table->string('spotify')->nullable();
             $table->foreignId('nucleo_id')->nullable();
-            $table->foreignId('dia_id')->nullable();
             $table->timestamps();
         });
     }
@@ -40,7 +38,6 @@ class CreateTurmasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('dias');
         Schema::dropIfExists('turmas');
     }
 }

@@ -68,7 +68,6 @@ export interface Turma {
     paragrafos_da_descricao: string[];
     // vagas_preenchidas: number
     vagas_ofertadas: number,
-    horario: string,
     disponivel: boolean,
     zoom: string,
     zoom_id: string,
@@ -77,16 +76,12 @@ export interface Turma {
     spotify: string,
     nucleo_id: number,
     nucleo: Nucleo;
-    dia_id: number,
-    dia: Dia;
 }
 
 export interface RelacionadasATurma {
     nucleo: Nucleo;
-    dia: Dia;
     // Para o filtro de Turma
     nucleos: Nucleo[];
-    dias: Dia[];
 }
 
 // Pacote
@@ -122,13 +117,6 @@ export interface Periodo {
 export interface RelacionadasAoPeriodo {
     // Para o filtro de Periodo
     pacotes: Pacote[];
-}
-
-// Dia
-
-export interface Dia {
-    id: number,
-    nome: string
 }
 
 // Aluno

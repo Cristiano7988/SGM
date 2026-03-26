@@ -28,14 +28,6 @@ export default function Show({ turma }: ShowPropsTurma) {
                     <b>{turma.nome}</b>
                 </div>
                 <div className='flex flex-col gap-4 p-4'>
-                    <div className="flex flex-col gap-1">
-                        <p><strong>Quando?</strong></p>
-                        <div>
-                            <p><strong>Dia:</strong> {turma.dia.nome}</p>
-                            <p><strong>Horário:</strong> {turma.horario}</p>
-                        </div>
-                    </div>
-
                     <div className="overflow-hidden bg-gray-100 dark:bg-gray-900 rounded-xl shadow-lg flex flex-col items-center justify-center p-4 text-center">
                         <CarouselText paragraphs={turma.paragrafos_da_descricao} />
                     </div>

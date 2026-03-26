@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Filtra;
 use App\Helpers\Trata;
-use App\Models\Dia;
 use App\Models\Nucleo;
 use App\Models\Turma;
 use App\Http\Requests\Settings\TurmaRequest;
@@ -26,21 +25,18 @@ class TurmaController extends Controller
 
             $turmas
                 ->leftJoin('nucleos', 'turmas.nucleo_id', 'nucleos.id')
-                ->leftJoin('dias', 'turmas.dia_id', 'dias.id')
                 ->select(['turmas.*'])->groupBy('turmas.id');
 
             if (isset($nucleoId)) $turmas = Filtra::resultado($turmas, $nucleoId, 'nucleo_id')->with('nucleo');
-            if (isset($diaId)) $turmas = Filtra::resultado($turmas, $diaId, 'dia_id'); // Turma COM dia vem por padrão da model
             
             if (isset($disponivel)) $turmas = $turmas->where('disponivel', (int) $disponivel);
             
-            $pagination = Trata::resultado($turmas, 'turmas.nome'); // Ordenação por turma ou dia.
+            $pagination = Trata::resultado($turmas, 'turmas.nome'); // Ordenação por turma.
 
             return isWeb()
                 ? Inertia::render('turmas/index', [
                     'pagination' => $pagination,
                     'nucleos' => Nucleo::all(),
-                    'dias' => Dia::all(),
                 ])
                 : response($turmas);
         } catch (\Throwable $th) {
@@ -61,8 +57,7 @@ class TurmaController extends Controller
         try {
             return Inertia::render('turmas/create', [
                 'turma' => $turma,
-                'nucleos' => Nucleo::all(),
-                'dias' => Dia::all()
+                'nucleos' => Nucleo::all()
             ]);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
@@ -112,7 +107,7 @@ class TurmaController extends Controller
         try {
             return isWeb()
                 ? Inertia::render('turmas/show', [
-                    'turma' => $turma->with(['nucleo', 'dia'])->first(),
+                    'turma' => $turma->with(['nucleo'])->first(),
                 ])
                 : response($turma);
         } catch (\Throwable $th) {
@@ -134,8 +129,7 @@ class TurmaController extends Controller
         try {
             return Inertia::render('turmas/edit', [
                 'turma' => $turma,
-                'nucleos' => Nucleo::all(),
-                'dias' => Dia::all()
+                'nucleos' => Nucleo::all()
             ]);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);

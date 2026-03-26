@@ -5,7 +5,6 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\CupomController;
-use App\Http\Controllers\DiaController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\FormaDePagamentoController;
 use App\Http\Controllers\MarcacaoController;
@@ -53,11 +52,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('/cupons')->group(function () {
         Route::get('/', [CupomController::class, 'index']);
         Route::get('/codigo', [CupomController::class, 'show']);
-    });
-
-    Route::prefix('/dias')->group(function () {
-        Route::get('/', [DiaController::class, 'index']);
-        Route::get('/{dia}', [DiaController::class, 'show']);
     });
 
     Route::prefix('/formas-de-pagamento')->group(function () {

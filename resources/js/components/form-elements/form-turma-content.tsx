@@ -58,25 +58,6 @@ export function FormTurmaContent({ initialData, endpoint, related }: FormContent
                     error={errors.nucleo_id}
                 />
             </div>
-            
-            <div className="flex gap-4">
-                <SelectModelContent
-                    column="dia_id"
-                    titulo="Dia"
-                    id={data.dia_id}
-                    array={related.dias}
-                    setData={setData}
-                    error={errors.dia_id}
-                />
-
-                <InputTimeContent
-                    column="horario"
-                    titulo="Horário"
-                    value={data.horario}
-                    setData={setData}
-                    error={errors.horario}
-                />
-            </div>
 
             <SwitchContent
                 column="disponivel"

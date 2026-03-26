@@ -1,7 +1,6 @@
 <?php
 namespace Database\Factories;
 
-use App\Models\Dia;
 use App\Models\Nucleo;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Http;
@@ -27,15 +26,13 @@ class TurmaFactory extends Factory
             'descricao' => implode("\n\n", $this->faker->paragraphs(3)),
             'imagem' => 'https://random.dog/' . $imageName,
             'vagas_ofertadas' => $vagasOfertadas,
-            'horario' => $this->faker->time('H:i'),
             'disponivel' => $this->faker->boolean(),
             'zoom' => $this->faker->url(),
             'zoom_id' => $this->faker->uuid(),
             'zoom_senha' => $this->faker->password(),
             'whatsapp' => $this->faker->url(),
             'spotify' => $this->faker->url(),
-            'nucleo_id' => Nucleo::inRandomOrder()->first()->id,
-            'dia_id' => Dia::inRandomOrder()->first()->id
+            'nucleo_id' => Nucleo::inRandomOrder()->first()->id
         ];
     }
 }

@@ -33,7 +33,6 @@ export default function FlipCardTurma({ turma }: { turma: Turma & RelacionadasAT
               <Link className="rounded-lg bg-blue-600 px-4 py-2 text-white font-medium transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" href={route('turmas.edit', { id: turma.id })} children="Editar" />
             </div>
             <div className="flex flex-col m-auto gap-2">
-              <p>{turma.dia.nome} às {turma.horario}</p>
               <div>
                 <strong>Vagas: </strong>
                 <div className="flex flex-col m-auto bg-gray-100 dark:bg-gray-900 p-4">
