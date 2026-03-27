@@ -1,15 +1,17 @@
-import { FormContentProps, Turma } from "@/types/models";
+import { Aula, FormContentProps, Turma } from "@/types/models";
 import { ButtonSubmitContent } from "./button-submit-content";
 import { InputImageContent } from "./input-image-content";
 import { InputNumberContent } from "./input-number-content";
 import { InputTextContent } from "./input-text-content";
-import { InputTimeContent } from "./input-time-content";
 import { InputUrlContent } from "./input-url-content";
 import { SelectModelContent } from "./select-model-content";
 import { SwitchContent } from "./switch-content";
 import { TextAreaContent } from "./text-area-content";
 import { useForm } from "@inertiajs/react";
 import { FormProps } from "@/types";
+import { Unlink } from "lucide-react";
+import ErrorLabel from "../error-label";
+import { InputTimeContent } from "./input-time-content";
 
 export function FormTurmaContent({ initialData, endpoint, related }: FormContentProps<Turma>) {
     const { data, setData, errors, clearErrors, hasErrors, processing, post, put } = useForm<FormProps<Turma>>(initialData);
@@ -21,6 +23,37 @@ export function FormTurmaContent({ initialData, endpoint, related }: FormContent
         edit
             ? put(endpoint)
             : post(endpoint);
+    };
+
+    const aulaInicial = { horario: "00:00", dia_id: null};
+    const aulas = edit ? data.aulas : [aulaInicial];
+
+    const addAula = () => setData("aulas", [...aulas, aulaInicial]);
+
+    const removeAula = (index: number) => {
+        const updatedAulas = aulas.filter((u: any, i: number) => i !== index);
+
+        setData("aulas", updatedAulas);
+        clearErrors(`aulas.${index}`);
+        clearErrors("aulas");
+    };
+    
+    const updateHorario = (index: number, value: string) => {
+        const updatedAulas = [...data.aulas];
+        updatedAulas[index].horario = value;
+
+        setData("aulas", updatedAulas);
+        clearErrors(`aulas.${index}`);
+        clearErrors("aulas");
+    };
+
+    const updateDia = (index: number, value: number) => {
+        const updatedAulas = [...data.aulas];
+        updatedAulas[index].dia_id = value;
+
+        setData("aulas", updatedAulas);
+        clearErrors(`aulas.${index}`);
+        clearErrors("aulas");
     };
 
     return (
@@ -132,12 +165,51 @@ export function FormTurmaContent({ initialData, endpoint, related }: FormContent
                 </div>
             </div>
 
-            {!hasErrors && <ButtonSubmitContent
-                processing={processing}
-                processingText="Salvando..."
-                buttonText="Salvar"
-                classes="bg-blue-500 hover:bg-blue-600 focus:ring-blue-500 focus:ring-offset-blue-200"
-            />}
+            <hr />
+
+            <h2 className="text-lg font-semibold">Aulas agendadas para esta turma</h2>
+
+            {aulas.map((aula: Aula, index: number) => (<div key={index + aula.id} className="flex gap-2">
+                <SelectModelContent
+                    column="dia_id"
+                    titulo="Dia"
+                    id={aula.dia_id}
+                    array={related.dias}
+                    setData={(column: string, dia_id: number) => updateDia(index, dia_id)}
+                    error={errors[`aulas.${index}.dia_id`]}
+                />
+                <InputTimeContent
+                    column="horario"
+                    titulo="Horário"
+                    value={data.aulas[index].horario}
+                    setData={(column: string, value: string) => updateHorario(index, value)}
+                    error={errors[`aulas.${index}.horario`]}
+                />
+                <div className="flex items-center gap-2 w-full">
+                    {index > 0 && (
+                        <Unlink
+                            className="cursor-pointer text-red-500 hover:text-red-700"
+                            onClick={() => removeAula(index)}
+                        />
+                    )}
+                </div>
+            </div>))}
+
+            {errors.aulas && <ErrorLabel error={errors.aulas} />}
+            <div className="bg-background bottom-4 fixed flex gap-4 items-center p-4 right-4">
+                <div
+                    onClick={addAula}
+                    className="cursor-pointer px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
+                    children="Adicionar aula"
+                />
+
+                {!hasErrors && <ButtonSubmitContent
+                    processing={processing}
+                    processingText="Salvando..."
+                    buttonText="Salvar"
+                    classes="bg-blue-500 hover:bg-blue-600 focus:ring-blue-500 focus:ring-offset-blue-200"
+                />}
+            </div>
         </form>
     );
 }

@@ -6,6 +6,7 @@ use App\Helpers\Filtra;
 use App\Helpers\Trata;
 use App\Models\Nucleo;
 use App\Models\Turma;
+use App\Models\Dia;
 use App\Http\Requests\Settings\TurmaRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -22,6 +23,7 @@ class TurmaController extends Controller
         try {
             extract(request()->all());
             $turmas = Turma::query();
+            $turmas->with(['aulas']);
 
             $turmas
                 ->leftJoin('nucleos', 'turmas.nucleo_id', 'nucleos.id')
@@ -57,7 +59,8 @@ class TurmaController extends Controller
         try {
             return Inertia::render('turmas/create', [
                 'turma' => $turma,
-                'nucleos' => Nucleo::all()
+                'nucleos' => Nucleo::all(),
+                'dias' => Dia::all()
             ]);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
@@ -79,6 +82,7 @@ class TurmaController extends Controller
                 : $request->validated();
 
             $turma = Turma::create($data);
+            $turma->aulas()->createMany($request->aulas);
 
             salvaImagem($turma, 'turmas');
             DB::commit();
@@ -128,8 +132,9 @@ class TurmaController extends Controller
     {
         try {
             return Inertia::render('turmas/edit', [
-                'turma' => $turma,
-                'nucleos' => Nucleo::all()
+                'turma' => $turma->load(['aulas']),
+                'nucleos' => Nucleo::all(),
+                'dias' => Dia::all()
             ]);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
@@ -151,6 +156,7 @@ class TurmaController extends Controller
                 : $request->validated();
 
             $turma->update($data);
+            $turma->aulas()->createMany($request->aulas);
 
             salvaImagem($turma, 'turmas');
             DB::commit();

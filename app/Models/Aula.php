@@ -8,24 +8,27 @@ class Aula extends Model
 {
     protected $fillable = [
         'turma_id',
+        'dia_id',
         'horario',
-        // 'duracao', // Esse item talvez pertença ao núcleo, já que é lá que definimos o público alvo
-        'data',
     ];
 
     protected $casts = [
         'turma_id' => 'integer',
-        'horario_inicio' => 'time',
-        'horario_fim' => 'time',
-        'data' => 'date'
+        'dia_id' => 'integer',
+        'horario' => 'datetime:H:i',
     ];
 
-    protected $appends = [
-        'dia',
+    protected $with = [
+        'dia'
     ];
 
     public function turma()
     {
         return $this->belongsTo(Turma::class);
+    }
+
+    public function dia()
+    {
+        return $this->belongsTo(Dia::class);
     }
 }

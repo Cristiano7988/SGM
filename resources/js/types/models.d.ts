@@ -78,6 +78,13 @@ export interface Turma {
     nucleo: Nucleo;
 }
 
+export interface Aula {
+    id: number,
+    horario: string,
+    dia_id: number,
+    turma_id: number
+}
+
 export interface RelacionadasATurma {
     nucleo: Nucleo;
     // Para o filtro de Turma
