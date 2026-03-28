@@ -42,15 +42,15 @@ export default function FlipCardTurma({ turma }: { turma: Turma & RelacionadasAT
               <div>
                 <strong>Vagas: </strong>
                 <div className="flex flex-col m-auto bg-gray-100 dark:bg-gray-900 p-4">
-                  <p>
-                    <strong>Preenchidas: </strong>
+                  <p className="flex gap-1">
+                    <strong>Preenchidas:</strong>
                     <span>
                       {turma.vagas_preenchidas}
                     </span>
                   </p>
 
-                  <p>
-                    <strong>Ofertadas: </strong>
+                  <p className="flex gap-1">
+                    <strong>Ofertadas:</strong>
                     <span>
                       {turma.vagas_ofertadas}
                     </span>

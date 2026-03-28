@@ -156,6 +156,7 @@ class TurmaController extends Controller
                 : $request->validated();
 
             $turma->update($data);
+            $turma->aulas()->delete();
             $turma->aulas()->createMany($request->aulas);
 
             salvaImagem($turma, 'turmas');

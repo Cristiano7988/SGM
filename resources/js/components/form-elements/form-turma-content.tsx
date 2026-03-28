@@ -12,10 +12,13 @@ import { FormProps } from "@/types";
 import { Unlink } from "lucide-react";
 import ErrorLabel from "../error-label";
 import { InputTimeContent } from "./input-time-content";
+import { useEffect, useState } from "react";
 
 export function FormTurmaContent({ initialData, endpoint, related }: FormContentProps<Turma>) {
     const { data, setData, errors, clearErrors, hasErrors, processing, post, put } = useForm<FormProps<Turma>>(initialData);
     const edit = location.pathname.includes("edit");
+    const aulaInicial = { horario: "00:00", dia_id: null};
+    const [aulas, setAulas] = useState(edit ? data.aulas : [aulaInicial]);
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -25,33 +28,32 @@ export function FormTurmaContent({ initialData, endpoint, related }: FormContent
             : post(endpoint);
     };
 
-    const aulaInicial = { horario: "00:00", dia_id: null};
-    const aulas = edit ? data.aulas : [aulaInicial];
+    useEffect(() => {
+        setData("aulas", aulas);
+    }, [aulas]);
 
-    const addAula = () => setData("aulas", [...aulas, aulaInicial]);
+    const addAula = () => setAulas([...aulas, aulaInicial]);
 
     const removeAula = (index: number) => {
-        const updatedAulas = aulas.filter((u: any, i: number) => i !== index);
+        delete aulas[index];
 
-        setData("aulas", updatedAulas);
+        setAulas(aulas.filter(Boolean));
         clearErrors(`aulas.${index}`);
         clearErrors("aulas");
     };
     
     const updateHorario = (index: number, value: string) => {
-        const updatedAulas = [...data.aulas];
-        updatedAulas[index].horario = value;
+        aulas[index].horario = value;
 
-        setData("aulas", updatedAulas);
+        setAulas(aulas);
         clearErrors(`aulas.${index}`);
         clearErrors("aulas");
     };
 
     const updateDia = (index: number, value: number) => {
-        const updatedAulas = [...data.aulas];
-        updatedAulas[index].dia_id = value;
+        aulas[index].dia_id = value;
 
-        setData("aulas", updatedAulas);
+        setData("aulas", aulas);
         clearErrors(`aulas.${index}`);
         clearErrors("aulas");
     };
@@ -169,7 +171,7 @@ export function FormTurmaContent({ initialData, endpoint, related }: FormContent
 
             <h2 className="text-lg font-semibold">Aulas agendadas para esta turma</h2>
 
-            {aulas.map((aula: Aula, index: number) => (<div key={index + aula.id} className="flex gap-2">
+            {aulas.map((aula: Aula, index: number) => (<div key={index} className="flex gap-2">
                 <SelectModelContent
                     column="dia_id"
                     titulo="Dia"
@@ -181,21 +183,20 @@ export function FormTurmaContent({ initialData, endpoint, related }: FormContent
                 <InputTimeContent
                     column="horario"
                     titulo="Horário"
-                    value={data.aulas[index]?.horario}
+                    value={aula.horario}
                     setData={(column: string, value: string) => updateHorario(index, value)}
                     error={errors[`aulas.${index}.horario`]}
                 />
                 <div className="flex items-center gap-2 w-full">
-                    {index > 0 && (
-                        <Unlink
-                            className="cursor-pointer text-red-500 hover:text-red-700"
-                            onClick={() => removeAula(index)}
-                        />
-                    )}
+                    <Unlink
+                        className="cursor-pointer text-red-500 hover:text-red-700"
+                        onClick={() => removeAula(index)}
+                    />
                 </div>
             </div>))}
 
             {errors.aulas && <ErrorLabel error={errors.aulas} />}
+
             <div className="bg-background bottom-4 fixed flex gap-4 items-center p-4 right-4">
                 <div
                     onClick={addAula}
