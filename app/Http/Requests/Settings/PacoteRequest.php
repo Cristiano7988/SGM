@@ -14,14 +14,6 @@ class PacoteRequest extends FormRequest
      */
     public function rules(): array
     {
-        // Transformar request em um array de integers
-        if ($this->has('periodos')) {
-            $this->merge([
-                'periodos' => array_map(function ($item) {
-                    return is_array($item) && isset($item['id']) ? $item['id'] : $item;
-                }, $this->input('periodos')),
-            ]);
-        }
 
         return [
             'nome' => ['required', 'string', 'min:3', 'max:255'],
@@ -38,8 +30,8 @@ class PacoteRequest extends FormRequest
                 'numeric',
                 'exists:nucleos,id',
             ],
-            'periodos' => ['array'],
-            'periodos.*' => ['integer', 'exists:periodos,id'],
+            'datas' => ['array'],
+            'datas.*.dia' => ['string'],
         ];
     }
 }

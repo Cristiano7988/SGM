@@ -7,8 +7,8 @@ import {
     RelacionadasAoPacote,
     Turma,
     RelacionadasATurma,
-    Periodo,
-    RelacionadasAoPeriodo,
+    Data,
+    RelacionadasAData,
     Aluno,
     RelacionadasAoAluno,
  } from './models';
@@ -89,13 +89,6 @@ export interface IndexPropsTurma extends IndexProps<Turma>, RelacionadasATurma {
 export interface ShowPropsTurma { turma: Turma & RelacionadasATurma };
 export interface EditPropsTurma extends Props, FormProps, RelacionadasATurma { turma: Turma; };
 export interface CreatePropsTurma extends EditPropsTurma {};
-
-// Periodos
-
-export interface IndexPropsPeriodo  extends IndexProps<Periodo>, RelacionadasAoPeriodo {};
-export interface ShowPropsPeriodo { periodo: Periodo & RelacionadasAoNucleo; };
-export interface EditPropsPeriodo extends Props, FormProps, RelacionadasAoPeriodo { periodo: Periodo; };
-export interface CreatePropsPeriodo extends EditPropsPeriodo {};
 
 // Alunos
 

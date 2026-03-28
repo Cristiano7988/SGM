@@ -157,10 +157,7 @@ class EmailController extends Controller
             if (!$transacoes->count()) return response("Transações não encontradas", 404);
     
             foreach($transacoes as $index => $transacao) {
-                foreach($transacao->matricula->pacote->periodos as $key => $periodo) {
-                    $separador = $key ? " - " : "";
-                    $transacoes[$index]['vigencia_do_pacote'] .= $separador . "De " . Formata::data($periodo->inicio) . " até " . Formata::data($periodo->fim);
-                }
+                $transacoes[$index]['vigencia_do_pacote'] = $transacao->matricula->pacote->vigencia;
             }
 
             $conteudo = new TodasTransacoes($transacoes);

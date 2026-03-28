@@ -1,4 +1,4 @@
-import { Pacote, Periodo, RelacionadasAoPacote } from "@/types/models";
+import { Pacote, RelacionadasAoPacote } from "@/types/models";
 import { Link } from "@inertiajs/react";
 
 export default function CardPacote({ pacote }: { pacote: Pacote & RelacionadasAoPacote }) {
@@ -12,13 +12,12 @@ export default function CardPacote({ pacote }: { pacote: Pacote & RelacionadasAo
               <b>{pacote.nome}</b>
               <Link className="rounded-lg bg-blue-600 px-4 py-2 text-white font-medium transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" href={route('pacotes.edit', { id: pacote.id })} children="Editar" />
             </div>
-            <div className="flex flex-col m-auto gap-2">
+            <div className="grid m-auto gap-4">
               <p>{pacote.valor_formatado}</p>
-              {pacote.periodos.map((periodo: Periodo) => (
-                <p key={periodo.id} className="text-sm text-neutral-500">
-                  De {periodo.inicio_formatado} até {periodo.fim_formatado}
-                </p>
-              ))}
+              <div className="grid gap-2">
+                <b>Vigência:</b>
+                <p className="text-sm">{pacote.vigencia}</p>
+              </div>
             </div>
           </div>
         </div>

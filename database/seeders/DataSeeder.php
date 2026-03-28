@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Periodo;
+use App\Models\Data;
 use Illuminate\Database\Seeder;
 
-class PeriodoSeeder extends Seeder
+class DataSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,6 +14,6 @@ class PeriodoSeeder extends Seeder
      */
     public function run()
     {
-        Periodo::factory()->count(3)->create();
+        Data::factory()->count(3)->create();
     }
 }

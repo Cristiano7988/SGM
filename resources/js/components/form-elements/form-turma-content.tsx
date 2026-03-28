@@ -181,7 +181,7 @@ export function FormTurmaContent({ initialData, endpoint, related }: FormContent
                 <InputTimeContent
                     column="horario"
                     titulo="Horário"
-                    value={data.aulas[index].horario}
+                    value={data.aulas[index]?.horario}
                     setData={(column: string, value: string) => updateHorario(index, value)}
                     error={errors[`aulas.${index}.horario`]}
                 />

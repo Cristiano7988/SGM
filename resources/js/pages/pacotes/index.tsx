@@ -35,11 +35,11 @@ export default function Index(props: IndexPropsPacote) {
         },
         {
             tipo: 'select' as const,
-            label: 'Períodos',
-            nome: 'periodos',
-            valor: searchParams.get('periodos') ?? undefined,
-            opcoes: props.periodos,
-            ativo: Boolean(searchParams.get('periodos')),
+            label: 'Datas',
+            nome: 'datas',
+            valor: searchParams.get('datas') ?? undefined,
+            opcoes: props.datas,
+            ativo: Boolean(searchParams.get('datas')),
         },
     ]
     return (

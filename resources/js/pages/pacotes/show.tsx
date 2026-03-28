@@ -25,8 +25,8 @@ export default function Show(props: ShowPropsPacote) {
                         <hr />
                         <p><strong>Núcleo:</strong> <Link href={"/nucleos/" + pacote.nucleo_id} children={pacote.nucleo.nome} /></p>
                         <hr />
-                        <p><strong>Períodos:</strong></p>
-                        {pacote.periodos.map((periodo) => <p key={periodo.id}>De {periodo.inicio} até {periodo.fim}</p>)}
+                        <p><strong>Datas:</strong></p>
+                        {pacote.datas.map((data) => <p key={data.id}>{data.dia_formatado}</p>)}
                     </div>
                 </div>
             </div>

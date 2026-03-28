@@ -94,36 +94,35 @@ export interface RelacionadasATurma {
 // Pacote
 
 export interface Pacote {
-    id: number;
+    id: number | null;
     nome: string;
     ativo: boolean;
-    nucleo_id: number;
+    nucleo_id: number | null;
     valor: number;
     valor_formatado: string;
+    vigencia: string
 }
 
 export interface RelacionadasAoPacote {
     nucleo: Nucleo;
-    periodos: Periodo[];
+    datas: Data[];
     // Para o filtro de Pacote
     nucleos: Nucleo[];
 }
 
-// Periodo
+// Data
 
-export interface Periodo {
-    id: number;
-    inicio: string;
-    fim: string;
-    inicio_formatado: string;
-    fim_formatado: string;
-    pacote_id: number;
-    pacote: Pacote;
+export interface Data {
+    id: number | null;
+    dia: string;
+    dia_formatado: string;
+    pacote_id: number | null;
+    pacote?: Pacote;
 }
 
-export interface RelacionadasAoPeriodo {
-    // Para o filtro de Periodo
-    pacotes: Pacote[];
+export interface RelacionadasAData {
+    // Para o filtro de Data
+    pacote: Pacote[];
 }
 
 // Aluno

@@ -10,7 +10,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Edit(props: EditPropsPacote) {
-    const { pacote, session, nucleos, periodos } = props;
+    const { pacote, session, nucleos, datas } = props;
 
     const { processing, delete: deletePacote } = useForm();
 
@@ -30,7 +30,7 @@ export default function Edit(props: EditPropsPacote) {
                 <FormPacoteContent
                     initialData={pacote}
                     endpoint={route('pacotes.update', pacote.id)}
-                    related={{ nucleos, periodos }}
+                    related={{ nucleos, datas }}
                 />
 
                 <form onSubmit={submitDeletion} className='mt-4'>

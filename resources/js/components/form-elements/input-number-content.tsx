@@ -26,6 +26,7 @@ export function InputNumberContent({ titulo, column, value, error, clearErrors, 
                 name={column}
                 min={min}
                 max={max}
+                step="0.01"
                 className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 style={{
                     colorScheme: 'light',

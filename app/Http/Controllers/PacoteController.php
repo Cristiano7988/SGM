@@ -7,7 +7,8 @@ use App\Helpers\Trata;
 use App\Http\Requests\Settings\PacoteRequest;
 use App\Models\Nucleo;
 use App\Models\Pacote;
-use App\Models\Periodo;
+use App\Models\Data;
+use App\Models\Matricula;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -24,18 +25,18 @@ class PacoteController extends Controller
             $pacotes = Pacote::query();
 
             $pacotes
-                // ->leftJoin('periodos', 'pacotes.id', 'periodos.pacote_id')
+                ->leftJoin('datas', 'pacotes.id', 'datas.pacote_id')
                 ->leftJoin('matriculas', 'pacotes.id', 'matriculas.pacote_id')
                 ->leftJoin('nucleos', 'pacotes.nucleo_id', 'nucleos.id')
                 ->select(['pacotes.*'])->groupBy('pacotes.id');
             
             $pacotes->with([
                 'nucleo',
-                'periodos',
+                'datas',
             ]);
 
-            // if (isset($matriculas)) $pacotes = Filtra::resultado($pacotes, $matriculas, 'matriculas.id')->with('matriculas');
-            if (isset($periodos)) $pacotes = Filtra::resultado($pacotes, $periodos, 'periodos.id')->with('periodos');
+            if (isset($matriculas)) $pacotes = Filtra::resultado($pacotes, $matriculas, 'matriculas.id')->with('matriculas');
+            if (isset($datas)) $pacotes = Filtra::resultado($pacotes, $datas, 'datas.id')->with('datas');
             if (isset($nucleoId)) $pacotes = Filtra::resultado($pacotes, $nucleoId, 'nucleos.id')->with('nucleo');
             if (isset($ativo)) $pacotes = $pacotes->where('ativo', $ativo);
 
@@ -45,7 +46,8 @@ class PacoteController extends Controller
                 ? Inertia::render('pacotes/index', [
                     'pagination' => $pagination,
                     'nucleos' => Nucleo::all(),
-                    'periodos' => Periodo::all(),
+                    'datas' => Data::all(),
+                    'matriculas' => Matricula::all()
                 ])
                 : response($pacotes);
         } catch (\Throwable $th) {
@@ -65,7 +67,7 @@ class PacoteController extends Controller
     {
         return Inertia::render('pacotes/create', [
             'nucleos' => Nucleo::all(),
-            'periodos' => Periodo::all()
+            'datas' => Data::all()
         ]);
     }
 
@@ -78,6 +80,8 @@ class PacoteController extends Controller
     {
         try {
             $pacote = Pacote::create($request->validated());
+
+            $pacote->datas()->createMany($request->datas);
             $mensagem = "Pacote {$pacote->nome} criado.";
 
             return isWeb()
@@ -103,7 +107,7 @@ class PacoteController extends Controller
                 ? Inertia::render('pacotes/show', [
                     'pacote' => $pacote,
                     'nucleo' => $pacote->nucleo,
-                    'periodos' => $pacote->periodos,
+                    'datas' => $pacote->datas,
                     'matriculas' => $pacote->matriculas,
                 ])
                 : response($pacote);
@@ -125,9 +129,9 @@ class PacoteController extends Controller
     {
         try {
             return Inertia::render('pacotes/edit', [
-                'pacote' => $pacote->load(['periodos']),
+                'pacote' => $pacote->load(['datas']),
                 'nucleos' => Nucleo::all(),
-                'periodos' => Periodo::all()
+                'datas' => Data::all()
             ]);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
@@ -146,7 +150,8 @@ class PacoteController extends Controller
     {
         try {
             $pacote->update($request->validated());
-            if (isset($request->periodos) && !!count($request->periodos)) $pacote->periodos()->sync($request->periodos);
+            $pacote->datas()->delete();
+            $pacote->datas()->createMany($request->datas);
 
             $mensagem = "Pacote {$pacote->nome} editado.";
 
@@ -171,6 +176,7 @@ class PacoteController extends Controller
     {
         try {
             DB::beginTransaction();
+            $pacote->datas()->delete();
             $excluido = Trata::exclusao($pacote, 'Pacote');
             if ($excluido) DB::commit(); // Exclui somente se conseguir notificar o cliente
 

@@ -12,7 +12,6 @@ use App\Http\Controllers\MatriculaController;
 use App\Http\Controllers\MedidaController;
 use App\Http\Controllers\NucleoController;
 use App\Http\Controllers\PacoteController;
-use App\Http\Controllers\PeriodoController;
 use App\Http\Controllers\SituacaoController;
 use App\Http\Controllers\TipoController;
 use App\Http\Controllers\TurmaController;
@@ -82,10 +81,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{pacote}', [PacoteController::class, 'show'])->middleware(checaDisponibilidadeDoPacote::class)->middleware(CalculaDescontoDepoisDaController::class);
     });
 
-    Route::prefix('/periodos')->group(function () {
-        Route::get('/', [PeriodoController::class, 'index']);
-        Route::get('/{periodo}', [PeriodoController::class, 'show']);
-    });
     
     Route::prefix('/situacoes')->group(function () {
         Route::get('/{situacao}', [SituacaoController::class, 'show']);
@@ -168,11 +163,6 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::delete('/{pacote}', [PacoteController::class, 'destroy']);
         });
 
-        Route::prefix('/periodos')->group(function () {
-            Route::post('/', [PeriodoController::class, 'store']);
-            Route::patch('/{periodo}', [PeriodoController::class, 'update']);
-            Route::delete('/{periodo}', [PeriodoController::class, 'destroy']);
-        });
 
         Route::prefix('/situacoes')->group(function () {
             Route::get('/', [SituacaoController::class, 'index']);

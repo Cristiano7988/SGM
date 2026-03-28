@@ -28,7 +28,7 @@ class preparaBackupDaTransacao
             if (!$user) return response("Usuário não encontrado", 403);
             if (!$matricula) return response("Matrícula não encontrada", 403);
             if (!$matricula->pacote) return response("Pacote não encontrado", 403);
-            if (!count($matricula->pacote->periodos)) return response("Periodos não encontrados", 403);
+            if (!count($matricula->pacote->datas)) return response("Datas não encontradas", 403);
             if (!$matricula->aluno) return response("Aluno não encontrado", 403);
             if (!$forma_de_pagamento) return response("Forma de pagamento não encontrada", 403);
             if ($request->valor_pago < 0) return response("Não é possível aplicar este desconto", 403);

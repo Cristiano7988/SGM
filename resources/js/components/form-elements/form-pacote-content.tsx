@@ -4,14 +4,27 @@ import { InputNumberContent } from "./input-number-content";
 import { InputTextContent } from "./input-text-content";
 import { SelectModelContent } from "./select-model-content";
 import { SwitchContent } from "./switch-content";
-import { FormContentProps, Pacote, Periodo } from "@/types/models";
+import { FormContentProps, Pacote, Data } from "@/types/models";
 import { FormProps } from "@/types";
 import { Unlink } from "lucide-react";
 import ErrorLabel from "../error-label";
+import { InputDateContent } from "./input-date-content";
+import { useEffect, useState } from "react";
 
 export function FormPacoteContent({ initialData, endpoint, related }: FormContentProps<Pacote>) {
-    const { data, setData, errors, clearErrors, hasErrors, processing, post, put } = useForm<FormProps<Pacote>>(initialData);
+    const { data: dataForm, setData, errors, clearErrors, hasErrors, processing, post, put } = useForm<FormProps<Pacote>>(initialData);
     const edit = location.pathname.includes("edit");
+    const [dia] = new Date().toISOString().split('T');
+    const dataInicial = { id: null, dia, dia_formatado: dia, pacote_id: null };
+    const [datas, setDatas] = useState([dataInicial]);
+
+    useEffect(() => {
+        setDatas(edit ? dataForm.datas : [dataInicial]);
+    }, []);
+
+    useEffect(() => {
+        setData("datas", datas);
+    }, [datas]);
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -20,38 +33,32 @@ export function FormPacoteContent({ initialData, endpoint, related }: FormConten
             ? put(endpoint)
             : post(endpoint);
     };
-
-    const periodos = data.periodos.length ? data.periodos : [{ id: null }];
     
-    const addPeriodo = () => {
-        setData("periodos", [...periodos, { id: null }]);
+    const addData = () => setDatas([...datas, dataInicial]);
+
+    const removeData = (index: number) => {
+        delete datas[index];
+
+        setDatas(datas.filter(Boolean));
+        clearErrors(`datas.${index}`);
+        clearErrors("datas");
     };
 
-    const removePeriodo = (index: number) => {
-        const updatedPeriodos = periodos.filter((u: any, i: number) => i !== index);
+    const updateData = (index: number, value: string) => {
+        const newDatas = [...datas];
+        newDatas[index] = { ...newDatas[index], dia: value };
 
-        setData("periodos", updatedPeriodos);
-        clearErrors(`periodos.${index}`);
-        clearErrors("periodos");
-    };
-
-    const updatePeriodo = (index: number, id: number) => {
-        const updatedPeriodos = [...periodos];
-        const user = related.periodos.find((u: Periodo) => u.id === id);
-        updatedPeriodos[index] = user;
-    
-        setData("periodos", updatedPeriodos);
-        clearErrors(`periodos.${index}`);
-        clearErrors("periodos");
+        setDatas(newDatas);
+        clearErrors(`datas.${index}`);
+        clearErrors("datas");
     };
 
     return (
         <form onSubmit={submit} className="flex flex-col gap-6 space-y-4">
-
             <InputTextContent
                 column="nome"
                 titulo="Nome"
-                value={data.nome}
+                value={dataForm.nome}
                 setData={setData}
                 error={errors.nome}
                 clearErrors={clearErrors}
@@ -60,7 +67,7 @@ export function FormPacoteContent({ initialData, endpoint, related }: FormConten
             <SelectModelContent
                 column="nucleo_id"
                 titulo="Núcleos"
-                id={data.nucleo_id}
+                id={dataForm.nucleo_id}
                 array={related.nucleos}
                 setData={setData}
                 error={errors.nucleo_id}
@@ -70,7 +77,7 @@ export function FormPacoteContent({ initialData, endpoint, related }: FormConten
                 column="ativo"
                 titulo="Ativo"
                 tituloInativo="Inativo"
-                value={data.ativo}
+                value={dataForm.ativo}
                 setData={setData}
                 error={errors.ativo}
             />
@@ -78,7 +85,7 @@ export function FormPacoteContent({ initialData, endpoint, related }: FormConten
             <InputNumberContent
                 titulo='Valor'
                 column='valor'
-                value={data.valor}
+                value={dataForm.valor}
                 setData={setData}
                 error={errors.valor}
                 clearErrors={clearErrors}
@@ -88,42 +95,39 @@ export function FormPacoteContent({ initialData, endpoint, related }: FormConten
 
             <hr />
 
-            <h2 className="text-lg font-semibold">Períodos vinculados a este pacote</h2>
+            <h2 className="text-lg font-semibold">Datas vinculadas a este pacote</h2>
 
-            {periodos.map((periodo: Periodo, index: number) => (
-                <div key={index + periodo.id} className="flex items-center gap-2">
-
-                    <SelectModelContent
-                        column="periodos"
-                        titulo="Período"
-                        id={periodo?.id}
-                        array={related.periodos}
-                        setData={(_: any, id: number) => updatePeriodo(index, id)}
-                        error={errors[`periodos.${index}`]}
+            {datas.map((data: Data, index: number) => (
+                <div key={index} className="flex items-center gap-2">
+                    <InputDateContent
+                        column="datas"
+                        titulo="Data"
+                        value={data.dia}
+                        setData={(_: any, value: string) => updateData(index, value)}
+                        error={errors[`datas.${index}`]}
+                        clearErrors={clearErrors}
                     />
 
-                    {index > 0 && (
-                        <Unlink
-                            className="cursor-pointer text-red-500 hover:text-red-700"
-                            onClick={() => removePeriodo(index)}
-                        />
-                    )}
+                    <Unlink
+                        className="cursor-pointer text-red-500 hover:text-red-700"
+                        onClick={() => removeData(index)}
+                    />
                 </div>
             ))}
 
-            {errors.periodos && <ErrorLabel error={errors.periodos} />}
+            {errors.datas && <ErrorLabel error={errors.datas} />}
 
             <div className="bg-background bottom-4 fixed flex gap-4 items-center p-4 right-4">
                 <Link
-                    href="/periodos/create"
+                    href="/datas/create"
                     className="px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
-                    children="Criar novo período"
+                    children="Criar nova data"
                 />
 
                 <div
-                    onClick={addPeriodo}
+                    onClick={addData}
                     className="cursor-pointer px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
-                    children="Vincular outro período"
+                    children="Vincular outra data"
                 />
 
                 {!hasErrors && (

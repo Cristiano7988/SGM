@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Aluno, Matricula, Periodo, RelacionadasAMatricula, User } from "@/types/models";
+import { Aluno, Matricula, RelacionadasAMatricula, User } from "@/types/models";
 import { Link } from "@inertiajs/react";
 import { Tag } from "./ui/tag";
 
@@ -61,11 +61,9 @@ export default function FlipCardMatricula({ matricula }: { matricula: Matricula 
           <div className="flex items-center gap-2">
             <b>Vigência:</b>
             <div>
-              {matricula.pacote?.periodos.map((periodo: Periodo) => (
-                <p key={periodo.id} className="text-sm">
-                  De {periodo.inicio_formatado} até {periodo.fim_formatado}
-                </p>
-              ))}
+              <p className="text-sm">
+                {matricula.pacote.vigencia}
+              </p>
             </div>
           </div>
           <hr className="border-gray-300 w-3/4" />

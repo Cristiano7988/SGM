@@ -17,7 +17,7 @@ export function InputDateContent({ titulo, column, value, error, clearErrors, se
     };
 
     return (
-        <div className="relative w-full flex flex-col gap-4">
+        <div className="relative flex flex-col gap-4">
             <Label htmlFor={column} className='block font-medium text-white'>{titulo}</Label>
             <input
                 type="date"

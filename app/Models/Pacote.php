@@ -16,11 +16,12 @@ class Pacote extends Model
     ];
 
     protected $with = [
-        'periodos'
+        'datas'
     ];
 
     protected $appends = [
         'valor_formatado',
+        'vigencia'
     ];
 
     public function getValorFormatadoAttribute()
@@ -28,14 +29,26 @@ class Pacote extends Model
         return "R$ " . number_format($this->attributes['valor'], 2, ',', '.');
     }
 
+    public function getVigenciaAttribute()
+    {
+        $inicio = $this->datas->first();
+        $fim = $this->datas->last();
+
+        if (!$inicio && !$fim) return "Indefinida";
+        
+        if ($inicio == $fim) return $inicio->dia_formatado;
+    
+        return "De {$inicio->dia_formatado} até {$fim->dia_formatado}";
+    }
+
     public function nucleo()
     {
         return $this->belongsTo(Nucleo::class);
     }
 
-    public function periodos()
+    public function datas()
     {
-        return $this->belongsToMany(Periodo::class);
+        return $this->hasMany(Data::class);
     }
 
     public function matriculas()

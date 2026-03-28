@@ -51,8 +51,7 @@ class Formata
             'inicio_matricula', // núcleo
             'fim_matricula', // núcleo
             'data_de_nascimento', // aluno
-            'inicio', // periodo
-            'fim', // periodo
+            'dia', // data
             'data_de_pagamento', // transacao
         ];
 
