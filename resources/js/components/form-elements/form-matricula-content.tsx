@@ -58,7 +58,7 @@ export function FormMatriculaContent({ initialData, endpoint, related }: FormCon
         }
 
         const [turma] = turmasFiltradas; 
-        const pacotesFiltrados = related.pacotes.filter((pacote: Pacote) => pacote.nucleo_id == turma.nucleo_id);
+        const pacotesFiltrados = related.pacotes.filter((pacote: Pacote) => pacote.turma_id == turma.id);
         setPacotes(pacotesFiltrados);
     }, [data.aluno_id]);
 

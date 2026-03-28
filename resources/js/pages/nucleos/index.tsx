@@ -14,7 +14,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Index(props: IndexPropsNucleo) {
-    const { pagination, turmas, pacotes, session } = props;
+    const { pagination, turmas, session } = props;
     const searchParams = new URLSearchParams(location.search);
     const filtros: FiltrosType[] = [
         {
@@ -24,15 +24,7 @@ export default function Index(props: IndexPropsNucleo) {
             valor: searchParams.get('turmas') ?? undefined,
             opcoes: turmas,
             ativo: Boolean(searchParams.get('turmas')),
-        },
-        {
-            tipo: 'select',
-            label: 'Pacote',
-            nome: 'pacotes',
-            valor: searchParams.get('pacotes') ?? undefined,
-            opcoes: pacotes,
-            ativo: Boolean(searchParams.get('pacotes')),
-        },
+        }
     ];
 
     return (

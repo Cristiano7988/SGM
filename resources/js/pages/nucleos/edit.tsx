@@ -10,7 +10,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Edit(props: EditPropsNucleo) {
-    const { nucleo, turmas, pacotes, session } = props;
+    const { nucleo, turmas, session } = props;
 
     const { processing, delete: deleteNucleo } = useForm();
 
@@ -30,7 +30,7 @@ export default function Edit(props: EditPropsNucleo) {
                 <FormNucleoContent
                     initialData={nucleo}
                     endpoint={route("nucleos.update", nucleo.id)}
-                    related={{ turmas, pacotes }}
+                    related={{ turmas }}
                 />
 
                 <form onSubmit={submit} >

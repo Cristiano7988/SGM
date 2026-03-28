@@ -59,9 +59,4 @@ class Nucleo extends Model
     {
         return $this->hasMany(Turma::class);
     }
-
-    public function pacotes()
-    {
-        return $this->hasMany(Pacote::class);
-    }
 }

@@ -4,12 +4,12 @@ import { BreadcrumbItem, CreatePropsPacote } from '@/types';
 import Session from '@/components/session';
 import { FormPacoteContent } from '@/components/form-elements/form-pacote-content';
 const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Pacotes', href: '/pacotes' },
+    { title: 'Pacote de aulas', href: '/pacotes' },
     { title: 'Editar Pacote', href: '#' },
 ];
 
 export default function Create(props: CreatePropsPacote) {
-    const { session, nucleos, datas } = props;
+    const { session, turmas, datas } = props;
     const initialData = {
         id: null,
         nome: '',
@@ -17,10 +17,10 @@ export default function Create(props: CreatePropsPacote) {
         valor_formatado: '',
         tipo: '',
         ativo: false,
-        nucleo_id: null,
+        turma_id: null,
         vigencia: "",
         datas,
-        nucleos
+        turmas
     }
 
     return (
@@ -34,7 +34,7 @@ export default function Create(props: CreatePropsPacote) {
                 <FormPacoteContent
                     initialData={initialData}
                     endpoint={route("pacotes.store")}
-                    related={{ nucleos, datas }}
+                    related={{ turmas, datas }}
                 />
             </div>
         </AppLayout>

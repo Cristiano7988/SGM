@@ -8,7 +8,7 @@ import { Head } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Pacotes',
+        title: 'Pacotes de aulas',
         href: '/pacotes',
     },
 ];
@@ -27,11 +27,11 @@ export default function Index(props: IndexPropsPacote) {
         },
         {
             tipo: 'select' as const,
-            label: 'Núcleo',
-            nome: 'nucleoId',
-            valor: searchParams.get('nucleoId') ?? undefined,
-            opcoes: props.nucleos,
-            ativo: Boolean(searchParams.get('nucleoId')),
+            label: 'Turma',
+            nome: 'turmaId',
+            valor: searchParams.get('turmaId') ?? undefined,
+            opcoes: props.turmas,
+            ativo: Boolean(searchParams.get('turmaId')),
         },
         {
             tipo: 'select' as const,

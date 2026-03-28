@@ -95,8 +95,8 @@ class MatriculaController extends Controller
         $turmas = Turma::allDisponiveis()->load(['nucleo']);
 
         $pacotes = $isAdmin
-            ? Pacote::all()->load(['nucleo'])
-            : Pacote::where('ativo', true)->get()->load(['nucleo']);
+            ? Pacote::all()->load(['turma'])
+            : Pacote::where('ativo', true)->get()->load(['turma']);
 
         $situacoes = Situacao::all();
 
@@ -184,8 +184,8 @@ class MatriculaController extends Controller
             $turmas = Turma::all()->load(['nucleo']);
 
             $pacotes = $isAdmin
-                ? Pacote::all()->load(['nucleo'])
-                : Pacote::where('ativo', true)->get()->load(['nucleo']);
+                ? Pacote::all()->load(['turma'])
+                : Pacote::where('ativo', true)->get()->load(['turma']);
 
             $situacoes = Situacao::all();
 

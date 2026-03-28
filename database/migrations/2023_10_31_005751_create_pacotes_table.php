@@ -18,7 +18,7 @@ class CreatePacotesTable extends Migration
             $table->string('nome');
             $table->decimal('valor');
             $table->boolean('ativo')->default(false);
-            $table->foreignId('nucleo_id')->nullable();
+            $table->foreignId('turma_id')->nullable();
             $table->timestamps();
         });
     }

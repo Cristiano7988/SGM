@@ -5,12 +5,12 @@ import Session from '@/components/session';
 import { ButtonSubmitContent } from '@/components/form-elements/button-submit-content';
 import { FormPacoteContent } from '@/components/form-elements/form-pacote-content';
 const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Pacotes', href: '/pacotes' },
+    { title: 'Pacote de aulas', href: '/pacotes' },
     { title: 'Editar Pacote', href: '#' },
 ];
 
 export default function Edit(props: EditPropsPacote) {
-    const { pacote, session, nucleos, datas } = props;
+    const { pacote, session, turmas, datas } = props;
 
     const { processing, delete: deletePacote } = useForm();
 
@@ -30,7 +30,7 @@ export default function Edit(props: EditPropsPacote) {
                 <FormPacoteContent
                     initialData={pacote}
                     endpoint={route('pacotes.update', pacote.id)}
-                    related={{ nucleos, datas }}
+                    related={{ turmas, datas }}
                 />
 
                 <form onSubmit={submitDeletion} className='mt-4'>

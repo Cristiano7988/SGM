@@ -66,4 +66,9 @@ class Turma extends Model
     {
         return $this->hasMany(Aula::class);
     }
+
+    public function pacotes()
+    {
+        return $this->hasMany(Pacote::class);
+    }
 }

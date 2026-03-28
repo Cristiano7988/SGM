@@ -65,12 +65,12 @@ export function FormPacoteContent({ initialData, endpoint, related }: FormConten
             />
 
             <SelectModelContent
-                column="nucleo_id"
-                titulo="Núcleos"
-                id={dataForm.nucleo_id}
-                array={related.nucleos}
+                column="turma_id"
+                titulo="Turmas"
+                id={dataForm.turma_id}
+                array={related.turmas}
                 setData={setData}
-                error={errors.nucleo_id}
+                error={errors.turma_id}
             />
 
             <SwitchContent
@@ -95,7 +95,7 @@ export function FormPacoteContent({ initialData, endpoint, related }: FormConten
 
             <hr />
 
-            <h2 className="text-lg font-semibold">Datas vinculadas a este pacote</h2>
+            <h2 className="text-lg font-semibold">Aulas vinculadas a este pacote</h2>
 
             {datas.map((data: Data, index: number) => (
                 <div key={index} className="flex items-center gap-2">

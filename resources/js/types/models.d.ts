@@ -55,7 +55,6 @@ export interface Nucleo {
 
 export interface RelacionadasAoNucleo {
     turmas: Turma[];
-    pacotes: Pacote[];
 }
 
 // Turma
@@ -97,17 +96,17 @@ export interface Pacote {
     id: number | null;
     nome: string;
     ativo: boolean;
-    nucleo_id: number | null;
+    turma_id: number | null;
     valor: number;
     valor_formatado: string;
     vigencia: string
 }
 
 export interface RelacionadasAoPacote {
-    nucleo: Nucleo;
+    turma: Turma;
     datas: Data[];
     // Para o filtro de Pacote
-    nucleos: Nucleo[];
+    turmas: Turma[];
 }
 
 // Data

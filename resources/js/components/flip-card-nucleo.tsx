@@ -66,7 +66,6 @@ export default function FlipCardNucleo({ nucleo }: { nucleo: Nucleo }) {
             />
           </div>
           <div className="flex justify-center gap-6 absolute w-full bg-sidebar p-4" style={{ bottom: 0 }}>
-            <Link className="rounded-lg bg-blue-600 px-4 py-2 text-white font-medium transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" href={route('pacotes.index', { nucleoId: nucleo.id })} children="Pacotes" />
             <Link className="rounded-lg bg-blue-600 px-4 py-2 text-white font-medium transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" href={route('turmas.index', { nucleoId: nucleo.id })} children="Turmas" />
           </div>
         </div>

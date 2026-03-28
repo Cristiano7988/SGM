@@ -23,7 +23,7 @@ export default function Show(props: ShowPropsPacote) {
                         <p><strong>Valor:</strong> {pacote.valor_formatado}</p>
                         <p><strong>Disponível:</strong> {pacote.ativo ? "Sim" : "Não"}</p>
                         <hr />
-                        <p><strong>Núcleo:</strong> <Link href={"/nucleos/" + pacote.nucleo_id} children={pacote.nucleo.nome} /></p>
+                        <p><strong>Turma:</strong> <Link href={"/turmas/" + pacote.turma_id} children={pacote.turma.nome} /></p>
                         <hr />
                         <p><strong>Datas:</strong></p>
                         {pacote.datas.map((data) => <p key={data.id}>{data.dia_formatado}</p>)}

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\Filtra;
 use App\Helpers\Trata;
 use App\Http\Requests\Settings\PacoteRequest;
-use App\Models\Nucleo;
+use App\Models\Turma;
 use App\Models\Pacote;
 use App\Models\Data;
 use App\Models\Matricula;
@@ -27,25 +27,25 @@ class PacoteController extends Controller
             $pacotes
                 ->leftJoin('datas', 'pacotes.id', 'datas.pacote_id')
                 ->leftJoin('matriculas', 'pacotes.id', 'matriculas.pacote_id')
-                ->leftJoin('nucleos', 'pacotes.nucleo_id', 'nucleos.id')
+                ->leftJoin('turmas', 'pacotes.turma_id', 'turmas.id')
                 ->select(['pacotes.*'])->groupBy('pacotes.id');
             
             $pacotes->with([
-                'nucleo',
+                'turma',
                 'datas',
             ]);
 
             if (isset($matriculas)) $pacotes = Filtra::resultado($pacotes, $matriculas, 'matriculas.id')->with('matriculas');
             if (isset($datas)) $pacotes = Filtra::resultado($pacotes, $datas, 'datas.id')->with('datas');
-            if (isset($nucleoId)) $pacotes = Filtra::resultado($pacotes, $nucleoId, 'nucleos.id')->with('nucleo');
+            if (isset($turmaId)) $pacotes = Filtra::resultado($pacotes, $turmaId, 'turmas.id')->with('turma');
             if (isset($ativo)) $pacotes = $pacotes->where('ativo', $ativo);
 
-            $pagination = Trata::resultado($pacotes, 'pacotes.nome'); // Ordenação por pacote ou por núcleo.
+            $pagination = Trata::resultado($pacotes, 'pacotes.nome'); // Ordenação por pacote.
 
             return isWeb()
                 ? Inertia::render('pacotes/index', [
                     'pagination' => $pagination,
-                    'nucleos' => Nucleo::all(),
+                    'turmas' => Turma::all(),
                     'datas' => Data::all(),
                     'matriculas' => Matricula::all()
                 ])
@@ -66,7 +66,7 @@ class PacoteController extends Controller
     public function create()
     {
         return Inertia::render('pacotes/create', [
-            'nucleos' => Nucleo::all(),
+            'turmas' => Turma::all(),
             'datas' => Data::all()
         ]);
     }
@@ -106,7 +106,7 @@ class PacoteController extends Controller
             return isWeb()
                 ? Inertia::render('pacotes/show', [
                     'pacote' => $pacote,
-                    'nucleo' => $pacote->nucleo,
+                    'turma' => $pacote->turma,
                     'datas' => $pacote->datas,
                     'matriculas' => $pacote->matriculas,
                 ])
@@ -130,7 +130,7 @@ class PacoteController extends Controller
         try {
             return Inertia::render('pacotes/edit', [
                 'pacote' => $pacote->load(['datas']),
-                'nucleos' => Nucleo::all(),
+                'turmas' => Turma::all(),
                 'datas' => Data::all()
             ]);
         } catch (\Throwable $th) {

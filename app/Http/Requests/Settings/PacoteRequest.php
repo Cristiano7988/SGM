@@ -25,10 +25,10 @@ class PacoteRequest extends FormRequest
             ],
 
             'ativo' => ['required', 'boolean'],
-            'nucleo_id' => [
+            'turma_id' => [
                 'required',
                 'numeric',
-                'exists:nucleos,id',
+                'exists:turmas,id',
             ],
             'datas' => ['array'],
             'datas.*.dia' => ['string'],

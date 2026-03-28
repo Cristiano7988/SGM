@@ -23,14 +23,6 @@ class NucleoRequest extends FormRequest
             ]);
         }
 
-        if ($this->has('pacotes')) {
-            $this->merge([
-                'pacotes' => array_map(function ($item) {
-                    return is_array($item) && isset($item['id']) ? $item['id'] : $item;
-                }, $this->input('pacotes')),
-            ]);
-        }
-
         return [
             'nome' => [
                 'string',
@@ -72,7 +64,6 @@ class NucleoRequest extends FormRequest
             'inicio_matricula' => "required|date|date_format:Y-m-d|before_or_equal:fim_matricula",
             'fim_matricula' => "required|date|date_format:Y-m-d|after_or_equal:inicio_matricula",
             'turmas' => 'array',
-            'pacotes' => 'array'
         ];
     }
 }

@@ -12,7 +12,7 @@ class Pacote extends Model
         'nome',
         'valor',
         'ativo',
-        'nucleo_id',
+        'turma_id',
     ];
 
     protected $with = [
@@ -41,9 +41,9 @@ class Pacote extends Model
         return "De {$inicio->dia_formatado} até {$fim->dia_formatado}";
     }
 
-    public function nucleo()
+    public function turma()
     {
-        return $this->belongsTo(Nucleo::class);
+        return $this->belongsTo(Turma::class);
     }
 
     public function datas()

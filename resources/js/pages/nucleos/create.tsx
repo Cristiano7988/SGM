@@ -10,7 +10,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Create(props: CreatePropsNucleo) {
-    const { session, turmas, pacotes } = props;
+    const { session, turmas } = props;
     const initialData = {
         id: null,
         nome: '',
@@ -23,7 +23,6 @@ export default function Create(props: CreatePropsNucleo) {
         inicio_matricula: '',
         fim_matricula: '',
         turmas,
-        pacotes,
     }
 
     return (
@@ -37,7 +36,7 @@ export default function Create(props: CreatePropsNucleo) {
                 <FormNucleoContent
                     initialData={initialData}
                     endpoint={route("nucleos.store")}
-                    related={{ turmas, pacotes }}
+                    related={{ turmas }}
                 />
             </div>
         </AppLayout>

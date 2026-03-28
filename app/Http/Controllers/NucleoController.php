@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Helpers\Filtra;
 use App\Helpers\Trata;
 use App\Models\Nucleo;
-use App\Models\Pacote;
 use App\Models\Turma;
 use Carbon\Carbon;
 use App\Http\Requests\Settings\NucleoRequest;
@@ -29,7 +28,6 @@ class NucleoController extends Controller
 
             $nucleos
                 ->leftJoin('turmas', 'nucleos.id', 'turmas.nucleo_id')
-                ->leftJoin('pacotes', 'nucleos.id', 'pacotes.nucleo_id')
                 ->select(['nucleos.*'])->groupBy('nucleos.id');
 
             /**
@@ -42,7 +40,6 @@ class NucleoController extends Controller
             // if (isset($matricular)) $nucleos->where('fim_matricula', '>=', $now)->where('inicio_matricula', '<=', $now);
             
             if (isset($turmas)) $nucleos = Filtra::resultado($nucleos, $turmas, 'turmas.id')->with('turmas');
-            if (isset($pacotes)) $nucleos = Filtra::resultado($nucleos, $pacotes, 'pacotes.id')->with('pacotes');
 
             $pagination = Trata::resultado($nucleos, 'nome'); // Ordenação apenas por núcleo.
 
@@ -50,7 +47,6 @@ class NucleoController extends Controller
                 ? Inertia::render('nucleos/index', [
                     'pagination' => $pagination,
                     'turmas' => Turma::all(),
-                    'pacotes' => Pacote::all(),
                 ])
                 : response($pagination);
         } catch (\Throwable $th) {
@@ -69,11 +65,9 @@ class NucleoController extends Controller
     public function create()
     {
         $turmas = Turma::all();
-        $pacotes = Pacote::all();
 
         return Inertia::render('nucleos/create',  [
             'turmas' => $turmas,
-            'pacotes' => $pacotes
         ]);
     }
 
@@ -92,7 +86,6 @@ class NucleoController extends Controller
 
             $nucleo = Nucleo::create($data);
             if ($request->turmas) Turma::whereIn('id', $request->turmas)->update(['nucleo_id' => $nucleo->id]);
-            if ($request->pacotes) Pacote::whereIn('id', $request->pacotes)->update(['nucleo_id' => $nucleo->id]);
 
             if ($request->hasFile('imagem')) {
                 $path = $request->imagem->store('nucleos', 'public');
@@ -147,9 +140,8 @@ class NucleoController extends Controller
     {
         try {
             return Inertia::render('nucleos/edit', [
-                'nucleo' => $nucleo->load(['turmas', 'pacotes']),
+                'nucleo' => $nucleo->load(['turmas']),
                 'turmas' => Turma::all(),
-                'pacotes' => Pacote::all()
             ]);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
@@ -180,7 +172,6 @@ class NucleoController extends Controller
 
             $nucleo->update($data);
             Turma::whereIn('id', $request->turmas)->update(['nucleo_id' => $nucleo->id]);
-            Pacote::whereIn('id', $request->pacotes)->update(['nucleo_id' => $nucleo->id]);
 
             if ($request->hasFile('imagem')) {
                 $path = $request->imagem->store('nucleos', 'public');

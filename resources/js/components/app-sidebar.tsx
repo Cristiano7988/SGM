@@ -24,7 +24,7 @@ const mainNavItems: NavItem[] = [
         icon: Users,
     },
     {
-        title: 'Pacotes',
+        title: 'Pacotes de aulas',
         url: '/pacotes',
         icon: Package,
     },
