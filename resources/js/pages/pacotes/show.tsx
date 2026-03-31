@@ -25,8 +25,8 @@ export default function Show(props: ShowPropsPacote) {
                         <hr />
                         <p><strong>Turma:</strong> <Link href={"/turmas/" + pacote.turma_id} children={pacote.turma.nome} /></p>
                         <hr />
-                        <p><strong>Datas:</strong></p>
-                        {pacote.datas.map((data) => <p key={data.id}>{data.dia_formatado}</p>)}
+                        <p><strong>Aulas:</strong></p>
+                        {pacote.aulas.map((aula) => <p key={aula.id}>{aula.dia_formatado}</p>)}
                     </div>
                 </div>
             </div>

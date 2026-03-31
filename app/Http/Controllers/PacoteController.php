@@ -7,7 +7,7 @@ use App\Helpers\Trata;
 use App\Http\Requests\Settings\PacoteRequest;
 use App\Models\Turma;
 use App\Models\Pacote;
-use App\Models\Data;
+use App\Models\Aula;
 use App\Models\Matricula;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -25,18 +25,18 @@ class PacoteController extends Controller
             $pacotes = Pacote::query();
 
             $pacotes
-                ->leftJoin('datas', 'pacotes.id', 'datas.pacote_id')
+                ->leftJoin('aulas', 'pacotes.id', 'aulas.pacote_id')
                 ->leftJoin('matriculas', 'pacotes.id', 'matriculas.pacote_id')
                 ->leftJoin('turmas', 'pacotes.turma_id', 'turmas.id')
                 ->select(['pacotes.*'])->groupBy('pacotes.id');
             
             $pacotes->with([
                 'turma',
-                'datas',
+                'aulas',
             ]);
 
             if (isset($matriculas)) $pacotes = Filtra::resultado($pacotes, $matriculas, 'matriculas.id')->with('matriculas');
-            if (isset($datas)) $pacotes = Filtra::resultado($pacotes, $datas, 'datas.id')->with('datas');
+            if (isset($aulas)) $pacotes = Filtra::resultado($pacotes, $aulas, 'aulas.id')->with('aulas');
             if (isset($turmaId)) $pacotes = Filtra::resultado($pacotes, $turmaId, 'turmas.id')->with('turma');
             if (isset($ativo)) $pacotes = $pacotes->where('ativo', $ativo);
 
@@ -46,7 +46,7 @@ class PacoteController extends Controller
                 ? Inertia::render('pacotes/index', [
                     'pagination' => $pagination,
                     'turmas' => Turma::all(),
-                    'datas' => Data::all(),
+                    'aulas' => Aula::all()->unique('dia')->values(),
                     'matriculas' => Matricula::all()
                 ])
                 : response($pacotes);
@@ -67,7 +67,6 @@ class PacoteController extends Controller
     {
         return Inertia::render('pacotes/create', [
             'turmas' => Turma::all(),
-            'datas' => Data::all()
         ]);
     }
 
@@ -81,7 +80,7 @@ class PacoteController extends Controller
         try {
             $pacote = Pacote::create($request->validated());
 
-            $pacote->datas()->createMany($request->datas);
+            $pacote->aulas()->createMany($request->aulas);
             $mensagem = "Pacote {$pacote->nome} criado.";
 
             return isWeb()
@@ -107,7 +106,7 @@ class PacoteController extends Controller
                 ? Inertia::render('pacotes/show', [
                     'pacote' => $pacote,
                     'turma' => $pacote->turma,
-                    'datas' => $pacote->datas,
+                    'aulas' => $pacote->aulas,
                     'matriculas' => $pacote->matriculas,
                 ])
                 : response($pacote);
@@ -129,9 +128,8 @@ class PacoteController extends Controller
     {
         try {
             return Inertia::render('pacotes/edit', [
-                'pacote' => $pacote->load(['datas']),
+                'pacote' => $pacote->load(['aulas']),
                 'turmas' => Turma::all(),
-                'datas' => Data::all()
             ]);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
@@ -150,8 +148,8 @@ class PacoteController extends Controller
     {
         try {
             $pacote->update($request->validated());
-            $pacote->datas()->delete();
-            $pacote->datas()->createMany($request->datas);
+            $pacote->aulas()->delete();
+            $pacote->aulas()->createMany($request->aulas);
 
             $mensagem = "Pacote {$pacote->nome} editado.";
 
@@ -176,7 +174,7 @@ class PacoteController extends Controller
     {
         try {
             DB::beginTransaction();
-            $pacote->datas()->delete();
+            $pacote->aulas()->delete();
             $excluido = Trata::exclusao($pacote, 'Pacote');
             if ($excluido) DB::commit(); // Exclui somente se conseguir notificar o cliente
 

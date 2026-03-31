@@ -8,7 +8,7 @@ use App\Models\FormaDePagamento;
 use App\Models\Matricula;
 use App\Models\Nucleo;
 use App\Models\Pacote;
-use App\Models\Data;
+use App\Models\Aula;
 use App\Models\Transacao;
 use App\Models\Turma;
 use App\Models\User;
@@ -50,7 +50,7 @@ class Substitui
         $matricula = Matricula::find($request->matricula_id) ?? null;
         $nucleo = Nucleo::find($request->nucleo_id) ?? null;
         $pacote = Pacote::find($request->pacote_id) ?? null;
-        $data = Data::find($request->data_id) ?? null;
+        $aula = Aula::find($request->aula_id) ?? null;
         $transacao = Transacao::find($request->transacao_id) ?? null;
         $turma = Turma::find($request->turma_id) ?? null;
         $user = User::find($request->user_id) ?? null;
@@ -61,7 +61,7 @@ class Substitui
         if ($matricula) $conteudo = Substitui::comDados('matricula', $matricula, $conteudo);
         if ($nucleo) $conteudo = Substitui::comDados('nucleo', $nucleo, $conteudo);
         if ($pacote) $conteudo = Substitui::comDados('pacote', $pacote, $conteudo);
-        if ($data) $conteudo = Substitui::comDados('data', $data, $conteudo);
+        if ($aula) $conteudo = Substitui::comDados('aula', $aula, $conteudo);
         if ($transacao) $conteudo = Substitui::comDados('transacao', $transacao, $conteudo);
         if ($turma) $conteudo = Substitui::comDados('turma', $turma, $conteudo);
         if ($user) $conteudo = Substitui::comDados('user', $user, $conteudo);

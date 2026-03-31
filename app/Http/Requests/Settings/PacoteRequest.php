@@ -30,8 +30,9 @@ class PacoteRequest extends FormRequest
                 'numeric',
                 'exists:turmas,id',
             ],
-            'datas' => ['array'],
-            'datas.*.dia' => ['string'],
+            'aulas' => ['array'],
+            'aulas.*.dia' => ['required', 'date_format:Y-m-d'],
+            'aulas.*.horario' => ['required', 'date_format:H:i'],
         ];
     }
 }

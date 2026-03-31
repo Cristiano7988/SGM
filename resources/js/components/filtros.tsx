@@ -77,7 +77,7 @@ export default function Filtros({ dados, tabela }: { dados: FiltrosType[], tabel
                                 {filtro.opcoes?.map((opcao: any) => <SelectItem
                                     key={opcao.id}
                                     value={opcao.id.toString()}
-                                    children={opcao.nome ?? opcao.tipo}
+                                    children={opcao.nome ?? opcao.tipo ?? opcao.dia_formatado}
                                 /> )}
                             </SelectContent>
                         </Select>

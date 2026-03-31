@@ -6,7 +6,6 @@ use App\Helpers\Filtra;
 use App\Helpers\Trata;
 use App\Models\Nucleo;
 use App\Models\Turma;
-use App\Models\Dia;
 use App\Http\Requests\Settings\TurmaRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -23,7 +22,7 @@ class TurmaController extends Controller
         try {
             extract(request()->all());
             $turmas = Turma::query();
-            $turmas->with(['aulas']);
+            $turmas->with(['pacotes']);
 
             $turmas
                 ->leftJoin('nucleos', 'turmas.nucleo_id', 'nucleos.id')
@@ -60,7 +59,6 @@ class TurmaController extends Controller
             return Inertia::render('turmas/create', [
                 'turma' => $turma,
                 'nucleos' => Nucleo::all(),
-                'dias' => Dia::all()
             ]);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
@@ -82,7 +80,6 @@ class TurmaController extends Controller
                 : $request->validated();
 
             $turma = Turma::create($data);
-            $turma->aulas()->createMany($request->aulas);
 
             salvaImagem($turma, 'turmas');
             DB::commit();
@@ -132,9 +129,8 @@ class TurmaController extends Controller
     {
         try {
             return Inertia::render('turmas/edit', [
-                'turma' => $turma->load(['aulas']),
+                'turma' => $turma->load(['pacotes']),
                 'nucleos' => Nucleo::all(),
-                'dias' => Dia::all()
             ]);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
@@ -156,8 +152,8 @@ class TurmaController extends Controller
                 : $request->validated();
 
             $turma->update($data);
-            $turma->aulas()->delete();
-            $turma->aulas()->createMany($request->aulas);
+            $turma->pacotes()->delete();
+            $turma->pacotes()->createMany($request->pacotes);
 
             salvaImagem($turma, 'turmas');
             DB::commit();
@@ -185,6 +181,7 @@ class TurmaController extends Controller
     {
         try {
             DB::beginTransaction();
+            $turma->pacotes()->delete();
             Storage::delete($turma->imagem);
             $turma->delete();
             DB::commit();

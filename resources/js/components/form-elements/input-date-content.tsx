@@ -2,15 +2,16 @@ import ErrorLabel from '../error-label';
 import { Label } from '../ui/label';
 
 interface InputTimeContentProps {
-    titulo: string;
+    titulo?: string;
     column: string;
     value: string;
+    min?: string;
     error?: string;
     clearErrors: Function;
     setData: Function;
 }
 
-export function InputDateContent({ titulo, column, value, error, clearErrors, setData }: InputTimeContentProps) {
+export function InputDateContent({ titulo, column, value, min = "", error, clearErrors, setData }: InputTimeContentProps) {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setData(column, e.target.value);
         clearErrors(column);
@@ -18,10 +19,11 @@ export function InputDateContent({ titulo, column, value, error, clearErrors, se
 
     return (
         <div className="relative flex flex-col gap-4">
-            <Label htmlFor={column} className='block font-medium text-white'>{titulo}</Label>
+            {titulo && <Label htmlFor={column} className='block font-medium text-white'>{titulo}</Label>}
             <input
                 type="date"
                 name={column}
+                min={min}
                 className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 style={{
                     colorScheme: 'light',

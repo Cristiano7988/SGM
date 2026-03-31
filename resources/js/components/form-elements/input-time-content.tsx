@@ -2,7 +2,7 @@ import ErrorLabel from '../error-label';
 import { Label } from '../ui/label';
 
 interface InputTimeContentProps {
-    titulo: string;
+    titulo?: string;
     column: string;
     value: string;
     error?: string;
@@ -11,8 +11,8 @@ interface InputTimeContentProps {
 
 export function InputTimeContent({ titulo, column, value, error, setData }: InputTimeContentProps) {
     return (
-        <div className="relative w-full flex flex-col gap-4">
-            <Label htmlFor={column} className='block font-medium text-white'>{titulo}</Label>
+        <div className="relative flex flex-col gap-4">
+            {titulo && <Label htmlFor={column} className='block font-medium text-white'>{titulo}</Label>}
             <input
                 type="time"
                 name={column}

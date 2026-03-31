@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import CarouselText from "./carousel-text";
 import { Link } from "@inertiajs/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Aula, RelacionadasATurma, Turma } from "@/types/models";
+import { Pacote, RelacionadasATurma, Turma } from "@/types/models";
 
 export default function FlipCardTurma({ turma }: { turma: Turma & RelacionadasATurma }) {
   const [flipped, setFlipped] = useState(false);
@@ -33,12 +33,12 @@ export default function FlipCardTurma({ turma }: { turma: Turma & RelacionadasAT
               <Link className="rounded-lg bg-blue-600 px-4 py-2 text-white font-medium transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" href={route('turmas.edit', { id: turma.id })} children="Editar" />
             </div>
             <div className="flex flex-col m-auto gap-2">
-              <div>
-                <strong>Aulas: </strong>
-                {turma.aulas.map((aula: Aula) => {
-                  return <p key={aula.id} ><span className="capitalize">{aula.dia.nome}</span> às {aula.horario}</p>
+              {!!turma.pacotes?.length && <div>
+                <strong>Pacotes de: </strong>
+                {turma.pacotes.map((pacote: Pacote) => {
+                  return <p key={pacote.id} >{pacote.valor_formatado}</p>
                 })}
-              </div>
+              </div>}
               <div>
                 <strong>Vagas: </strong>
                 <div className="flex flex-col m-auto bg-gray-100 dark:bg-gray-900 p-4">

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use App\Helpers\Formata;
 
 class Aluno extends Model
 {
@@ -33,9 +34,7 @@ class Aluno extends Model
 
     public function getDataDeNascimentoFormatadaAttribute()
     {
-        if (!$this->data_de_nascimento) return null;
-
-        return Carbon::parse($this->data_de_nascimento)->format('d/m/Y');
+        return Formata::data($this->data_de_nascimento);
     }
 
     public function getIdadeAttribute()

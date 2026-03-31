@@ -16,11 +16,12 @@ class Pacote extends Model
     ];
 
     protected $with = [
-        'datas'
+        'aulas'
     ];
 
     protected $appends = [
         'valor_formatado',
+        'aulas_na_semana',
         'vigencia'
     ];
 
@@ -28,11 +29,18 @@ class Pacote extends Model
     {
         return "R$ " . number_format($this->attributes['valor'], 2, ',', '.');
     }
+    
+    public function getAulasNaSemanaAttribute()
+    {
+        return $this->aulas->unique(function ($aula) {
+            return $aula->dia_da_semana;
+        })->values();
+    }
 
     public function getVigenciaAttribute()
     {
-        $inicio = $this->datas->first();
-        $fim = $this->datas->last();
+        $inicio = $this->aulas->first();
+        $fim = $this->aulas->last();
 
         if (!$inicio && !$fim) return "Indefinida";
         
@@ -46,9 +54,9 @@ class Pacote extends Model
         return $this->belongsTo(Turma::class);
     }
 
-    public function datas()
+    public function aulas()
     {
-        return $this->hasMany(Data::class);
+        return $this->hasMany(Aula::class);
     }
 
     public function matriculas()

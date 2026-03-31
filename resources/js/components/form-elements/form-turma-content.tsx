@@ -1,4 +1,4 @@
-import { Aula, FormContentProps, Turma } from "@/types/models";
+import { FormContentProps, Turma } from "@/types/models";
 import { ButtonSubmitContent } from "./button-submit-content";
 import { InputImageContent } from "./input-image-content";
 import { InputNumberContent } from "./input-number-content";
@@ -7,18 +7,12 @@ import { InputUrlContent } from "./input-url-content";
 import { SelectModelContent } from "./select-model-content";
 import { SwitchContent } from "./switch-content";
 import { TextAreaContent } from "./text-area-content";
-import { useForm } from "@inertiajs/react";
+import { Link, useForm } from "@inertiajs/react";
 import { FormProps } from "@/types";
-import { Unlink } from "lucide-react";
-import ErrorLabel from "../error-label";
-import { InputTimeContent } from "./input-time-content";
-import { useEffect, useState } from "react";
 
 export function FormTurmaContent({ initialData, endpoint, related }: FormContentProps<Turma>) {
     const { data, setData, errors, clearErrors, hasErrors, processing, post, put } = useForm<FormProps<Turma>>(initialData);
     const edit = location.pathname.includes("edit");
-    const aulaInicial = { horario: "00:00", dia_id: null};
-    const [aulas, setAulas] = useState(edit ? data.aulas : [aulaInicial]);
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -26,36 +20,6 @@ export function FormTurmaContent({ initialData, endpoint, related }: FormContent
         edit
             ? put(endpoint)
             : post(endpoint);
-    };
-
-    useEffect(() => {
-        setData("aulas", aulas);
-    }, [aulas]);
-
-    const addAula = () => setAulas([...aulas, aulaInicial]);
-
-    const removeAula = (index: number) => {
-        delete aulas[index];
-
-        setAulas(aulas.filter(Boolean));
-        clearErrors(`aulas.${index}`);
-        clearErrors("aulas");
-    };
-    
-    const updateHorario = (index: number, value: string) => {
-        aulas[index].horario = value;
-
-        setAulas(aulas);
-        clearErrors(`aulas.${index}`);
-        clearErrors("aulas");
-    };
-
-    const updateDia = (index: number, value: number) => {
-        aulas[index].dia_id = value;
-
-        setData("aulas", aulas);
-        clearErrors(`aulas.${index}`);
-        clearErrors("aulas");
     };
 
     return (
@@ -132,7 +96,6 @@ export function FormTurmaContent({ initialData, endpoint, related }: FormContent
                 />
 
                 <div className="inline-flex gap-4">
-
                     <InputTextContent
                         column="zoom_id"
                         titulo="ID"
@@ -167,41 +130,11 @@ export function FormTurmaContent({ initialData, endpoint, related }: FormContent
                 </div>
             </div>
 
-            <hr />
-
-            <h2 className="text-lg font-semibold">Aulas agendadas para esta turma</h2>
-
-            {aulas.map((aula: Aula, index: number) => (<div key={index} className="flex gap-2">
-                <SelectModelContent
-                    column="dia_id"
-                    titulo="Dia"
-                    id={aula.dia_id}
-                    array={related.dias}
-                    setData={(column: string, dia_id: number) => updateDia(index, dia_id)}
-                    error={errors[`aulas.${index}.dia_id`]}
-                />
-                <InputTimeContent
-                    column="horario"
-                    titulo="Horário"
-                    value={aula.horario}
-                    setData={(column: string, value: string) => updateHorario(index, value)}
-                    error={errors[`aulas.${index}.horario`]}
-                />
-                <div className="flex items-center gap-2 w-full">
-                    <Unlink
-                        className="cursor-pointer text-red-500 hover:text-red-700"
-                        onClick={() => removeAula(index)}
-                    />
-                </div>
-            </div>))}
-
-            {errors.aulas && <ErrorLabel error={errors.aulas} />}
-
             <div className="bg-background bottom-4 fixed flex gap-4 items-center p-4 right-4">
-                <div
-                    onClick={addAula}
+                <Link
+                    href="/pacotes/create"
                     className="cursor-pointer px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
-                    children="Adicionar aula"
+                    children="Criar pacote de aulas"
                 />
 
                 {!hasErrors && <ButtonSubmitContent

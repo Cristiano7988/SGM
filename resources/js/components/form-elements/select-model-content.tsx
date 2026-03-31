@@ -1,9 +1,10 @@
+import { Aula } from '@/types/models';
 import ErrorLabel from '../error-label';
 import { Label } from '../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 interface SelectContentProps {
-    titulo: string;
+    titulo?: string;
     column: string;
     id: number;
     array: any[];
@@ -14,8 +15,8 @@ interface SelectContentProps {
 export function SelectModelContent({ titulo, column, id, array, error, setData }: SelectContentProps) {
     return (
         <div className='flex flex-col w-full gap-4'>
-            <Label htmlFor={column} className='capitalize block font-medium text-white'>{titulo}</Label>
-            {array.length
+            {titulo && <Label htmlFor={column} className='capitalize block font-medium text-white'>{titulo}</Label>}
+            {!!array?.length
                 ? <Select
                     onValueChange={(value) => setData(column, Number(value))}
                     defaultValue={String(id)}
@@ -25,7 +26,7 @@ export function SelectModelContent({ titulo, column, id, array, error, setData }
                     </SelectTrigger>
                     <SelectContent>
                         {array.map(item => {
-                            const valor = 'valor' in item && "- " + item.valor_formatado;
+                            const valor = 'valor' in item && `${item.valor_formatado} ${item.aulas_na_semana?.map((aula: Aula) => `- ${aula.dia_da_semana} às ${aula.horario} `)}`;
                             const label = item.nome ?? item.tipo ?? item.esta ?? item.observacao;
                             const inativo = !item.ativo && 'ativo' in item;
                             const indisponivel = !item.disponivel && 'disponivel' in item;

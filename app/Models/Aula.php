@@ -3,32 +3,40 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Helpers\Formata;
+use Carbon\Carbon;
 
 class Aula extends Model
 {
     protected $fillable = [
-        'turma_id',
-        'dia_id',
+        'pacote_id',
+        'dia',
         'horario',
     ];
 
     protected $casts = [
-        'turma_id' => 'integer',
-        'dia_id' => 'integer',
+        'pacote_id' => 'integer',
+        'dia' => 'date:Y-m-d',
         'horario' => 'datetime:H:i',
     ];
 
-    protected $with = [
-        'dia'
+    protected $appends = [
+        'dia_formatado',
+        'dia_da_semana'
     ];
 
-    public function turma()
+    function getDiaFormatadoAttribute()
     {
-        return $this->belongsTo(Turma::class);
+        return Formata::data($this->dia);
     }
 
-    public function dia()
+    function getDiadaSemanaAttribute()
     {
-        return $this->belongsTo(Dia::class);
+        return Carbon::parse($this->dia)->locale('pt_BR')->translatedFormat('l');
+    }
+    
+    public function pacote()
+    {
+        return $this->belongsTo(Pacote::class);
     }
 }

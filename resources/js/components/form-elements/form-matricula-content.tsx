@@ -62,6 +62,13 @@ export function FormMatriculaContent({ initialData, endpoint, related }: FormCon
         setPacotes(pacotesFiltrados);
     }, [data.aluno_id]);
 
+    useEffect(() => {
+        if (!data.turma_id) return;
+
+        const pacotesFiltrados = related.pacotes.filter((pacote: Pacote) => data.turma_id == pacote.turma_id);
+        setPacotes(pacotesFiltrados);
+    }, [data.turma_id]);
+
     const userInicial = { id: null, pivot: { vinculo: "" }};
     const users = edit ? data.users : [userInicial];
 
@@ -110,7 +117,7 @@ export function FormMatriculaContent({ initialData, endpoint, related }: FormCon
 
             <SelectModelContent
                 column="pacote_id"
-                titulo={"Pacote"}
+                titulo={"Pacote de aulas"}
                 id={data.pacote_id}
                 array={pacotes}
                 setData={(_: any, id: number) => handleUpdate(id, related.pacotes, 'pacote_id')}

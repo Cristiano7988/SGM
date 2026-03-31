@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Data;
+use App\Models\Aula;
 use Illuminate\Database\Seeder;
 
-class DataSeeder extends Seeder
+class AulaSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,6 +14,6 @@ class DataSeeder extends Seeder
      */
     public function run()
     {
-        Data::factory()->count(3)->create();
+        Aula::factory()->count(3)->create();
     }
 }

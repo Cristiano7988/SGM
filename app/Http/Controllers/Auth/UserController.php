@@ -57,7 +57,7 @@ class UserController extends Controller
                 // Matrículas
                 ->leftJoin('matriculas', isset($transacoes_feitas_pelo_usuario) ? 'transacoes.matricula_id' : 'alunos.id', isset($transacoes_feitas_pelo_usuario) ? 'matriculas.id' : 'matriculas.aluno_id')
                 ->leftJoin('pacotes', 'matriculas.pacote_id', 'pacotes.id')
-                ->leftJoin('datas', 'datas.pacote_id', 'pacotes.id')
+                ->leftJoin('aulas', 'aulas.pacote_id', 'pacotes.id')
                 ->leftJoin('situacoes', 'matriculas.situacao_id', 'situacoes.id')
                 ->leftJoin('marcacoes', 'matriculas.marcacao_id', 'marcacoes.id')
                 // Turmas
@@ -79,7 +79,7 @@ class UserController extends Controller
             if (isset($medidas))                        $users = Filtra::resultado($users, $medidas, 'medidas.id');
             if (isset($matriculas))                     $users = Filtra::resultado($users, $matriculas, 'matriculas.id');
             if (isset($pacotes))                        $users = Filtra::resultado($users, $pacotes, 'pacotes.id');
-            if (isset($datas))                          $users = Filtra::resultado($users, $datas, 'datas.id');
+            if (isset($aulas))                          $users = Filtra::resultado($users, $aulas, 'aulas.id');
             if (isset($situacoes))                      $users = Filtra::resultado($users, $situacoes, 'situacoes.id');
             if (isset($marcacoes))                      $users = Filtra::resultado($users, $marcacoes, 'marcacoes.id');
             if (isset($turmas))                         $users = Filtra::resultado($users, $turmas, 'turmas.id');
@@ -167,15 +167,15 @@ class UserController extends Controller
                                             extract(request()->all());
                                             if ($pacotes != '*') $query->whereIn('pacotes.id', explode(',', $pacotes));
 
-                                            // Datas
-                                            if (isset($datas)) {
-                                                $query->whereNotNull('data_id');
+                                            // Aulas
+                                            if (isset($aulas)) {
+                                                $query->whereNotNull('aula_id');
 
                                                 // With
                                                 $query->with([
-                                                    'datas' => function ($query) {
+                                                    'aulas' => function ($query) {
                                                         extract(request()->all());
-                                                        if ($datas != '*') $query->whereIn('datas.id', explode(',', $datas));
+                                                        if ($aulas != '*') $query->whereIn('aulas.id', explode(',', $aulas));
                                                     }
                                                 ]);
                                             }
@@ -266,15 +266,15 @@ class UserController extends Controller
                                             extract(request()->all());
                                             if ($pacotes != '*') $query->whereIn('pacotes.id', explode(',', $pacotes));
 
-                                            // Datas
-                                            if (isset($datas)) {
-                                                $query->whereNotNull('data_id');
+                                            // Aulas
+                                            if (isset($aulas)) {
+                                                $query->whereNotNull('aula_id');
 
                                                 // With
                                                 $query->with([
-                                                    'datas' => function ($query) {
+                                                    'aulas' => function ($query) {
                                                         extract(request()->all());
-                                                        if ($datas != '*') $query->whereIn('datas.id', explode(',', $datas));
+                                                        if ($aulas != '*') $query->whereIn('aulas.id', explode(',', $aulas));
                                                     }
                                                 ]);
                                             }

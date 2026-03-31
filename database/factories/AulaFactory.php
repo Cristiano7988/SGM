@@ -3,7 +3,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class DataFactory extends Factory
+class AulaFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -12,10 +12,10 @@ class DataFactory extends Factory
      */
     public function definition()
     {
-        $dia = $this->faker->dateTimeBetween('-1 year', 'now');
-
         return [
-            'dia' => $dia,
+            'dia' => $this->faker->date('Y-m-d'),
+            'horario' => $this->faker->time('H:i'),
+            'pacote_id' => Pacote::inRandomOrder()->first()->id
         ];
     }
 }

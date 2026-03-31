@@ -35,11 +35,11 @@ export default function Index(props: IndexPropsPacote) {
         },
         {
             tipo: 'select' as const,
-            label: 'Datas',
-            nome: 'datas',
-            valor: searchParams.get('datas') ?? undefined,
-            opcoes: props.datas,
-            ativo: Boolean(searchParams.get('datas')),
+            label: 'Aulas',
+            nome: 'aulas',
+            valor: searchParams.get('aulas') ?? undefined,
+            opcoes: props.aulas,
+            ativo: Boolean(searchParams.get('aulas')),
         },
     ]
     return (

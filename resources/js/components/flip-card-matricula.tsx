@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Aluno, Matricula, RelacionadasAMatricula, User } from "@/types/models";
+import { Aluno, Aula, Matricula, RelacionadasAMatricula, User } from "@/types/models";
 import { Link } from "@inertiajs/react";
 import { Tag } from "./ui/tag";
 
@@ -32,9 +32,12 @@ export default function FlipCardMatricula({ matricula }: { matricula: Matricula 
               
               <Link className="rounded-lg bg-blue-600 px-4 py-2 text-white font-medium transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 m-auto" href={route('matriculas.edit', { id: matricula.id })} children="Editar" />
             </div>
-            <div className="flex flex-col items-center m-auto gap-2">
+            <div className="flex flex-col m-auto gap-2">
               <p><b>Aluno:</b> <Link className="tex-sm" href={`/alunos/${matricula.aluno_id}`}>{matricula.aluno?.nome}</Link></p>
               <p><b>Turma:</b> <Link className="tex-sm" href={`/turmas/${matricula.turma_id}`}>{matricula.turma?.nome}</Link></p>
+              <p><b>Dias:</b> {matricula.pacote?.aulas_na_semana.map((aula: Aula) => <p key={aula.id} className="text-sm">
+                <span className="capitalize">{aula.dia_da_semana}</span> às {aula.horario}
+              </p>)}</p>
             </div>
             <ChevronRight
               onClick={() => setFlipped(true)}

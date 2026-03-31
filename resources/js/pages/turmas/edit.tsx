@@ -11,7 +11,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Edit(props: EditPropsTurma) {
-    const { turma, dias, session, nucleos } = props;
+    const { turma, pacotes, session, nucleos } = props;
 
     const { processing, delete: deleteTurma } = useForm();
 
@@ -31,7 +31,7 @@ export default function Edit(props: EditPropsTurma) {
                 <FormTurmaContent
                     initialData={turma}
                     endpoint={route('turmas.update', turma.id)}
-                    related={{ nucleos, dias }}
+                    related={{ nucleos, pacotes }}
                 />
 
                 <form onSubmit={submit} className='mt-4'>

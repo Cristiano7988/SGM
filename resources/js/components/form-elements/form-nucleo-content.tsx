@@ -3,7 +3,7 @@ import { ButtonSubmitContent } from "./button-submit-content";
 import { InputTextContent } from "./input-text-content";
 import { SelectModelContent } from "./select-model-content";
 import { Unlink } from "lucide-react";
-import { Turma, FormContentProps, Nucleo, Pacote } from "@/types/models";
+import { Turma, FormContentProps, Nucleo } from "@/types/models";
 import { FormProps } from "@/types/index";
 import ErrorLabel from "../error-label";
 import { InputImageContent } from "./input-image-content";
@@ -45,30 +45,6 @@ export function FormNucleoContent({ initialData, endpoint, related }: FormConten
         setData("turmas", updatedTurmas);
         clearErrors(`turmas.${index}`);
         clearErrors("turmas");
-    };
-
-    const pacotes = edit ? data.pacotes : [{ id: null }];
-
-    const addPacote = () => {
-        setData("pacotes", [...pacotes, { id: null }]);
-    };
-
-    const removePacote = (index: number) => {
-        const updatedPacotes = pacotes.filter((u: any, i: number) => i !== index);
-
-        setData("pacotes", updatedPacotes);
-        clearErrors(`pacotes.${index}`);
-        clearErrors("pacotes");
-    };
-
-    const updatePacote = (index: number, id: number) => {
-        const updatedPacotes = [...pacotes];
-        const pacote = related.pacotes.find((u: Pacote) => u.id === id);
-        updatedPacotes[index] = pacote;
-
-        setData("pacotes", updatedPacotes);
-        clearErrors(`pacotes.${index}`);
-        clearErrors("pacotes");
     };
 
     return (<>
@@ -156,7 +132,6 @@ export function FormNucleoContent({ initialData, endpoint, related }: FormConten
 
                     <SelectModelContent
                         column="turma"
-                        titulo="Turma"
                         id={turma.id}
                         array={related.turmas}
                         setData={(_: any, id: number) => updateTurma(index, id)}
@@ -176,31 +151,6 @@ export function FormNucleoContent({ initialData, endpoint, related }: FormConten
 
             <hr />
 
-            <h2 className="text-lg font-semibold">Pacotes vinculados a este núcleo</h2>
-
-            {pacotes.map((pacote: Pacote, index: number) => (
-                <div key={pacote.id + index} className="flex items-center gap-2">
-
-                    <SelectModelContent
-                        column="pacote"
-                        titulo="Pacote"
-                        id={pacote.id}
-                        array={related.pacotes}
-                        setData={(_: any, id: number) => updatePacote(index, id)}
-                        error={errors[`pacotes.${index}`]}
-                    />
-
-                    {index > 0 && (
-                        <Unlink
-                            className="cursor-pointer text-red-500 hover:text-red-700"
-                            onClick={() => removePacote(index)}
-                        />
-                    )}
-                </div>
-            ))}
-
-            {errors.pacotes && <ErrorLabel error={errors.pacotes} />}
-
             <div className="bg-background bottom-4 fixed flex gap-4 items-center p-4 right-4">
                 <Link
                     href="/turmas/create"
@@ -212,18 +162,6 @@ export function FormNucleoContent({ initialData, endpoint, related }: FormConten
                     onClick={addTurma}
                     className="cursor-pointer px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
                     children="Vincular outra turma"
-                />
-
-                <Link
-                    href="/pacotes/create"
-                    className="px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
-                    children="Criar novo pacote"
-                />
-
-                <div
-                    onClick={addPacote}
-                    className="cursor-pointer px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
-                    children="Vincular outro pacote"
                 />
 
                 {!hasErrors && (

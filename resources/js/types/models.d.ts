@@ -65,7 +65,7 @@ export interface Turma {
     imagem: string;
     descricao: string;
     paragrafos_da_descricao: string[];
-    // vagas_preenchidas: number
+    vagas_preenchidas: number
     vagas_ofertadas: number,
     disponivel: boolean,
     zoom: string,
@@ -78,14 +78,17 @@ export interface Turma {
 }
 
 export interface Aula {
-    id: number,
+    id: number | null,
     horario: string,
-    dia_id: number,
-    turma_id: number
+    dia: string,
+    dia_formatado: string,
+    dia_da_semana: string,
+    pacote_id: number | null
 }
 
 export interface RelacionadasATurma {
     nucleo: Nucleo;
+    pacotes: Pacote[];
     // Para o filtro de Turma
     nucleos: Nucleo[];
 }
@@ -97,31 +100,18 @@ export interface Pacote {
     nome: string;
     ativo: boolean;
     turma_id: number | null;
+    turma: Turma;
     valor: number;
     valor_formatado: string;
-    vigencia: string
+    vigencia: string,
+    aulas_na_semana: Aula[]
 }
 
 export interface RelacionadasAoPacote {
     turma: Turma;
-    datas: Data[];
+    aulas: Aula[];
     // Para o filtro de Pacote
     turmas: Turma[];
-}
-
-// Data
-
-export interface Data {
-    id: number | null;
-    dia: string;
-    dia_formatado: string;
-    pacote_id: number | null;
-    pacote?: Pacote;
-}
-
-export interface RelacionadasAData {
-    // Para o filtro de Data
-    pacote: Pacote[];
 }
 
 // Aluno

@@ -9,7 +9,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Create(props: CreatePropsPacote) {
-    const { session, turmas, datas } = props;
+    const { session, turmas } = props;
     const initialData = {
         id: null,
         nome: '',
@@ -19,7 +19,7 @@ export default function Create(props: CreatePropsPacote) {
         ativo: false,
         turma_id: null,
         vigencia: "",
-        datas,
+        dia_da_semana: "",
         turmas
     }
 
@@ -34,7 +34,7 @@ export default function Create(props: CreatePropsPacote) {
                 <FormPacoteContent
                     initialData={initialData}
                     endpoint={route("pacotes.store")}
-                    related={{ turmas, datas }}
+                    related={{ turmas }}
                 />
             </div>
         </AppLayout>
