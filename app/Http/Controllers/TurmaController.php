@@ -152,8 +152,6 @@ class TurmaController extends Controller
                 : $request->validated();
 
             $turma->update($data);
-            $turma->pacotes()->delete();
-            $turma->pacotes()->createMany($request->pacotes);
 
             salvaImagem($turma, 'turmas');
             DB::commit();

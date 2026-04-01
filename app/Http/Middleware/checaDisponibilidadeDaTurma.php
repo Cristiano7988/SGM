@@ -21,7 +21,7 @@ class checaDisponibilidadeDaTurma
         try {
             $matricula = $request->route('matricula');
             $turma = $request->route('turma') ?? Turma::find($request->turma_id);
-            if ($matricula) $turma = $matricula->turma;
+            if ($matricula) $turma = $matricula->pacote->turma;
             $rotaDeCriacaoDaMatricula = $request->server('REQUEST_URI')  == "/api/matricula";
             $checaDisponibilidade = $rotaDeCriacaoDaMatricula || $matricula || $request->disponivel; // Considera a disponibilidade da turma no ato da matrícula, na atualização da matrícula ou caso seja requisitado
             

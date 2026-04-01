@@ -24,6 +24,10 @@ class Turma extends Model
         'nucleo_id',
     ];
 
+    protected $with = [
+        'nucleo'
+    ];
+
     protected $casts = [
         'disponivel' => 'boolean',
         'vagas_ofertadas' => 'integer',
@@ -41,7 +45,7 @@ class Turma extends Model
 
     function getVagasPreenchidasAttribute(): int
     {
-        return $this->matriculas()->count();
+        return $this->matriculas->filter(function ($m) { return !$m->vencida; })->count();
     }
 
     public static function allDisponiveis()
@@ -59,7 +63,7 @@ class Turma extends Model
 
     public function matriculas()
     {
-        return $this->hasMany(Matricula::class);
+        return $this->hasManyThrough(Matricula::class, Pacote::class);
     }
 
     public function pacotes()

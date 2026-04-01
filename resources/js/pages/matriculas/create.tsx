@@ -11,11 +11,10 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Create(props: RelacionadasAMatricula & Props) {
-    const { alunos, turmas, pacotes, situacoes, marcacoes, users, session } = props;
+    const { alunos, pacotes, situacoes, marcacoes, users, session } = props;
     const initialData: Matricula & RelacionadasAMatricula = {
         id: null,
         aluno_id: null,
-        turma_id: null,
         pacote_id: null,
         situacao_id: null,
         users: []
@@ -32,7 +31,7 @@ export default function Create(props: RelacionadasAMatricula & Props) {
                 <FormMatriculaContent
                     initialData={initialData}
                     endpoint={route("matriculas.store")}
-                    related={{ alunos, turmas, pacotes, situacoes, marcacoes, users }}
+                    related={{ alunos, pacotes, situacoes, marcacoes, users }}
                 />
             </div>
         </AppLayout>

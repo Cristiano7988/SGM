@@ -22,7 +22,8 @@ class Aula extends Model
 
     protected $appends = [
         'dia_formatado',
-        'dia_da_semana'
+        'dia_da_semana',
+        'dia_da_semana_index',
     ];
 
     function getDiaFormatadoAttribute()
@@ -33,6 +34,11 @@ class Aula extends Model
     function getDiadaSemanaAttribute()
     {
         return Carbon::parse($this->dia)->locale('pt_BR')->translatedFormat('l');
+    }
+
+    function getDiaDaSemanaIndexAttribute()
+    {
+        return Carbon::parse($this->dia)->dayOfWeek;
     }
     
     public function pacote()

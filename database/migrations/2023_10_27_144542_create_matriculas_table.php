@@ -16,7 +16,6 @@ class CreateMatriculasTable extends Migration
         Schema::create('matriculas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('aluno_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('turma_id')->constrained()->cascadeOnDelete();
             $table->foreignId('situacao_id')->nullable()->constrained('situacoes')->cascadeOnDelete();
             $table->foreignId('marcacao_id')->nullable()->downconstrained('marcacoes')->cascadeOnDelete();
             $table->foreignId('pacote_id')->constrained()->cascadeOnDelete();

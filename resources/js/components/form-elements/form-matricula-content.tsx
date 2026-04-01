@@ -1,7 +1,7 @@
 import { Link, useForm } from "@inertiajs/react";
 import { ButtonSubmitContent } from "./button-submit-content";
 import { SelectModelContent } from "./select-model-content"
-import { FormContentProps, Matricula, Aluno, Turma, Nucleo, Pacote, User } from "@/types/models";
+import { FormContentProps, Matricula, Aluno, Nucleo, Pacote, User } from "@/types/models";
 import { FormProps } from "@/types/index";
 import { useEffect, useState } from "react";
 import { Unlink } from "lucide-react";
@@ -9,7 +9,6 @@ import ErrorLabel from "../error-label";
 
 export function FormMatriculaContent({ initialData, endpoint, related }: FormContentProps<Matricula>) {
     const { data, setData, errors, clearErrors, hasErrors, processing, post, put } = useForm<FormProps<Matricula>>(initialData);
-    const [turmas, setTurmas] = useState(related.turmas);
     const [pacotes, setPacotes] = useState(related.pacotes);
     const edit = location.pathname.includes("edit");
 
@@ -28,7 +27,7 @@ export function FormMatriculaContent({ initialData, endpoint, related }: FormCon
         clearErrors(column);
     };
 
-    function checarDisponibilidadeNucleo({ nucleo }: { nucleo: Nucleo }) {
+    function checaDisponibilidadeDoNucleo({ nucleo }: { nucleo: Nucleo }) {
         const now = new Date();
         const horarioLocal = "T00:00:00";
         const inicioMatricula = new Date(nucleo.inicio_matricula + horarioLocal);
@@ -46,28 +45,25 @@ export function FormMatriculaContent({ initialData, endpoint, related }: FormCon
         return true;
     }
 
+    const filtraPacotesDeAlunosMatriculados = (pacote: Pacote) => {
+        const aluno = related.alunos.find((aluno: Aluno) => aluno.id == data.aluno_id);
+        const matricula = aluno.matriculas.find((matricula: Matricula) => matricula.pacote.turma_id == pacote.turma_id);
+
+        return !matricula;
+    }
+
     useEffect(() => {
         if (!data.aluno_id) return;
 
-        const turmasFiltradas = related.turmas.filter((turma: Turma) => checarDisponibilidadeNucleo({ nucleo: turma.nucleo }));
-        setTurmas(turmasFiltradas);
+        let pacotesFiltradas = related.pacotes.filter((pacote: Pacote) => checaDisponibilidadeDoNucleo({ nucleo: pacote.turma.nucleo }));
+        pacotesFiltradas = pacotesFiltradas.filter((pacote: Pacote) => filtraPacotesDeAlunosMatriculados(pacote));
+        setPacotes(pacotesFiltradas);
 
-        if (!turmasFiltradas.length) {
+        if (!pacotesFiltradas.length) {
             setPacotes([]);
             return;
         }
-
-        const [turma] = turmasFiltradas; 
-        const pacotesFiltrados = related.pacotes.filter((pacote: Pacote) => pacote.turma_id == turma.id);
-        setPacotes(pacotesFiltrados);
     }, [data.aluno_id]);
-
-    useEffect(() => {
-        if (!data.turma_id) return;
-
-        const pacotesFiltrados = related.pacotes.filter((pacote: Pacote) => data.turma_id == pacote.turma_id);
-        setPacotes(pacotesFiltrados);
-    }, [data.turma_id]);
 
     const userInicial = { id: null, pivot: { vinculo: "" }};
     const users = edit ? data.users : [userInicial];
@@ -104,15 +100,6 @@ export function FormMatriculaContent({ initialData, endpoint, related }: FormCon
                 array={related.alunos}
                 setData={(_: any, id: number) => handleUpdate(id, related.alunos, 'aluno_id')}
                 error={errors["aluno_id"]}
-            />
-
-            <SelectModelContent
-                column="turma_id"
-                titulo={"turma"}
-                id={data.turma_id}
-                array={turmas}
-                setData={(_: any, id: number) => handleUpdate(id, turmas, 'turma_id')}
-                error={errors["turma_id"]}
             />
 
             <SelectModelContent

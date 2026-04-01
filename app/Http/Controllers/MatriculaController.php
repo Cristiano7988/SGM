@@ -30,10 +30,9 @@ class MatriculaController extends Controller
 
             $matriculas->with([
                 'aluno',
-                'turma',
                 'situacao',
                 'marcacao',
-                'pacote',
+                'pacote.turma',
                 'users'
             ]);
 
@@ -41,7 +40,6 @@ class MatriculaController extends Controller
                 ->leftJoin('situacoes', 'matriculas.situacao_id', 'situacoes.id')
                 ->leftJoin('marcacoes', 'matriculas.marcacao_id', 'marcacoes.id')
                 ->leftJoin('alunos', 'matriculas.aluno_id', 'alunos.id')
-                ->leftJoin('turmas', 'matriculas.turma_id', 'turmas.id')
                 ->leftJoin('pacotes', 'matriculas.pacote_id', 'pacotes.id')
                 ->select(['matriculas.*', 'alunos.nome'])->groupBy('matriculas.id');
 
@@ -52,13 +50,11 @@ class MatriculaController extends Controller
             if (isset($situacoes)) $matriculas = Filtra::resultado($matriculas, $situacoes, 'situacoes.id')->with('situacao');
             if (isset($marcacoes)) $matriculas = Filtra::resultado($matriculas, $marcacoes, 'marcacoes.id')->with('marcacao');
             if (isset($alunos)) $matriculas = Filtra::resultado($matriculas, $alunos, 'alunos.id')->with('aluno');
-            if (isset($turmas)) $matriculas = Filtra::resultado($matriculas, $turmas, 'turmas.id')->with('turma');
             if (isset($pacotes)) $matriculas = Filtra::resultado($matriculas, $pacotes, 'pacotes.id')->with('pacote');
 
             $pagination = Trata::resultado($matriculas, 'alunos.nome'); // Ordenação por situação, marcação, aluno, turma ou pacote.
 
             $alunos = $user && $user->is_admin ? Aluno::all() : $user->alunos;
-            $turmas = $user && $user->is_admin ? Turma::all() : $user->alunos->flatMap->matriculas->flatMap->turma->unique('id');
             $situacoes = $user && $user->is_admin ? Situacao::all() : $user->alunos->flatMap->matriculas->flatMap->situacao->unique('id');
             $pacotes = $user && $user->is_admin ? Pacote::all() : $user->alunos->flatMap->matriculas->flatMap->pacote->unique('id');
 
@@ -66,7 +62,6 @@ class MatriculaController extends Controller
                 ? Inertia::render('matriculas/index', [
                     'pagination' => $pagination,
                     'alunos' => $alunos,
-                    'turmas' => $turmas,
                     'situacoes' => $situacoes,
                     'pacotes' => $pacotes,
                 ])
@@ -89,13 +84,11 @@ class MatriculaController extends Controller
         $isAdmin = $user && $user->is_admin; 
 
         $alunos = $isAdmin
-            ? Aluno::all()
+            ? Aluno::with(['matriculas.pacote'])->orderBy('nome')->get()
             : $user->alunos;
 
-        $turmas = Turma::allDisponiveis()->load(['nucleo']);
-
         $pacotes = $isAdmin
-            ? Pacote::all()->load(['turma'])
+            ? Pacote::disponiveis()
             : Pacote::where('ativo', true)->get()->load(['turma']);
 
         $situacoes = Situacao::all();
@@ -108,7 +101,6 @@ class MatriculaController extends Controller
 
         return Inertia::render('matriculas/create', [
             'alunos' => $alunos,
-            'turmas' => $turmas,
             'pacotes' => $pacotes,
             'situacoes' => $situacoes,
             'marcacoes' => $marcacoes,
@@ -140,7 +132,7 @@ class MatriculaController extends Controller
             $matricula = Matricula::create($request->validated());
             if ($request->users) $matricula->users()->sync($request->users);
 
-            $mensagem = "Matrícula do {$matricula->aluno->nome} na turma {$matricula->turma->nome} criada.";
+            $mensagem = "Matrícula do {$matricula->aluno->nome} na turma {$matricula->pacote->turma->nome} criada.";
 
             return isWeb()
                 ? redirect()->route("matriculas.index")->with("success", $mensagem)
@@ -178,13 +170,11 @@ class MatriculaController extends Controller
             $isAdmin = $user && $user->is_admin; 
 
             $alunos = $isAdmin
-                ? Aluno::all()
+                ? Aluno::with(['matriculas.pacote'])->get()
                 : $user->alunos;
 
-            $turmas = Turma::all()->load(['nucleo']);
-
             $pacotes = $isAdmin
-                ? Pacote::all()->load(['turma'])
+                ? Pacote::disponiveis()
                 : Pacote::where('ativo', true)->get()->load(['turma']);
 
             $situacoes = Situacao::all();
@@ -198,7 +188,6 @@ class MatriculaController extends Controller
             return Inertia::render('matriculas/edit', [
                 'matricula' => $matricula->load(['users']),
                 'alunos' => $alunos,
-                'turmas' => $turmas,
                 'pacotes' => $pacotes,
                 'situacoes' => $situacoes,
                 'marcacoes' => $marcacoes,
@@ -218,11 +207,11 @@ class MatriculaController extends Controller
     {
         try {
             $matricula->update($request->validated());
-            $matricula->turma->vagas_preenchidas = $matricula->turma->matriculas()->count();
-            $matricula->turma->save();
+            $matricula->pacote->turma->vagas_preenchidas = $matricula->pacote->turma->matriculas()->count();
+            $matricula->pacote->turma->save();
             $matricula->users()->sync($request->users);
 
-            $mensagem = "Matrícula do {$matricula->aluno->nome} na turma {$matricula->turma->nome} editada.";
+            $mensagem = "Matrícula do {$matricula->aluno->nome} na turma {$matricula->pacote->turma->nome} editada.";
             
             return isWeb()
                 ? redirect()->route("matriculas.index")->with("success", $mensagem)

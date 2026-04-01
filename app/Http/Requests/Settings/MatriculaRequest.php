@@ -28,11 +28,6 @@ class MatriculaRequest extends FormRequest
                 'required',
                 'exists:alunos,id'
             ],
-            'turma_id' => [
-                'integer',
-                'required',
-                'exists:turmas,id'
-            ],
             'pacote_id' => [
                 'integer',
                 'required',

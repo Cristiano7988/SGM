@@ -11,7 +11,6 @@ class Matricula extends Model
 
     protected $fillable = [
         'aluno_id',
-        'turma_id',
         'situacao_id',
         'marcacao_id',
         'pacote_id',
@@ -21,14 +20,19 @@ class Matricula extends Model
         'users'
     ];
 
+    protected $appends = [
+        'vencida'
+    ];
+
+    public function getVencidaAttribute():bool
+    {
+        return $this->pacote->vencido ;
+    }
+
+
     public function aluno()
     {
         return $this->belongsTo(Aluno::class);
-    }
-
-    public function turma()
-    {
-        return $this->belongsTo(Turma::class);
     }
 
     public function marcacao()

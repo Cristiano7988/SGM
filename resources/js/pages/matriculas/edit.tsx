@@ -12,7 +12,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Edit(props: RelacionadasAMatricula & Props & { matricula: Matricula }) {
-    const { matricula, alunos, turmas, pacotes, situacoes, marcacoes, users, session } = props;
+    const { matricula, alunos, pacotes, situacoes, marcacoes, users, session } = props;
     const { processing, delete: deleteMatricula } = useForm();
 
     const submit = (e: React.FormEvent) => {
@@ -31,7 +31,7 @@ export default function Edit(props: RelacionadasAMatricula & Props & { matricula
                 <FormMatriculaContent
                     initialData={matricula}
                     endpoint={route("matriculas.update", matricula.id)}
-                    related={{ alunos, turmas, pacotes, situacoes, marcacoes, users }}
+                    related={{ alunos, pacotes, situacoes, marcacoes, users }}
                 />
 
                 <form onSubmit={submit} className='mt-4'>

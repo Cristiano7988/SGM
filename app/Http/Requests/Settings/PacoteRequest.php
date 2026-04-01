@@ -31,7 +31,7 @@ class PacoteRequest extends FormRequest
                 'exists:turmas,id',
             ],
             'aulas' => ['array'],
-            'aulas.*.dia' => ['required', 'date_format:Y-m-d'],
+            'aulas.*.dia' => ['required', 'date_format:Y-m-d', 'after_or_equal:today'],
             'aulas.*.horario' => ['required', 'date_format:H:i'],
         ];
     }

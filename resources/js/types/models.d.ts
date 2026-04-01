@@ -130,11 +130,12 @@ export interface RelacionadasAoAluno {
 }
 
 export interface Matricula {
-    id: number;
-    aluno_id: number;
-    turma_id: number;
-    pacote_id: number;
-    situacao_id: number;
+    id: number | null;
+    aluno_id: number | null;
+    turma_id: number | null;
+    pacote_id: number | null;
+    situacao_id: number | null;
+    vencida: bool;
 }
 
 export interface RelacionadasAMatricula {

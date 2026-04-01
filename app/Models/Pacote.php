@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Pacote extends Model
 {
@@ -22,7 +23,11 @@ class Pacote extends Model
     protected $appends = [
         'valor_formatado',
         'aulas_na_semana',
-        'vigencia'
+        'aulas_na_semana_index',
+        'vigencia',
+        'vencido',
+        'vagas_preenchidas',
+        'total_de_aulas'
     ];
 
     public function getValorFormatadoAttribute()
@@ -37,6 +42,11 @@ class Pacote extends Model
         })->values();
     }
 
+    public function getAulasNaSemanaIndexAttribute()
+    {
+        return $this->aulas->min('dia_da_semana_index');
+    }
+
     public function getVigenciaAttribute()
     {
         $inicio = $this->aulas->first();
@@ -47,6 +57,36 @@ class Pacote extends Model
         if ($inicio == $fim) return $inicio->dia_formatado;
     
         return "De {$inicio->dia_formatado} até {$fim->dia_formatado}";
+    }
+
+    public function getVencidoAttribute():bool
+    {
+        $fim = $this->aulas->sortBy('dia')->last();
+        if (!$fim) return false;
+
+        return Carbon::parse($fim->dia)->isPast();
+    }
+
+    function getVagasPreenchidasAttribute(): int
+    {
+        return $this->matriculas()->count();
+    }
+
+    function getTotalDeAulasAttribute(): int
+    {
+        return $this->aulas()->count();
+    }
+
+    public static function disponiveis()
+    {
+        return Pacote::has('aulas')
+            ->with('turma')
+            ->get()
+            ->filter(function ($pacote) {
+                return $pacote->turma->vagas_preenchidas < $pacote->turma->vagas_ofertadas;
+            })
+            ->sortBy('aulas_na_semana_index')
+            ->values();
     }
 
     public function turma()

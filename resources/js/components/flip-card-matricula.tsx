@@ -24,8 +24,8 @@ export default function FlipCardMatricula({ matricula }: { matricula: Matricula 
             <div className="flex flex-col gap-4">
               <figure className="m-auto w-24 h-24 rounded-full overflow-hidden border border-gray-300">
                 <img
-                  src={matricula.turma?.imagem}
-                  alt={matricula.turma?.nome}
+                  src={matricula.pacote?.turma?.imagem}
+                  alt={matricula.pacote?.turma?.nome}
                   className="w-full h-full object-cover"
                 />
               </figure>
@@ -34,10 +34,11 @@ export default function FlipCardMatricula({ matricula }: { matricula: Matricula 
             </div>
             <div className="flex flex-col m-auto gap-2">
               <p><b>Aluno:</b> <Link className="tex-sm" href={`/alunos/${matricula.aluno_id}`}>{matricula.aluno?.nome}</Link></p>
-              <p><b>Turma:</b> <Link className="tex-sm" href={`/turmas/${matricula.turma_id}`}>{matricula.turma?.nome}</Link></p>
+              <p><b>Turma:</b> <Link className="tex-sm" href={`/turmas/${matricula.pacote?.turma_id}`}>{matricula.pacote?.turma?.nome}</Link></p>
               <p><b>Dias:</b> {matricula.pacote?.aulas_na_semana.map((aula: Aula) => <p key={aula.id} className="text-sm">
                 <span className="capitalize">{aula.dia_da_semana}</span> às {aula.horario}
               </p>)}</p>
+              {matricula.vencida && <p>Rematricular</p>}
             </div>
             <ChevronRight
               onClick={() => setFlipped(true)}
