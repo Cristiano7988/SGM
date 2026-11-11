@@ -106,7 +106,7 @@ export function FormMatriculaContent({ initialData, endpoint, related }: FormCon
                 column="pacote_id"
                 titulo={"Pacote de aulas"}
                 id={data.pacote_id}
-                array={pacotes}
+                array={related.pacotes}
                 setData={(_: any, id: number) => handleUpdate(id, related.pacotes, 'pacote_id')}
                 error={errors["pacote_id"]}
             />
@@ -129,9 +129,9 @@ export function FormMatriculaContent({ initialData, endpoint, related }: FormCon
                 error={errors["situacao_id"]}
             />
             
-            <hr />
+            {!!users.length && <hr />}
 
-            <h2 className="text-lg font-semibold">Usuários que acompanharão o aluno</h2>
+            {!!users.length && <h2 className="text-lg font-semibold">Usuários que acompanharão o aluno</h2>}
 
             {users.map((user: User, index: number) => (<div key={index + user.id} className="flex gap-2">
                 <div className="flex items-center gap-2 w-full">

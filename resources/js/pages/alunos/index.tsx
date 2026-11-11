@@ -45,7 +45,7 @@ export default function Index(props: IndexProps<Aluno & RelacionadasAoAluno>) {
                 <Filtros dados={filtros} tabela="alunos" />
 
                 {pagination.data.length
-                    ? <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+                    ? <div className="flex flex-wrap justify-between gap-4">
                         {pagination.data.map((aluno) => <FlipCardAluno key={aluno.id} aluno={aluno} />)}
                     </div>
                     : <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex flex-col justify-center items-center overflow-hidden rounded-xl border md:min-h-min">

@@ -60,10 +60,6 @@ class UserController extends Controller
                 ->leftJoin('aulas', 'aulas.pacote_id', 'pacotes.id')
                 ->leftJoin('situacoes', 'matriculas.situacao_id', 'situacoes.id')
                 ->leftJoin('marcacoes', 'matriculas.marcacao_id', 'marcacoes.id')
-                // Turmas
-                ->leftJoin('turmas', 'matriculas.turma_id', 'turmas.id')
-                // Núcleos
-                ->leftJoin('nucleos', 'turmas.nucleo_id', 'nucleos.id')
                 ->select(['users.*'])->groupBy('users.id');
 
             // Aqui é estabelecido que o usuário poderá acessar apenas informações relacionadas ao aluno ao qual está associado
@@ -334,7 +330,7 @@ class UserController extends Controller
                 ? Inertia::render('users/index', [
                     'pagination' => $pagination,
                     'emails' => $user->is_admin ? User::select('emails.id', 'emails.assunto')->join('email_user', 'users.id', 'email_user.user_id')->join('emails', 'email_user.email_id', 'emails.id')->groupBy('emails.id')->get() : $user->emails,
-                    'alunos' => $user->alunos,
+                    'alunos' => $user && $user->is_admin ? Aluno::all() : $user->alunos,
                 ])
                 : response($users);
         } catch(\Throwable $th) {

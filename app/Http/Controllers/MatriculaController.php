@@ -57,13 +57,17 @@ class MatriculaController extends Controller
             $alunos = $user && $user->is_admin ? Aluno::all() : $user->alunos;
             $situacoes = $user && $user->is_admin ? Situacao::all() : $user->alunos->flatMap->matriculas->flatMap->situacao->unique('id');
             $pacotes = $user && $user->is_admin ? Pacote::all() : $user->alunos->flatMap->matriculas->flatMap->pacote->unique('id');
+            $turmas = $user && $user->is_admin ? Turma::all() : $user->alunos->flatMap->matriculas->flatMap->pacote->flatMap->turma->unique('id');
+            $marcacoes = $user && $user->is_admin ? Marcacao::all() : $user->alunos->flatMap->matriculas->flatMap->marcacao->unique('id');
 
             return isWeb()
                 ? Inertia::render('matriculas/index', [
                     'pagination' => $pagination,
                     'alunos' => $alunos,
-                    'situacoes' => $situacoes,
+                    'turmas' => $turmas,
                     'pacotes' => $pacotes,
+                    'situacoes' => $situacoes,
+                    'marcacoes' => $marcacoes,
                 ])
                 : response($matriculas);
         } catch (\Throwable $th) {
