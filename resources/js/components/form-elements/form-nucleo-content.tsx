@@ -12,15 +12,20 @@ import { InputDateContent } from "./input-date-content";
 import IdadeInputToggle from "../idade-input-toggle";
 
 export function FormNucleoContent({ initialData, endpoint, related }: FormContentProps<Nucleo>) {
-    const { data, setData, errors, clearErrors, hasErrors, processing, post, put } = useForm<FormProps<Nucleo>>(initialData);
+    const { data, setData, errors, clearErrors, hasErrors, processing, post, transform } = useForm<FormProps<Nucleo>>(initialData);
     const edit = location.pathname.includes("edit");
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        edit
-            ? put(endpoint)
-            : post(endpoint);
+        if (edit) {
+            transform((data) => ({
+                ...data,
+                _method: 'PUT',
+            }));
+        }
+        
+        post(endpoint);
     };
 
     const turmas = edit ? data.turmas : [{ id: null }];

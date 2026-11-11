@@ -11,15 +11,20 @@ import { Link, useForm } from "@inertiajs/react";
 import { FormProps } from "@/types";
 
 export function FormTurmaContent({ initialData, endpoint, related }: FormContentProps<Turma>) {
-    const { data, setData, errors, clearErrors, hasErrors, processing, post, put } = useForm<FormProps<Turma>>(initialData);
+    const { data, setData, errors, clearErrors, hasErrors, processing, post, transform } = useForm<FormProps<Turma>>(initialData);
     const edit = location.pathname.includes("edit");
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        edit
-            ? put(endpoint)
-            : post(endpoint);
+        if (edit) {
+            transform((data) => ({
+                ...data,
+                _method: 'PUT',
+            }));
+        }
+        
+        post(endpoint);
     };
 
     return (
