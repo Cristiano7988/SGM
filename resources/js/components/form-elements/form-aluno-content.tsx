@@ -76,9 +76,9 @@ export function FormAlunoContent({ initialData, endpoint, related }: FormContent
                 />
             </div>
 
-            <hr />
+            {!!users.length && <hr />}
 
-            <h2 className="text-lg font-semibold">Usuários vinculados a este aluno</h2>
+            {!!users.length && <h2 className="text-lg font-semibold">Usuários vinculados a este aluno</h2>}
 
             {users.map((user: User, index: number) => (<div key={index + user.id} className="flex gap-2">
                 <div className="flex items-center gap-2 w-full">

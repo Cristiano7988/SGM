@@ -128,9 +128,9 @@ export function FormNucleoContent({ initialData, endpoint, related }: FormConten
                 </div>
             </div>
 
-            <hr />
+            {!!turmas.length && <hr />}
 
-            <h2 className="text-lg font-semibold">Turmas vinculados a este núcleo</h2>
+            {!!turmas.length && <h2 className="text-lg font-semibold">Turmas vinculados a este núcleo</h2>}
 
             {turmas.map((turma: Turma, index: number) => (
                 <div key={index + turma.id} className="flex items-center gap-2">

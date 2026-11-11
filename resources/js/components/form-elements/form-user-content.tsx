@@ -215,9 +215,9 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
                 </div>
             </div>
 
-            <hr />
+            {!!alunos.length && <hr />}
 
-            <h2 className="text-lg font-semibold">Alunos vinculados a este usuário</h2>
+            {!!alunos.length && <h2 className="text-lg font-semibold">Alunos vinculados a este usuário</h2>}
 
             {alunos.map((aluno: Aluno, index: number) => (<div key={index + aluno.id} className="flex gap-2">
                 <div className="flex items-center gap-2 w-full">
