@@ -26,14 +26,6 @@ class User extends Authenticatable
         'vinculo',
         'whatsapp',
         'instagram',
-        'cep',
-        'pais',
-        'estado',
-        'cidade',
-        'bairro',
-        'logradouro',
-        'numero',
-        'complemento'
     ];
 
     protected $with = [

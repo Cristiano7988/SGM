@@ -24,7 +24,10 @@ export default function FlipCardAluno({ aluno }: { aluno: Aluno & RelacionadasAo
             <div className="flex flex-col items-center m-auto gap-4">
               <b>{aluno.nome}</b>
               <b>{aluno.idade}</b>
-              <Link className="rounded-lg bg-blue-600 px-4 py-2 text-white font-medium transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" href={route('alunos.edit', { id: aluno.id })} children="Editar" />
+              <div className="flex gap-2">
+                <Link className="rounded-lg bg-blue-600 px-4 py-2 text-white font-medium transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" href={route('alunos.show', { id: aluno.id })}  children="Ver" />
+                <Link className="rounded-lg bg-blue-600 px-4 py-2 text-white font-medium transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" href={route('alunos.edit', { id: aluno.id })}  children="Editar" />
+              </div>
             </div>
             <ChevronRight
               onClick={() => setFlipped(true)}

@@ -25,7 +25,10 @@ export default function FlipCardUser({ user }: { user: User & RelacionadasAoUser
               <b>{user.nome}</b>
               <b>{user.email}</b>
               <b>{user.whatsapp}</b>
-              <Link className="rounded-lg bg-blue-600 px-4 py-2 text-white font-medium transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" href={route('users.edit', { id: user.id })} children="Editar" />
+              <div className="flex gap-2">
+                <Link className="rounded-lg bg-blue-600 px-4 py-2 text-white font-medium transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" href={route('users.show', { id: user.id })} children="Ver" />
+                <Link className="rounded-lg bg-blue-600 px-4 py-2 text-white font-medium transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500" href={route('users.edit', { id: user.id })} children="Editar" />
+              </div>
             </div>
             <ChevronRight
               onClick={() => setFlipped(true)}
@@ -45,8 +48,8 @@ export default function FlipCardUser({ user }: { user: User & RelacionadasAoUser
           />
           <p><b>Alunos:</b></p>
           <div className="flex flex-col gap-1">
-            {user.alunos.map((aluno: Aluno) => {
-              const matricula = user.matriculas?.find((matricula) => matricula.aluno_id == aluno.id);
+            {user.alunos?.map((aluno: Aluno) => {
+              const matricula = aluno.matriculas?.find((matricula) => matricula.aluno_id == aluno.id);
               return <div key={aluno.id} className="flex items-center gap-1"><Link className="text-sm" href={route('alunos.show', { id: aluno.id })}>
                 {aluno.nome}
               </Link>

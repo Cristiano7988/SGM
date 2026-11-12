@@ -27,6 +27,14 @@ export default function Index(props: IndexProps<Aluno & RelacionadasAoAluno>) {
         },
         {
             tipo: 'select' as const,
+            label: 'Endereços',
+            nome: 'enderecos',
+            valor: searchParams.get('enderecos') ?? undefined,
+            opcoes: props.enderecos,
+            ativo: Boolean(searchParams.get('enderecos')),
+        },
+        {
+            tipo: 'select' as const,
             label: 'Usuários',
             nome: 'users',
             valor: searchParams.get('users') ?? undefined,

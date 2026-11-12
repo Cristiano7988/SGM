@@ -34,6 +34,19 @@ export default function Show(props: any) {
                     <p>Nenhum usuário vinculado.</p>
                 )}
 
+                <hr />
+
+                <h2 className='text-lg font-bold'>Endereços Vinculados</h2>
+                {!!aluno.enderecos.length ? (
+                    <ul className='list-disc list-inside'>
+                        {aluno.enderecos.map((endereco: any) => (
+                            <li key={endereco.id}>{endereco.logradouro}, {endereco.numero} - {endereco.bairro}, {endereco.cidade}/{endereco.estado}, {endereco.cep} - {endereco.pais}</li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>Nenhum endereço vinculado.</p>
+                )}
+
             </div>
         </AppLayout>
     );

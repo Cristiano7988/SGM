@@ -13,6 +13,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function Create(props: { session: any, alunos: Aluno[] }) {
     const { session, alunos } = props;
     const initialData: User & RelacionadasAoUser = {
+        id: 0,
         nome: '',
         email: '',
         email_nf: '',
@@ -20,14 +21,8 @@ export default function Create(props: { session: any, alunos: Aluno[] }) {
         cnpj: '',
         whatsapp: '',
         instagram: '',
-        cep: '',
-        pais: '',
-        estado: '',
-        cidade: '',
-        bairro: '',
-        logradouro: '',
-        numero: undefined,
-        complemento: '',
+        matriculas: [],
+        pivot: { id: 0, user_id: 0, aluno_id: 0, vinculo: '' },
         alunos: []
     };
 

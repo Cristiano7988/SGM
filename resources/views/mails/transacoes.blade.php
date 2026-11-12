@@ -131,17 +131,6 @@
                                                                                             @if ($transacao->valor_pago) <strong>Valor</strong>: {{$transacao->valor_pago}}<br> @endif
                                                                                             @if ($transacao->data_de_pagamento) <strong>Data de pagamento</strong>: {{ App\Helpers\Formata::data($transacao->data_de_pagamento)}}<br> @endif
                                                                                             @if ($transacao->vigencia_do_pacote) <strong>Vigência</strong>: {{$transacao->vigencia_do_pacote}}<br> @endif
-                                                                                            <hr />
-                                                                                            @if ($transacao->user)
-                                                                                                @if ($transacao->user->logradouro) <strong>Endereço</strong>: {{$transacao->user->logradouro}}<br> @endif
-                                                                                                @if ($transacao->user->numero) <strong>Número</strong>: {{$transacao->user->numero}}<br> @endif
-                                                                                                @if ($transacao->user->complemento) <strong>Complemento</strong>: {{$transacao->user->complemento}}<br> @endif
-                                                                                                @if ($transacao->user->cep) <strong>CEP</strong>: {{$transacao->user->cep}}<br> @endif
-                                                                                                @if ($transacao->user->cidade) <strong>Bairro</strong>: {{$transacao->user->cidade}}<br> @endif
-                                                                                                @if ($transacao->user->bairro) <strong>Cidade</strong>: {{$transacao->user->bairro}}<br> @endif
-                                                                                                @if ($transacao->user->estado) <strong>Estado</strong>: {{$transacao->user->estado}}<br> @endif
-                                                                                                @if ($transacao->user->pais) <strong>Pais</strong>: {{$transacao->user->pais}}<br> @endif
-                                                                                            @endif
                                                                                         </p>
                                                                                     </td>
                                                                                 </tr>

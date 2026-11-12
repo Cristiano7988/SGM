@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AlunoController;
+use App\Http\Controllers\EnderecoController;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\NucleoController;
 use App\Http\Controllers\PacoteController;
@@ -37,6 +38,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('pacotes', PacoteController::class)->only(['index', 'show']);
     Route::resource('matriculas', MatriculaController::class)->only(['index', 'create', 'store', 'show']);
     Route::resource('alunos', AlunoController::class);
+    Route::resource('enderecos', EnderecoController::class);
     Route::resource('users', UserController::class);
 });
 

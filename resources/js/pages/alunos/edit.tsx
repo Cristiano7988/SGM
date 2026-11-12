@@ -1,7 +1,7 @@
 import { Head, useForm } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
-import { Aluno, Matricula, RelacionadasAoAluno, User } from '@/types/models';
+import { Aluno, Matricula, RelacionadasAoAluno, User, Endereco } from '@/types/models';
 import Session from '@/components/session';
 import { FormAlunoContent } from '@/components/form-elements/form-aluno-content';
 import { ButtonSubmitContent } from '@/components/form-elements/button-submit-content';
@@ -11,8 +11,8 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Editar Aluno', href: '#' },
 ];
 
-export default function Edit(props: { session: any, aluno: Aluno & RelacionadasAoAluno, users: User[], matriculas: Matricula[] }) {
-    const { session, aluno, users, matriculas } = props;
+export default function Edit(props: { session: any, aluno: Aluno & RelacionadasAoAluno, users: User[], matriculas: Matricula[], enderecos: Endereco[] }) {
+    const { session, aluno, users, matriculas, enderecos } = props;
     const { processing, delete: deleteAluno } = useForm();
 
     const submit = (e: React.FormEvent) => {
@@ -31,7 +31,7 @@ export default function Edit(props: { session: any, aluno: Aluno & RelacionadasA
                 <FormAlunoContent
                     initialData={aluno}
                     endpoint={route("alunos.update", aluno.id)}
-                    related={{ users, matriculas }}
+                    related={{ users, matriculas, enderecos }}
                 />
 
                 <form onSubmit={submit} className='mt-4'>

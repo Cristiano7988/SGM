@@ -9,15 +9,21 @@ export interface User {
     cnpj: string;
     whatsapp: string;
     instagram: string;
+    pivot: AlunoUser
+    matriculas?: Matricula[];
+}
+
+export interface Endereco {
+    id: number;
     cep: string;
     pais: string;
     estado: string;
     cidade: string;
     bairro: string;
     logradouro: string;
-    numero: number | undefined;
+    numero: string;
     complemento: string;
-    pivot: AlunoUser
+    alunos?: Aluno[];
 }
 
 export interface AlunoUser {
@@ -122,6 +128,7 @@ export interface Aluno {
     data_de_nascimento_formatada: string;
     idade: string
     pivot: AlunoUser
+    matriculas: Matricula[];
 }
 
 export interface RelacionadasAoAluno {
@@ -135,7 +142,7 @@ export interface Matricula {
     turma_id: number | null;
     pacote_id: number | null;
     situacao_id: number | null;
-    vencida: bool;
+    vencida: boolean;
 }
 
 export interface RelacionadasAMatricula {

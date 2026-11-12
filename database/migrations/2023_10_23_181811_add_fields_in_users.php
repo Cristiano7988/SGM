@@ -19,14 +19,6 @@ class AddFieldsInUsers extends Migration
             $table->string('cnpj')->unique()->nullable();
             $table->string('whatsapp')->unique()->nullable();
             $table->string('instagram')->unique()->nullable();
-            $table->string('cep')->nullable();
-            $table->string('pais')->nullable();
-            $table->string('estado')->nullable();
-            $table->string('cidade')->nullable();
-            $table->string('bairro')->nullable();
-            $table->string('logradouro')->nullable();
-            $table->integer('numero')->nullable();
-            $table->string('complemento')->nullable();
         });
     }
 

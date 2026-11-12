@@ -78,6 +78,11 @@ class Aluno extends Model
         return $this->belongsToMany(User::class)->withPivot('vinculo')->withTimestamps();
     }
 
+    public function enderecos()
+    {
+        return $this->belongsToMany(Endereco::class)->withTimestamps();
+    }
+
     public function matriculas()
     {
         return $this->hasMany(Matricula::class);

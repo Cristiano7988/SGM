@@ -6,6 +6,7 @@ use App\Helpers\Trata;
 use App\Models\Aluno;
 use App\Models\User;
 use App\Models\Matricula;
+use App\Models\Endereco;
 use App\Http\Requests\Settings\AlunoRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -49,6 +50,7 @@ class AlunoController extends Controller
                     'pagination' => $pagination,
                     'users' => $user && $user->is_admin ? User::all() : $user->alunos->flatMap->users->unique('id'),
                     'matriculas' => $user && $user->is_admin ? Matricula::all() : $user->alunos->flatMap->matriculas->unique('id'),
+                    'enderecos' => $user && $user->is_admin ? Endereco::all() : $user->alunos->flatMap->enderecos->unique('id'),
                 ])
                 : response($pagination);
         } catch (\Throwable $th) {
@@ -110,9 +112,9 @@ class AlunoController extends Controller
         try {
             return isWeb()
                 ? Inertia::render('alunos/show', [
-                    'aluno' => $aluno->load(['users', 'matriculas']),
+                    'aluno' => $aluno->load(['users', 'matriculas', 'enderecos']),
                 ])
-                : response($aluno->load(['users', 'matriculas']));
+                : response($aluno->load(['users', 'matriculas', 'enderecos']));
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
             return isWeb()
@@ -143,6 +145,7 @@ class AlunoController extends Controller
                 'aluno' => $aluno->load(['users', 'matriculas']),
                 'users' => $users,
                 'matriculas' => $matriculas,
+                'enderecos' => $aluno->enderecos,
             ]);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
