@@ -28,7 +28,9 @@ export function SelectModelContent({ titulo, column, id, array, error, setData }
                         {array.map(item => {
                             const aulas_na_semana = item.aulas_na_semana?.map((aula: Aula) => `- ${aula.dia_da_semana} às ${aula.horario} `);
                             const plural = item.total_de_aulas !== 1 ? 'aulas' : 'aula';
-                            const valor = 'valor' in item && `${item.valor_formatado} (${item.total_de_aulas} ${plural}) ${aulas_na_semana} - ${item.turma?.nome}`;
+                            const valor = titulo?.toLowerCase().includes('pacote')
+                                ? 'valor' in item && `${item.valor_formatado} (${item.total_de_aulas} ${plural}) ${aulas_na_semana} - ${item.turma?.nome}`
+                                : 'valor' in item && `- Valor da aula: ${item.valor_formatado}`;
                             const label = item.nome ?? item.tipo ?? item.esta ?? item.observacao;
                             const inativo = !item.ativo && 'ativo' in item;
                             const indisponivel = !item.disponivel && 'disponivel' in item;

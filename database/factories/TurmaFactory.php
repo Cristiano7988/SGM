@@ -24,6 +24,7 @@ class TurmaFactory extends Factory
         return [
             'nome' => $this->faker->name(),
             'descricao' => implode("\n\n", $this->faker->paragraphs(3)),
+            'valor' => $this->faker->randomFloat(2, 0, 100),
             'imagem' => 'https://random.dog/' . $imageName,
             'vagas_ofertadas' => $vagasOfertadas,
             'disponivel' => $this->faker->boolean(),

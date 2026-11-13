@@ -52,6 +52,15 @@ export function FormTurmaContent({ initialData, endpoint, related }: FormContent
                 error={errors.descricao}
             />
 
+            <InputNumberContent
+                column="valor"
+                titulo="Valor da aula"
+                value={data.valor}
+                setData={setData}
+                error={errors.valor}
+                clearErrors={clearErrors}
+            />
+
             <div className="flex gap-4">
                 <SelectModelContent
                     column="nucleo_id"

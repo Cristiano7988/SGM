@@ -1,6 +1,5 @@
 import { useForm } from "@inertiajs/react";
 import { ButtonSubmitContent } from "./button-submit-content";
-import { InputNumberContent } from "./input-number-content";
 import { InputTextContent } from "./input-text-content";
 import { SelectModelContent } from "./select-model-content";
 import { SwitchContent } from "./switch-content";
@@ -71,17 +70,6 @@ export function FormPacoteContent({ initialData, endpoint, related }: FormConten
                     setData={setData}
                     error={errors.nome}
                     clearErrors={clearErrors}
-                />
-
-                <InputNumberContent
-                    titulo='Valor'
-                    column='valor'
-                    value={dataForm.valor}
-                    setData={setData}
-                    error={errors.valor}
-                    clearErrors={clearErrors}
-                    min={0}
-                    max={2000}
                 />
             </div>
 

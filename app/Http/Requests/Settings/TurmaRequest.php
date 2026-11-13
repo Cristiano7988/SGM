@@ -22,6 +22,7 @@ class TurmaRequest extends FormRequest
                 'max:40',
             ],
             'descricao' => 'string|min:10|max:1500',
+            'valor' => 'required|numeric|min:0',
             'imagem' => ['required', function($attribute, $value, $fail) {
                 validaImagem($attribute, $value, $fail);
             }],

@@ -157,15 +157,6 @@ export function FormAlunoContent({ initialData, endpoint, related }: FormContent
                         />
                     )}
                 </div>
-                {!!data.users?.length && <InputTextContent
-                    column="vinculo"
-                    titulo="Vínculo"
-                    title="O que este usuário é deste aluno? Mãe? Pai? ..."
-                    value={data.users[index].pivot.vinculo}
-                    setData={(column: string, value: string) => updateVinculo(index, value)}
-                    error={errors[`users.${index}.pivot.vinculo`]}
-                    clearErrors={clearErrors}
-                />}
             </div>))}
 
             {errors.users && <ErrorLabel error={errors.users} />}

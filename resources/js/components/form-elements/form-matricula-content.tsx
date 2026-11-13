@@ -172,6 +172,12 @@ export function FormMatriculaContent({ initialData, endpoint, related }: FormCon
                     children="Criar novo aluno"
                 />
 
+                <Link
+                    href="/matriculas/create"
+                    className="px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
+                    children="Criar nova matrícula"
+                />
+
                 {!hasErrors && (
                     <ButtonSubmitContent
                         processing={processing}

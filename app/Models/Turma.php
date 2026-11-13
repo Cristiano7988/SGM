@@ -12,6 +12,7 @@ class Turma extends Model
     protected $fillable = [
         'nome',
         'descricao',
+        'valor',
         'imagem',
         'vagas_preenchidas',
         'vagas_ofertadas',
@@ -35,7 +36,12 @@ class Turma extends Model
         'descricao' => 'string'
     ];
 
-    protected $appends = ['vagas_preenchidas', 'paragrafos_da_descricao'];
+    protected $appends = ['vagas_preenchidas', 'paragrafos_da_descricao', 'valor_formatado'];
+
+    public function getValorFormatadoAttribute()
+    {
+        return "R$ " . number_format($this->valor, 2, ',', '.');
+    }
 
     function getParagrafosDaDescricaoAttribute(): array
     {

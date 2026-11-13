@@ -11,7 +11,6 @@ class Pacote extends Model
     use HasFactory;
     protected $fillable = [
         'nome',
-        'valor',
         'ativo',
         'turma_id',
     ];
@@ -21,6 +20,7 @@ class Pacote extends Model
     ];
 
     protected $appends = [
+        'valor',
         'valor_formatado',
         'aulas_na_semana',
         'aulas_na_semana_index',
@@ -30,9 +30,22 @@ class Pacote extends Model
         'total_de_aulas'
     ];
 
+    public function getValorAttribute()
+    {
+        $aulas = $this->relationLoaded('aulas')
+            ? $this->aulas->count()
+            : $this->aulas()->count();
+
+        $turma = $this->relationLoaded('turma')
+            ? $this->turma
+            : $this->turma()->first();
+
+        return $aulas * ($turma->valor ?? 0);
+    }
+
     public function getValorFormatadoAttribute()
     {
-        return "R$ " . number_format($this->attributes['valor'], 2, ',', '.');
+        return "R$ " . number_format($this->valor, 2, ',', '.');
     }
     
     public function getAulasNaSemanaAttribute()

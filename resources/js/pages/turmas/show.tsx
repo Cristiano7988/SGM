@@ -36,6 +36,7 @@ export default function Show({ turma }: ShowPropsTurma) {
                         <div>
                             <p><strong>Núcleo:</strong> <Link href={"/nucleos/" + turma.nucleo_id} children={turma.nucleo.nome} /></p>
                             <p><strong>Disponível:</strong> {turma.disponivel ? "Sim" : "Não"}</p>
+                            <p><strong>Valor da aula:</strong> {turma.valor_formatado}</p>
                         </div>
                     </div>
 

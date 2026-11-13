@@ -13,7 +13,6 @@ export default function Create(props: CreatePropsPacote) {
     const initialData = {
         id: null,
         nome: '',
-        valor: 0,
         valor_formatado: '',
         tipo: '',
         ativo: false,

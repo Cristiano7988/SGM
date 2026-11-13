@@ -20,7 +20,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(ChecaSeEAdmin::class)->group(function () {
         Route::resource('nucleos', NucleoController::class)->except(['index', 'show']);
         Route::resource('turmas', TurmaController::class)->except(['index', 'show']);
-        Route::resource('pacotes', PacoteController::class)->except(['index', 'show']);
         Route::resource('matriculas', MatriculaController::class)->except(['index', 'create', 'store', 'show']);
     });
 
@@ -35,7 +34,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->resource('nucleos', NucleoController::class)->only(['index', 'show']);
         
     Route::resource('turmas', TurmaController::class)->only(['index', 'show']);
-    Route::resource('pacotes', PacoteController::class)->only(['index', 'show']);
+    Route::resource('pacotes', PacoteController::class);
     Route::resource('matriculas', MatriculaController::class)->only(['index', 'create', 'store', 'show']);
     Route::resource('alunos', AlunoController::class);
     Route::resource('enderecos', EnderecoController::class);

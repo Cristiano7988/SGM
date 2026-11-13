@@ -16,6 +16,8 @@ export default function Create(props: CreatePropsTurma) {
         nome: '',
         imagem: '',
         descricao: '',
+        valor: 0,
+        valor_formatado: 'R$ 0,00',
         vagas_ofertadas: 0,
         nucleo_id: null,
         disponivel: false,

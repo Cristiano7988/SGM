@@ -17,6 +17,7 @@ class CreateTurmasTable extends Migration
             $table->id();
             $table->string('nome');
             $table->longText('descricao')->nullable();
+            $table->decimal('valor', 10, 2)->default(0);
             $table->string('imagem')->nullable();
             $table->integer('vagas_preenchidas')->default(0);
             $table->integer('vagas_ofertadas')->default(6);
