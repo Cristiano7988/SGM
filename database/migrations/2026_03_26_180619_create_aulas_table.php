@@ -16,6 +16,7 @@ return new class extends Migration
             $table->date('dia');
             $table->time('horario');
             $table->foreignId('pacote_id')->constrained()->onDelete('cascade');
+            $table->foreignId('endereco_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

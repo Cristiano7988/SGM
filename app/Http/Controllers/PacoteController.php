@@ -9,6 +9,7 @@ use App\Models\Turma;
 use App\Models\Pacote;
 use App\Models\Aula;
 use App\Models\Matricula;
+use App\Models\Endereco;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -65,8 +66,14 @@ class PacoteController extends Controller
      */
     public function create()
     {
+        $user = auth()->user();
+        $enderecos = $user && $user->is_admin
+            ? Endereco::all()
+            : $user->enderecos;
+
         return Inertia::render('pacotes/create', [
             'turmas' => Turma::all(),
+            'enderecos' => $enderecos
         ]);
     }
 
@@ -106,7 +113,7 @@ class PacoteController extends Controller
                 ? Inertia::render('pacotes/show', [
                     'pacote' => $pacote,
                     'turma' => $pacote->turma,
-                    'aulas' => $pacote->aulas,
+                    'aulas' => $pacote->aulas->load('endereco'),
                     'matriculas' => $pacote->matriculas,
                 ])
                 : response($pacote);
@@ -127,9 +134,15 @@ class PacoteController extends Controller
     public function edit(Pacote $pacote)
     {
         try {
+            $user = auth()->user();
+            $enderecos = $user && $user->is_admin
+                ? Endereco::all()
+                : $user->enderecos;
+                
             return Inertia::render('pacotes/edit', [
                 'pacote' => $pacote->load(['aulas']),
                 'turmas' => Turma::all(),
+                'enderecos' => $enderecos
             ]);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);

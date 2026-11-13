@@ -10,12 +10,14 @@ class Aula extends Model
 {
     protected $fillable = [
         'pacote_id',
+        'endereco_id',
         'dia',
         'horario',
     ];
 
     protected $casts = [
         'pacote_id' => 'integer',
+        'endereco_id' => 'integer',
         'dia' => 'date:Y-m-d',
         'horario' => 'datetime:H:i',
     ];
@@ -44,5 +46,10 @@ class Aula extends Model
     public function pacote()
     {
         return $this->belongsTo(Pacote::class);
+    }
+
+    public function endereco()
+    {
+        return $this->belongsTo(Endereco::class);
     }
 }

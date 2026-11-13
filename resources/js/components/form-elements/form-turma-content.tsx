@@ -146,6 +146,12 @@ export function FormTurmaContent({ initialData, endpoint, related }: FormContent
 
             <div className="bg-background bottom-4 fixed flex gap-4 items-center p-4 right-4">
                 <Link
+                    href="/nucleos/create"
+                    className="cursor-pointer px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
+                    children="Criar núcleo"
+                />
+
+                <Link
                     href="/pacotes/create"
                     className="cursor-pointer px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
                     children="Criar pacote de aulas"

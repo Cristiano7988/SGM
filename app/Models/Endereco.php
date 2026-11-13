@@ -25,4 +25,9 @@ class Endereco extends Model
     {
         return $this->belongsToMany(Aluno::class)->withTimestamps();
     }
+
+    public function aulas()
+    {
+        return $this->hasMany(Aula::class);
+    }
 }

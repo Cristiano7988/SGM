@@ -1,4 +1,4 @@
-import { useForm } from "@inertiajs/react";
+import { Link, useForm } from "@inertiajs/react";
 import { ButtonSubmitContent } from "./button-submit-content";
 import { InputTextContent } from "./input-text-content";
 import { SelectModelContent } from "./select-model-content";
@@ -60,6 +60,14 @@ export function FormPacoteContent({ initialData, endpoint, related }: FormConten
         clearErrors(`aulas.${index}.horario`);
     };
 
+    const updateEndereco = (index: number, value: number) => {
+        const updatedAulas = [...dataForm.aulas];
+        updatedAulas[index].endereco_id = value;
+
+        setData("aulas", updatedAulas);
+        clearErrors(`aulas.${index}.endereco_id`);
+    };
+
     return (
         <form onSubmit={submit} className="flex flex-col gap-6 space-y-4">
             <div className="flex gap-2">
@@ -93,10 +101,10 @@ export function FormPacoteContent({ initialData, endpoint, related }: FormConten
 
             <hr />
 
-            <h2 className="text-lg font-semibold">Aulas deste pacote</h2>
+            <h2 style={{ margin: "unset" }} className="text-lg font-semibold">Aulas deste pacote</h2>
 
             {aulas.map((aula: Aula, index: number) => (
-                <div key={index} className="flex items-center gap-2">
+                <div key={index} className="flex items-end gap-2">
                     <InputDateContent
                         column="dia"
                         value={aula.dia}
@@ -111,6 +119,14 @@ export function FormPacoteContent({ initialData, endpoint, related }: FormConten
                         setData={(_: any, value: string) => updateHorario(index, value)}
                         error={errors[`aulas.${index}.horario`]}
                     />
+                    <SelectModelContent
+                        column="endereco_id"
+                        titulo="Endereço"
+                        id={dataForm.aulas[index]?.endereco_id}
+                        array={related.enderecos}
+                        setData={(_: any, value: number) => updateEndereco(index, value)}
+                        error={errors[`aulas.${index}.endereco_id`]}
+                    />
                     <Unlink
                         className="cursor-pointer text-red-500 hover:text-red-700"
                         onClick={() => removeAula(index)}
@@ -121,6 +137,11 @@ export function FormPacoteContent({ initialData, endpoint, related }: FormConten
             {errors.aulas && <ErrorLabel error={errors.aulas} />}
 
             <div className="bg-background bottom-4 fixed flex gap-4 items-center p-4 right-4">
+                <Link
+                    href="/turmas/create"
+                    className="px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
+                    children="Criar nova turma"
+                />
                 <div
                     onClick={addAula}
                     className="cursor-pointer px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"

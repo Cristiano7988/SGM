@@ -10,10 +10,11 @@ interface InputTextContentProps {
     clearErrors: Function;
     setData: Function;
     required?: boolean;
+    maxLength?: number;
 }
 
 
-export function InputTextContent({ titulo, column, value, error, clearErrors, setData, required = false, title }: InputTextContentProps) {
+export function InputTextContent({ titulo, column, value, error, clearErrors, setData, required = false, title, maxLength = 255 }: InputTextContentProps) {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         clearErrors(column);
         setData(column, e.target.value);
@@ -29,6 +30,7 @@ export function InputTextContent({ titulo, column, value, error, clearErrors, se
                 value={value}
                 title={title}
                 onChange={handleChange}
+                maxLength={maxLength}
                 className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <ErrorLabel error={error} />

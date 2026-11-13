@@ -91,7 +91,10 @@ export interface Aula {
     dia: string,
     dia_formatado: string,
     dia_da_semana: string,
-    pacote_id: number | null
+    pacote_id: number | null,
+    pacote?: Pacote,
+    endereco_id: number | null,
+    endereco?: Endereco,
 }
 
 export interface RelacionadasATurma {
@@ -104,11 +107,11 @@ export interface RelacionadasATurma {
 // Pacote
 
 export interface Pacote {
-    id: number | null;
+    id: number;
     nome: string;
     ativo: boolean;
-    turma_id: number | null;
-    turma: Turma;
+    turma_id: number;
+    turma?: Turma;
     valor: number;
     valor_formatado: string;
     vigencia: string,

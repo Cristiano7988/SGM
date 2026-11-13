@@ -31,7 +31,9 @@ export function SelectModelContent({ titulo, column, id, array, error, setData }
                             const valor = titulo?.toLowerCase().includes('pacote')
                                 ? 'valor' in item && `${item.valor_formatado} (${item.total_de_aulas} ${plural}) ${aulas_na_semana} - ${item.turma?.nome}`
                                 : 'valor' in item && `- Valor da aula: ${item.valor_formatado}`;
-                            const label = item.nome ?? item.tipo ?? item.esta ?? item.observacao;
+                            const label = titulo?.toLowerCase().includes('endereço')
+                                ? `${item.logradouro}, ${item.numero}, ${item.complemento} - bairro ${item.bairro}`
+                                : item.nome ?? item.tipo ?? item.esta ?? item.observacao;
                             const inativo = !item.ativo && 'ativo' in item;
                             const indisponivel = !item.disponivel && 'disponivel' in item;
 
