@@ -4,7 +4,7 @@ import { Label } from '../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 interface SelectContentProps {
-    titulo?: string;
+    titulo: string;
     column: string;
     id: number;
     array: any[];
@@ -26,14 +26,29 @@ export function SelectModelContent({ titulo, column, id, array, error, setData }
                     </SelectTrigger>
                     <SelectContent>
                         {array.map(item => {
-                            const aulas_na_semana = item.aulas_na_semana?.map((aula: Aula) => `- ${aula.dia_da_semana} às ${aula.horario} `);
-                            const plural = item.total_de_aulas !== 1 ? 'aulas' : 'aula';
-                            const valor = titulo?.toLowerCase().includes('pacote')
-                                ? 'valor' in item && `${item.valor_formatado} (${item.total_de_aulas} ${plural}) ${aulas_na_semana} - ${item.turma?.nome}`
-                                : 'valor' in item && `- Valor da aula: ${item.valor_formatado}`;
-                            const label = titulo?.toLowerCase().includes('endereço')
-                                ? `${item.logradouro}, ${item.numero}, ${item.complemento} - bairro ${item.bairro}`
-                                : item.nome ?? item.tipo ?? item.esta ?? item.observacao;
+                            var label;
+                            switch (column) {
+                                case 'endereco_id':
+                                case 'enderecos':
+                                    label = `${item.logradouro}, ${item.numero}, ${item.complemento} - ${item.bairro}`;
+                                    break;
+                                case 'pacote_id':
+                                    const aulas_na_semana = item.aulas_na_semana?.map((aula: Aula) => `${aula.dia_da_semana} às ${aula.horario}`);
+                                    const plural = item.total_de_aulas !== 1 ? 'aulas' : 'aula';
+                                    label = `${aulas_na_semana} - ${item.total_de_aulas} ${plural} por ${item.valor_formatado}`;
+                                    break;
+                                case 'turma_id':
+                                    label = `${item.nome} - Valor da aula: ${item.valor_formatado}`;
+                                    break;
+                                case 'marcacao_id':
+                                    label = item.observacao;
+                                    break;
+                                case 'situacao_id':
+                                    label = item.esta;
+                                    break;
+                                default:
+                                    label = item.nome;
+                            }
                             const inativo = !item.ativo && 'ativo' in item;
                             const indisponivel = !item.disponivel && 'disponivel' in item;
 
@@ -42,11 +57,11 @@ export function SelectModelContent({ titulo, column, id, array, error, setData }
                             value={String(item.id)}
                             className={inativo || indisponivel ? "opacity-50" : ""}
                         >
-                            {label} {valor} {inativo && "(inativo)"} {indisponivel && "(indisponível)"}
+                            {label}
                         </SelectItem>})}
                     </SelectContent>
                 </Select>
-                : <p className="text-red-400">Não há {titulo} disponível no momento.</p>}
+                : <p className="text-red-400">Não há {titulo.toLowerCase()} disponível no momento.</p>}
                 <ErrorLabel error={error} />
         </div>
     );
