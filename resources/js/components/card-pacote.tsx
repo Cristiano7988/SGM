@@ -9,7 +9,6 @@ export default function CardPacote({ pacote }: { pacote: Pacote & RelacionadasAo
         <div className="absolute inset-0 border-sidebar-border/70 dark:border-sidebar-border rounded-xl border overflow-hidden backface-hidden">
           <div className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20 p-4 flex justify-center gap-4">
             <div className="flex flex-col m-auto">
-              <b>{pacote.nome}</b>
               <div className="grid gap-2">
                 <b>Turma:</b>
                 <p className="text-sm">{pacote.turma.nome}</p>

@@ -10,7 +10,6 @@ class Pacote extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'nome',
         'ativo',
         'turma_id',
     ];

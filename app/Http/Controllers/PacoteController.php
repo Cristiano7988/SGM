@@ -41,7 +41,7 @@ class PacoteController extends Controller
             if (isset($turmaId)) $pacotes = Filtra::resultado($pacotes, $turmaId, 'turmas.id')->with('turma');
             if (isset($ativo)) $pacotes = $pacotes->where('ativo', $ativo);
 
-            $pagination = Trata::resultado($pacotes, 'pacotes.nome'); // Ordenação por pacote.
+            $pagination = Trata::resultado($pacotes, 'pacotes.id'); // Ordenação por pacote.
 
             return isWeb()
                 ? Inertia::render('pacotes/index', [
@@ -88,7 +88,7 @@ class PacoteController extends Controller
             $pacote = Pacote::create($request->validated());
 
             $pacote->aulas()->createMany($request->aulas);
-            $mensagem = "Pacote {$pacote->nome} criado.";
+            $mensagem = "Pacote {$pacote->vigencia} criado.";
 
             return isWeb()
                 ? redirect()->route('pacotes.index')->with('success', $mensagem)
@@ -164,7 +164,7 @@ class PacoteController extends Controller
             $pacote->aulas()->delete();
             $pacote->aulas()->createMany($request->aulas);
 
-            $mensagem = "Pacote {$pacote->nome} editado.";
+            $mensagem = "Pacote {$pacote->vigencia} editado.";
 
             return isWeb()
                 ? redirect()->route('pacotes.index')->with('success', $mensagem)
@@ -191,7 +191,7 @@ class PacoteController extends Controller
             $excluido = Trata::exclusao($pacote, 'Pacote');
             if ($excluido) DB::commit(); // Exclui somente se conseguir notificar o cliente
 
-            $mensagem = "Pacote {$pacote->nome} deletado.";
+            $mensagem = "Pacote {$pacote->vigencia} deletado.";
 
             return isWeb()
                 ? redirect()->route('pacotes.index')->with('success', $mensagem)

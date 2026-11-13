@@ -15,7 +15,7 @@ export function FormPacoteContent({ initialData, endpoint, related }: FormConten
     const { data: dataForm, setData, errors, clearErrors, hasErrors, processing, post, put } = useForm<FormProps<Pacote>>(initialData);
     const edit = location.pathname.includes("edit");
     const [dia] = new Date().toISOString().split('T');
-    const aulaInicial = { id: null, dia, dia_formatado: dia, dia_da_semana: "", horario: "00:00", pacote_id: null };
+    const aulaInicial = { id: 0, dia, dia_formatado: dia, dia_da_semana: "", horario: "00:00", pacote_id: 0, endereco_id: 0 };
     const [aulas, setAulas] = useState([aulaInicial]);
 
     useEffect(() => {
@@ -70,17 +70,6 @@ export function FormPacoteContent({ initialData, endpoint, related }: FormConten
 
     return (
         <form onSubmit={submit} className="flex flex-col gap-6 space-y-4">
-            <div className="flex gap-2">
-                <InputTextContent
-                    column="nome"
-                    titulo="Nome"
-                    value={dataForm.nome}
-                    setData={setData}
-                    error={errors.nome}
-                    clearErrors={clearErrors}
-                />
-            </div>
-
             <SelectModelContent
                 column="turma_id"
                 titulo="Turmas"

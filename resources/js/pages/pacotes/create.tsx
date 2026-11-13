@@ -12,7 +12,6 @@ export default function Create(props: CreatePropsPacote) {
     const { session, turmas, enderecos } = props;
     const initialData = {
         id: 0,
-        nome: '',
         valor: 0,
         valor_formatado: '',
         tipo: '',

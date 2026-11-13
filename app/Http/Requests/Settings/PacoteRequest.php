@@ -16,7 +16,6 @@ class PacoteRequest extends FormRequest
     {
 
         return [
-            'nome' => ['required', 'string', 'min:3', 'max:255'],
             'ativo' => ['required', 'boolean'],
             'turma_id' => [
                 'required',

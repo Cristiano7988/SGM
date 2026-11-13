@@ -19,7 +19,6 @@ export default function Show(props: ShowPropsPacote) {
             <div className="flex flex-wrap gap-4 p-4">
                 <div className='flex gap-4 p-4'>
                     <div className="flex flex-col gap-2">
-                        <p><strong>Nome:</strong> {pacote.nome}</p>
                         <p><strong>Valor:</strong> {pacote.valor_formatado}</p>
                         <p><strong>Disponível:</strong> {pacote.ativo ? "Sim" : "Não"}</p>
                         <hr />

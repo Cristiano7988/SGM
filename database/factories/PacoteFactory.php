@@ -14,7 +14,6 @@ class PacoteFactory extends Factory
     public function definition()
     {
         return [
-            'nome' => $this->faker->name(),
             'valor' => $this->faker->numberBetween(0, 500),
             'ativo' => $this->faker->boolean(),
             'turma_id' => Turma::inRandomOrder()->first()->id,

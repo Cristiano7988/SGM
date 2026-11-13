@@ -11,6 +11,7 @@ export interface User {
     instagram: string;
     pivot: AlunoUser
     matriculas?: Matricula[];
+    alunos?: Aluno[];
 }
 
 export interface Endereco {
@@ -86,14 +87,14 @@ export interface Turma {
 }
 
 export interface Aula {
-    id: number | null,
+    id: number,
     horario: string,
     dia: string,
     dia_formatado: string,
     dia_da_semana: string,
     pacote_id: number | null,
     pacote?: Pacote,
-    endereco_id: number | null,
+    endereco_id: number,
     endereco?: Endereco,
 }
 
@@ -108,7 +109,6 @@ export interface RelacionadasATurma {
 
 export interface Pacote {
     id: number;
-    nome: string;
     ativo: boolean;
     turma_id: number;
     turma?: Turma;

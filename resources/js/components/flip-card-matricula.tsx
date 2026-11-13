@@ -59,14 +59,14 @@ export default function FlipCardMatricula({ matricula }: { matricula: Matricula 
 
           <p>
             <b>Pacote: </b>
-            <Link href={`/pacotes/${matricula.pacote_id}`}>{matricula.pacote?.nome} ({matricula.pacote?.ativo ? "ativo" : "inativo"})</Link>
+            <Link href={`/pacotes/${matricula.pacote_id}`}>{matricula.pacote?.vigencia} ({matricula.pacote?.ativo ? "ativo" : "inativo"})</Link>
           </p>
           <p>{matricula.pacote?.valor_formatado}</p>
           <div className="flex items-center gap-2">
             <b>Vigência:</b>
             <div>
               <p className="text-sm">
-                {matricula.pacote.vigencia}
+                {matricula.pacote?.vigencia}
               </p>
             </div>
           </div>
@@ -75,7 +75,9 @@ export default function FlipCardMatricula({ matricula }: { matricula: Matricula 
             <b>Acompanhantes:</b>
             <div className="flex flex-col gap-1">
               {matricula.users.map((user: User) => {
-                const [alunoVinculado] = user.alunos?.filter((a: Aluno) => a.id == matricula.aluno_id);
+                if (!user.alunos?.length) return null;
+
+                const [alunoVinculado] = user.alunos.filter((a: Aluno) => a.id == matricula.aluno_id);
                 return <div key={user.id} className="flex items-center gap-1"><Link className="text-sm" href={route('users.show', { id: user.id })}>
                   {user.nome}
                 </Link>
