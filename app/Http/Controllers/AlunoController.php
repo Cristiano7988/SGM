@@ -141,11 +141,15 @@ class AlunoController extends Controller
                 ? Matricula::all()
                 : $user->alunos->flatMap->matriculas->unique('id');
 
+            $enderecos = $user && $user->is_admin
+                ? Endereco::all()
+                : $aluno->enderecos;
+
             return Inertia::render('alunos/edit', [
-                'aluno' => $aluno->load(['users', 'matriculas']),
+                'aluno' => $aluno->load(['users', 'matriculas', 'enderecos']),
                 'users' => $users,
                 'matriculas' => $matriculas,
-                'enderecos' => $aluno->enderecos,
+                'enderecos' => $enderecos,
             ]);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
