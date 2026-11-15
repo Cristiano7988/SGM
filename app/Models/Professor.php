@@ -23,7 +23,7 @@ class Professor extends Model
     {
         return $this->users->filter(
             fn ($user) => $user->pivot->mesma_pessoa
-        )->values();
+        )->values()->first();
     }
 
     public function users()
