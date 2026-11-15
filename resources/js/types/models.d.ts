@@ -9,9 +9,17 @@ export interface User {
     cnpj: string;
     whatsapp: string;
     instagram: string;
-    pivot: AlunoUser
+    pivot: AlunoUser & UserProfessor;
     matriculas?: Matricula[];
     alunos?: Aluno[];
+}
+
+export interface Professor {
+    id: number;
+    nome: string;
+    imagem: string;
+    pivot: UserProfessor;
+    users?: User[];
 }
 
 export interface Endereco {
@@ -32,6 +40,13 @@ export interface AlunoUser {
     aluno_id: number,
     user_id: number,
     vinculo: string
+}
+
+export interface UserProfessor {
+    id: number,
+    user_id: number,
+    professor_id: number,
+    mesma_pessoa: boolean,
 }
 
 export interface RelacionadasAoUser {

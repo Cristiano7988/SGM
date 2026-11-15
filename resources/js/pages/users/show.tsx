@@ -29,13 +29,46 @@ export default function Show(props: any) {
                     <p><strong>Whatsapp:</strong> {user.whatsapp}</p>
                     <p><strong>Instagram:</strong> {user.instagram}</p>
                 </div>
+
+                <h2 className='text-lg font-bold'>Endereço:</h2>
+
+                <p><strong>CEP:</strong> {user.endereco?.cep}</p>
+
+                <div className="flex gap-2">
+                    <p><strong>País:</strong> {user.endereco?.pais}</p>
+                    <p><strong>Estado:</strong> {user.endereco?.estado}</p>
+                </div>
+                <div className="flex gap-2">
+                    <p><strong>Cidade:</strong> {user.endereco?.cidade}</p>
+                    <p><strong>Bairro:</strong> {user.endereco?.bairro}</p>
+                </div>
+                <div className="flex gap-2">
+                    <p><strong>Logradouro:</strong> {user.endereco?.logradouro}</p>
+                    <p><strong>Número:</strong> {user.endereco?.numero}</p>
+                    <p><strong>Complemento:</strong> {user.endereco?.complemento}</p>
+                </div>
+
+                <hr />
                 
-                {!!user.alunos.length && (
+                {!!user.alunos?.length && (
                     <>
                         <h2 className='text-lg font-bold'>Alunos Vinculados</h2>
                         <ul className='list-disc list-inside'>
                             {user.alunos.map((aluno: any) => (
                                 <li key={aluno.id}><Link key={aluno.id} href={`/alunos/${aluno.id}`}>{aluno.nome}</Link></li>
+                            ))}
+                        </ul>
+                    </>
+                )}
+
+                <hr />
+
+                {!!user.professores?.length && (
+                    <>
+                        <h2 className='text-lg font-bold'>Professores Vinculados</h2>
+                        <ul className='list-disc list-inside'>
+                            {user.professores.map((professor: any) => (
+                                <li key={professor.id}><Link key={professor.id} href={`/professores/${professor.id}`}>{professor.nome}</Link></li>
                             ))}
                         </ul>
                     </>

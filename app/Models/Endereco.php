@@ -30,4 +30,9 @@ class Endereco extends Model
     {
         return $this->hasMany(Aula::class);
     }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class)->withTimestamps();
+    }
 }

@@ -19,6 +19,7 @@ class AddFieldsInUsers extends Migration
             $table->string('cnpj')->unique()->nullable();
             $table->string('whatsapp')->unique()->nullable();
             $table->string('instagram')->unique()->nullable();
+            $table->foreignId('endereco_id')->nullable()->constrained('enderecos')->onDelete('set null');
         });
     }
 

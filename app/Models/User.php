@@ -26,10 +26,12 @@ class User extends Authenticatable
         'vinculo',
         'whatsapp',
         'instagram',
+        'endereco_id',
     ];
 
     protected $with = [
-        'alunos'
+        'alunos',
+        'endereco'
     ];
 
     /**
@@ -55,7 +57,7 @@ class User extends Authenticatable
     {
         return self::get()
             ->map(function ($user) use ($alunoId) {
-                $user->pivot = $user->alunos->find($alunoId)->pivot ?? (object)['id' => 0, 'vinculo' => "", 'user_id' => 0, 'aluno_id' => 0];
+                $user->pivot = $user->alunos->find($alunoId)->pivot ?? (object)['id' => 0, 'vinculo' => "", 'user_id' => 0, 'aluno_id' => 0, 'mesma_pessoa' => false, 'professor_id' => 0];
                 return $user;
             });
     }
@@ -83,5 +85,17 @@ class User extends Authenticatable
     public function erros()
     {
         return $this->hasMany(Erro::class);
+    }
+
+    public function endereco()
+    {
+        return $this->belongsTo(Endereco::class, 'endereco_id');
+    }
+
+    public function professores()
+    {
+        return $this->belongsToMany(Professor::class, 'users_professores')
+            ->withPivot('mesma_pessoa')
+            ->withTimestamps();
     }
 }

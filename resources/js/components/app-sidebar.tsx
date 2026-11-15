@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Crosshair, Folder, GraduationCap, LayoutGrid, Package, Users, ClipboardList, Building } from 'lucide-react';
+import { BookOpen, Crosshair, Folder, GraduationCap, LayoutGrid, Package, Users, ClipboardList, Building, Backpack } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -31,7 +31,7 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Alunos',
         url: '/alunos',
-        icon: GraduationCap,
+        icon: Backpack,
     },
     {
         title: 'Endereços',
@@ -47,6 +47,11 @@ const mainNavItems: NavItem[] = [
         title: 'Matrículas',
         url: '/matriculas',
         icon: ClipboardList,
+    },
+    {
+        title: 'Professores',
+        url: '/professores',
+        icon: GraduationCap,
     },
 ];
 

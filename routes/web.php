@@ -7,6 +7,7 @@ use App\Http\Controllers\NucleoController;
 use App\Http\Controllers\PacoteController;
 use App\Http\Controllers\TurmaController;
 use App\Http\Controllers\MatriculaController;
+use App\Http\Controllers\ProfessorController;
 use App\Http\Middleware\calculaIdadeDoAluno;
 use App\Http\Middleware\ChecaSeEAdmin;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +40,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('alunos', AlunoController::class);
     Route::resource('enderecos', EnderecoController::class);
     Route::resource('users', UserController::class);
+    Route::resource('professores', ProfessorController::class)->parameters(['professores' => 'professor']);
 });
 
 Route::get('/', function () {

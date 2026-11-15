@@ -15,7 +15,7 @@ export function SwitchContent({ titulo, tituloInativo, column, value, error, set
     const toggleInputMode = () => setData(column, !value);
 
     return (
-        <div className="flex items-center space-x-4">
+        <div>
             <Switch
                 name={column}
                 checked={value}
