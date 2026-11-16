@@ -28,6 +28,7 @@ class CreateTurmasTable extends Migration
             $table->string('whatsapp')->nullable();
             $table->string('spotify')->nullable();
             $table->foreignId('nucleo_id')->nullable();
+            $table->foreignId('professor_id')->nullable();
             $table->timestamps();
         });
     }

@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use App\Helpers\Trata;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class ProfessorController extends Controller
 {
@@ -35,7 +36,7 @@ class ProfessorController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Professor $professor)
     {
         $user = auth()->user();
 
@@ -43,19 +44,9 @@ class ProfessorController extends Controller
             ? User::allWithHisPivot(false)
             : $user->professores;
     
-        $professor = new Professor();
+        $user = new User();
 
-        $user = new User([
-            'nome' => '',
-            'email' => '',
-            'email_nf' => '',
-            'cpf' => '',
-            'cnpj' => '',
-            'whatsapp' => '',
-            'instagram' => '',
-        ]);
-
-        $professor->setRelation('users', collect([$user]));
+        $professor->setRelation('users', collect([]));
 
         return Inertia::render('professores/create', [
             'professor' => $professor,

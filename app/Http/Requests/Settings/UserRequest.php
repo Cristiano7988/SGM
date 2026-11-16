@@ -24,6 +24,7 @@ class UserRequest extends FormRequest
                     ->mapWithKeys(function ($aluno) {
                         return [
                             $aluno['id'] => [
+                                'id' => $aluno['id'],
                                 'vinculo' => $aluno['pivot']['vinculo']
                             ]
                         ];
@@ -45,8 +46,9 @@ class UserRequest extends FormRequest
                 'cnpj' => [$nullable, 'string', 'min:14', 'max:18', Rule::unique('users')->ignore($id)],
                 'whatsapp' => [$nullable, 'min:3', 'max:100', Rule::unique('users')->ignore($id)],
                 'instagram' => ['nullable', 'string', 'url', 'min:5', 'max:255', Rule::unique('users')->ignore($id)],
+                'endereco_id' => ['nullable', 'numeric', 'min:1', 'exists:enderecos,id'],
                 'alunos' => ['array'],
-                'alunos.*.aluno_id' => ['integer', 'exists:alunos,id'],
+                'alunos.*.id' => ['integer', 'exists:alunos,id'],
                 'alunos.*.vinculo' => ['string', 'nullable'],
             ]
             : [

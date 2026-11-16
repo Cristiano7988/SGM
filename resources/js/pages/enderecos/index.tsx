@@ -19,11 +19,11 @@ export default function Index(props: IndexProps<Endereco>) {
     const filtros: FiltrosType[] = [
         {
             tipo: 'select' as const,
-            label: 'Alunos',
-            nome: 'alunos',
-            valor: searchParams.get('alunos') ?? undefined,
-            opcoes: props.alunos,
-            ativo: Boolean(searchParams.get('alunos')),
+            label: 'Users',
+            nome: 'users',
+            valor: searchParams.get('users') ?? undefined,
+            opcoes: props.users,
+            ativo: Boolean(searchParams.get('users')),
         },
     ]
    

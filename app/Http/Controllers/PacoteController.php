@@ -71,7 +71,12 @@ class PacoteController extends Controller
             ? Endereco::all()
             : $user->enderecos;
 
+        $pacote = new Pacote();
+        $aula = new Aula();
+
+        $pacote->setRelation('aulas', collect([]));
         return Inertia::render('pacotes/create', [
+            'pacote' => $pacote,
             'turmas' => Turma::all(),
             'enderecos' => $enderecos
         ]);

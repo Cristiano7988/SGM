@@ -27,6 +27,8 @@ export function FormTurmaContent({ initialData, endpoint, related }: FormContent
         post(endpoint);
     };
 
+    const addProfessor = () => setData("professores", [...data.professores, initialData.professor]);
+
     return (
         <form onSubmit={submit} className="flex flex-col gap-6 space-y-4">
             <InputImageContent
@@ -64,11 +66,22 @@ export function FormTurmaContent({ initialData, endpoint, related }: FormContent
             <div className="flex gap-4">
                 <SelectModelContent
                     column="nucleo_id"
-                    titulo="Núcleos"
+                    titulo="Núcleo"
                     id={data.nucleo_id}
                     array={related.nucleos}
                     setData={setData}
                     error={errors.nucleo_id}
+                />
+            </div>
+
+            <div className="flex gap-4">
+                <SelectModelContent
+                    column="professor_id"
+                    titulo="Professor"
+                    id={data.professor_id}
+                    array={related.professores}
+                    setData={setData}
+                    error={errors.professor_id}
                 />
             </div>
 
@@ -155,6 +168,18 @@ export function FormTurmaContent({ initialData, endpoint, related }: FormContent
                     href="/pacotes/create"
                     className="cursor-pointer px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
                     children="Criar pacote de aulas"
+                />
+
+                <Link
+                    href="/professores/create"
+                    className="cursor-pointer px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
+                    children="Criar professor"
+                />
+
+                <div
+                    onClick={addProfessor}
+                    className="cursor-pointer px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
+                    children="Vincular outro Professor"
                 />
 
                 {!hasErrors && <ButtonSubmitContent

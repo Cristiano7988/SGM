@@ -57,6 +57,13 @@ export default function FlipCardUser({ user }: { user: User & RelacionadasAoUser
               <Tag background="orange" children={matricula && "Acompanha"} title={`Este aluno é acompanhado pelo usuário ${user.nome} nas aulas`} />
             </div>})}
           </div>
+          {user.endereco && <><p><b>Endereço:</b></p>
+          <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-1"><Link className="text-sm" href={route('enderecos.show', { id: user.endereco_id })}>
+                {user.endereco.logradouro}, {user.endereco.numero}, {user.endereco.complemento}, bairro {user.endereco.bairro}
+              </Link>
+            </div>
+          </div></>}
         </div>
       </motion.div>
     </div>

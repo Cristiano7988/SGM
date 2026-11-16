@@ -7,6 +7,7 @@ use App\Helpers\Trata;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Aluno;
+use App\Models\Endereco;
 use Illuminate\Support\Str;
 use App\Http\Requests\Settings\UserRequest;
 use Illuminate\Support\Facades\Auth;
@@ -39,7 +40,8 @@ class UserController extends Controller
 
             $users->with([
                 "alunos",
-                "matriculas"
+                "matriculas",
+                "endereco"
             ]);
             
             $users
@@ -341,19 +343,27 @@ class UserController extends Controller
         }
     }
 
-    public function create()
+    public function create(User $user)
     {
         try {
-            $user = Auth::user();
+            $authUser = Auth::user();
 
-            if(!$user) return redirect()->route('login')->with('error', 'Usuário sem permissão para acessar este recurso');
+            if(!$authUser) return redirect()->route('login')->with('error', 'Usuário sem permissão para acessar este recurso');
 
-            $alunos = $user->is_admin
+            $alunos = $authUser->is_admin
                 ? Aluno::allWithHisPivot(false)
                 : $user->alunos;
 
+            $enderecos = $authUser->is_admin
+                ? Endereco::all()
+                : [$user->endereco];
+
+            $user->setRelation('alunos', collect([]));
+
             return Inertia::render('users/create', [
-                'alunos' => $alunos
+                'user' => $user,
+                'alunos' => $alunos,
+                'enderecos' => $enderecos
             ]);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
@@ -430,9 +440,14 @@ class UserController extends Controller
                 ? Aluno::allWithHisPivot($user->id)
                 : $user->alunos;
 
+            $enderecos = $authUser->is_admin
+                ? Endereco::all()
+                : [$user->endereco];
+
             return Inertia::render('users/edit', [
-                'user' => $user->load(['alunos']),
-                'alunos' => $alunos
+                'user' => $user->load(['alunos', 'endereco']),
+                'alunos' => $alunos,
+                'enderecos' => $enderecos
             ]);
         } catch (\Throwable $th) {
             Trata::erro($th);

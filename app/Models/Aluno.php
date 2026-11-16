@@ -39,8 +39,6 @@ class Aluno extends Model
 
     public function getIdadeAttribute()
     {   
-        if (!$this->data_de_nascimento) return null;
-
         $anos = Carbon::parse($this->data_de_nascimento)->diffInDays(Carbon::now()) / 365;
 
         $formatado = $anos < 1
@@ -52,14 +50,14 @@ class Aluno extends Model
 
     public function getMesesAttribute()
     {
-        $data = Carbon::parse($this->attributes['data_de_nascimento']);
+        $data = Carbon::parse($this->data_de_nascimento);
 
         return $data->floatDiffInMonths(now());
     }
 
     public function getAnosAttribute()
     {
-        $data = Carbon::parse($this->attributes['data_de_nascimento']);
+        $data = Carbon::parse($this->data_de_nascimento);
 
         return $data->floatDiffInYears(now());
     }
@@ -76,11 +74,6 @@ class Aluno extends Model
     public function users()
     {
         return $this->belongsToMany(User::class)->withPivot('vinculo')->withTimestamps();
-    }
-
-    public function enderecos()
-    {
-        return $this->belongsToMany(Endereco::class)->withTimestamps();
     }
 
     public function matriculas()

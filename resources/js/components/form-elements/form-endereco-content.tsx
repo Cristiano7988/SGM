@@ -3,10 +3,11 @@ import { ButtonSubmitContent } from "./button-submit-content";
 import { InputTextContent } from "./input-text-content";
 import { SelectModelContent } from "./select-model-content";
 import { Unlink } from "lucide-react";
-import { Aluno, Endereco, FormContentProps } from "@/types/models";
+import { Endereco, FormContentProps, User } from "@/types/models";
 import { FormProps } from "@/types/index";
 import ErrorLabel from "../error-label";
 import { InputNumberContent } from "./input-number-content";
+import { useEffect } from "react";
 
 export function FormEnderecoContent({ initialData, endpoint, related }: FormContentProps<Endereco>) {
     const { data, setData, errors, clearErrors, hasErrors, processing, post, put } = useForm<FormProps<Endereco>>(initialData);
@@ -20,43 +21,43 @@ export function FormEnderecoContent({ initialData, endpoint, related }: FormCont
             : post(endpoint);
     };
 
-    const alunoInicial = {
-        id: 0,
-        nome: "",
-        data_de_nascimento: "",
-        data_de_nascimento_formatada: "",
-        idade: "",
-        matriculas: [],
-        pivot: { 
-            id: 0,
-            aluno_id: 0,
-            user_id: 0,
-            vinculo: ""
-        }
-    };
-    const alunos = edit ? data.alunos : [alunoInicial];
+    const [userInicial] = data.users;
+    const addUser = () => setData("users", [...data.users, userInicial]);
 
-    const addAluno = () => alunos && setData("alunos", [...alunos, alunoInicial]);
+    const removeUser = (index: number) => {
+        if (data.users?.length) return;
+        const updatedUsers = data.users.filter((u: any, i: number) => i !== index);
 
-    const removeAluno = (index: number) => {
-        const updatedAlunos = alunos?.filter((u: any, i: number) => i !== index);
-
-        setData("alunos", updatedAlunos);
-        clearErrors(`alunos.${index}`);
-        clearErrors("alunos");
+        setData("users", updatedUsers);
+        clearErrors(`users.${index}`);
+        clearErrors("users");
     };
 
-    const updateAluno = (index: number, aluno_id: number) => {
-        if (!alunos) return;
+    const updateUser = (index: number, user_id: number) => {
+        if (!data.users?.length) return;
     
-        const updatedAlunos = [...alunos];
-        const aluno = related.alunos.find((a: Aluno) => a.id == aluno_id);
-        updatedAlunos[index] = aluno;
+        const updatedUser = [...data.users];
+        const user = related.users.find((u: User) => u.id == user_id);
+        updatedUser[index] = user;
 
-        setData("alunos", updatedAlunos);
-        clearErrors(`alunos.${index}`);
-        clearErrors("alunos");
+        setData("users", updatedUser);
+        clearErrors(`users.${index}`);
+        clearErrors("users");
     };
+
+    useEffect(() => {
+        if (!data.cep) return;
+
+        fetch(`https://viacep.com.br/ws/${data.cep}/json/`)
+            .then((r) => r.ok ? r.json() : false)
+            .then((resultado) => {
+                setData("logradouro", resultado.logradouro);
+                setData("bairro", resultado.bairro);
+                setData("cidade", resultado.localidade);
+                setData("estado", resultado.uf);
+                setData("pais", "Brasil");
+            });
+    }, [data.cep]);
 
     return (<>
         <form onSubmit={submit} className="flex flex-col gap-6 space-y-4">
@@ -145,44 +146,41 @@ export function FormEnderecoContent({ initialData, endpoint, related }: FormCont
                 </div>
             </div>
 
-            {!!alunos?.length && <hr />}
+            {!!data.users?.length && <>
+                <hr />
+                <h2 className="text-lg font-semibold">Usuários vinculados à este endereço</h2>
+                {data.users.map((user: User, index: number) => (<div key={index + user?.id} className="flex gap-2">
+                    <div className="flex items-center gap-2 w-full">
+                        <SelectModelContent
+                            column="users"
+                            titulo="Usuário"
+                            id={user?.id}
+                            array={related.users}
+                            setData={(_column: string, user_id: number) => updateUser(index, user_id)}
+                            error={errors[`users.${index}`]}
+                        />
 
-            {!!alunos?.length && <h2 className="text-lg font-semibold">Alunos vinculados a este endereço</h2>}
-
-            {alunos?.map((aluno: Aluno, index: number) => (<div key={index + aluno.id} className="flex gap-2">
-                <div className="flex items-center gap-2 w-full">
-                    <SelectModelContent
-                        column="alunos"
-                        titulo="Aluno"
-                        id={aluno?.id}
-                        array={related.alunos}
-                        setData={(_column: string, aluno_id: number) => updateAluno(index, aluno_id)}
-                        error={errors[`alunos.${index}`]}
-                    />
-
-                    {index > 0 && (
                         <Unlink
                             className="cursor-pointer text-red-500 hover:text-red-700"
-                            onClick={() => removeAluno(index)}
+                            onClick={() => removeUser(index)}
                         />
-                    )}
-                </div>
-            </div>))}
-
-            {errors.alunos && <ErrorLabel error={errors.alunos} />}
+                    </div>
+                </div>))}
+                {errors.users && <ErrorLabel error={errors.users} />}
+            </>}
 
             <div className="bg-background bottom-4 fixed flex gap-4 items-center p-4 right-4">
 
                 <Link
-                    href="/alunos/create"
+                    href="/users/create"
                     className="px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
-                    children="Criar novo aluno"
+                    children="Criar novo usuário"
                 />
 
                 <div
-                    onClick={addAluno}
+                    onClick={addUser}
                     className="cursor-pointer px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
-                    children="Vincular outro aluno"
+                    children="Vincular outro usuário"
                 />
 
                 {!hasErrors && (

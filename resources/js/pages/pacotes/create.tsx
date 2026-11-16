@@ -9,21 +9,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Create(props: CreatePropsPacote) {
-    const { session, turmas, enderecos } = props;
-    const initialData = {
-        id: 0,
-        valor: 0,
-        valor_formatado: '',
-        tipo: '',
-        ativo: false,
-        turma_id: 0,
-        vigencia: "",
-        dia_da_semana: "",
-        aulas_na_semana: [],
-        turmas,
-        enderecos
-    }
-
+    const { session, pacote, turmas, enderecos } = props;
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title='Criar Pacote' />
@@ -33,7 +19,7 @@ export default function Create(props: CreatePropsPacote) {
                 <h1 className="text-xl font-bold mb-4">Criar Pacote</h1>
 
                 <FormPacoteContent
-                    initialData={initialData}
+                    initialData={pacote}
                     endpoint={route("pacotes.store")}
                     related={{ turmas, enderecos }}
                 />

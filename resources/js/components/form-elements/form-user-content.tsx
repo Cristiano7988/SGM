@@ -6,7 +6,6 @@ import { Unlink } from "lucide-react";
 import { Aluno, FormContentProps, User } from "@/types/models";
 import { FormProps } from "@/types/index";
 import ErrorLabel from "../error-label";
-import { InputNumberContent } from "./input-number-content";
 
 export function FormUserContent({ initialData, endpoint, related }: FormContentProps<User>) {
     const { data, setData, errors, clearErrors, hasErrors, processing, post, put } = useForm<FormProps<User>>(initialData);
@@ -20,13 +19,12 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
             : post(endpoint);
     };
 
-    const alunoInicial = { id: null, pivot: { vinculo: "" }};
-    const alunos = edit ? data.alunos : [alunoInicial];
+    const [alunoInicial] = initialData.alunos;
 
-    const addAluno = () => setData("alunos", [...alunos, alunoInicial]);
+    const addAluno = () => setData("alunos", [...data.alunos, alunoInicial]);
 
     const removeAluno = (index: number) => {
-        const updatedAlunos = alunos.filter((u: any, i: number) => i !== index);
+        const updatedAlunos = data.alunos?.filter((u: any, i: number) => i !== index);
 
         setData("alunos", updatedAlunos);
         clearErrors(`alunos.${index}`);
@@ -34,7 +32,9 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
     };
 
     const updateAluno = (index: number, aluno_id: number) => {
-        const updatedAlunos = [...alunos];
+        if (!data.alunos) return;
+
+        const updatedAlunos = [...data.alunos];
         const aluno = related.alunos.find((a: Aluno) => a.id == aluno_id);
         updatedAlunos[index] = aluno;
 
@@ -131,44 +131,53 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
                     />
                 </div>
             </div>
-
-            {!!alunos.length && <hr />}
-
-            {!!alunos.length && <h2 className="text-lg font-semibold">Alunos vinculados a este usuário</h2>}
-
-            {alunos.map((aluno: Aluno, index: number) => (<div key={index + aluno.id} className="flex gap-2">
-                <div className="flex items-center gap-2 w-full">
-                    <SelectModelContent
-                        column="alunos"
-                        titulo="Aluno"
-                        id={aluno?.id}
-                        array={related.alunos}
-                        setData={(_column: string, aluno_id: number) => updateAluno(index, aluno_id)}
-                        error={errors[`alunos.${index}`]}
-                    />
-
-                    {index > 0 && (
+            {!!data.alunos?.length && <>
+                <hr />
+                <h2 className="text-lg font-semibold">Alunos vinculados a este usuário</h2>
+            
+                {data.alunos.map((aluno: Aluno, index: number) => (<div key={index + aluno.id} className="flex gap-2">
+                    <div className="flex items-center gap-2 w-full">
+                        <SelectModelContent
+                            column="alunos"
+                            titulo="Aluno"
+                            id={aluno?.id}
+                            array={related.alunos}
+                            setData={(_column: string, aluno_id: number) => updateAluno(index, aluno_id)}
+                            error={errors["alunos"] ?? errors[`alunos.${index}`] ?? errors[`alunos.${index}.id`] ?? errors[`alunos.${index}.vinculo`]}
+                        />
+                        <InputTextContent
+                            column="vinculo"
+                            titulo="Vínculo"
+                            title="O que este usuário é deste aluno? Mãe? Pai? ..."
+                            value={data.alunos[index]?.pivot?.vinculo}
+                            setData={(_column: string, value: string) => updateVinculo(index, value)}
+                            error={errors[`alunos.${index}.pivot.vinculo`]}
+                            clearErrors={clearErrors}
+                        />
                         <Unlink
                             className="cursor-pointer text-red-500 hover:text-red-700"
                             onClick={() => removeAluno(index)}
                         />
-                    )}
-                </div>
-                {!!data.alunos?.length && <InputTextContent
-                    column="vinculo"
-                    titulo="Vínculo"
-                    title="O que este usuário é deste aluno? Mãe? Pai? ..."
-                    value={data.alunos[index].pivot.vinculo}
-                    setData={(_column: string, value: string) => updateVinculo(index, value)}
-                    error={errors[`alunos.${index}.pivot.vinculo`]}
-                    clearErrors={clearErrors}
-                />}
-            </div>))}
+                    </div>
+                </div>))}
+            </>}
 
             {errors.alunos && <ErrorLabel error={errors.alunos} />}
 
-            <div className="bg-background bottom-4 fixed flex gap-4 items-center p-4 right-4">
+            <hr />
 
+            <h2 className="text-lg font-semibold">Endereço vinculado a este usuário</h2>
+
+            <SelectModelContent
+                column="endereco_id"
+                titulo="Endereço"
+                id={data.endereco?.id}
+                array={related.enderecos}
+                setData={setData}
+                error={errors[`endereco_id`]}
+            />
+
+            <div className="bg-background bottom-4 fixed flex gap-4 items-center p-4 right-4">
                 <Link
                     href="/alunos/create"
                     className="px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
@@ -179,6 +188,13 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
                     onClick={addAluno}
                     className="cursor-pointer px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
                     children="Vincular outro aluno"
+                />
+
+                
+                <Link
+                    href="/enderecos/create"
+                    className="px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
+                    children="Criar novo endereço"
                 />
 
                 {!hasErrors && (

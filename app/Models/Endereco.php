@@ -18,13 +18,10 @@ class Endereco extends Model
         'bairro',
         'logradouro',
         'numero',
-        'complemento'
+        'complemento',
+        'latitude',
+        'longitude'
     ];
-
-    public function alunos()
-    {
-        return $this->belongsToMany(Aluno::class)->withTimestamps();
-    }
 
     public function aulas()
     {
@@ -33,6 +30,6 @@ class Endereco extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class)->withTimestamps();
+        return $this->hasMany(User::class, 'endereco_id');
     }
 }

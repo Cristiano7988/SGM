@@ -1,7 +1,7 @@
 import { Head } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
-import { Aluno, User, RelacionadasAoUser } from '@/types/models';
+import { Aluno, User, Endereco } from '@/types/models';
 import Session from '@/components/session';
 import { FormUserContent } from '@/components/form-elements/form-user-content';
 
@@ -10,21 +10,8 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Criar Usuário', href: '#' },
 ];
 
-export default function Create(props: { session: any, alunos: Aluno[] }) {
-    const { session, alunos } = props;
-    const initialData: User & RelacionadasAoUser = {
-        id: 0,
-        nome: '',
-        email: '',
-        email_nf: '',
-        cpf: '',
-        cnpj: '',
-        whatsapp: '',
-        instagram: '',
-        matriculas: [],
-        pivot: { id: 0, user_id: 0, aluno_id: 0, vinculo: '' },
-        alunos: []
-    };
+export default function Create(props: { session: any, user: User, alunos: Aluno[], enderecos: Endereco[] }) {
+    const { session, user, alunos, enderecos } = props;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -35,9 +22,9 @@ export default function Create(props: { session: any, alunos: Aluno[] }) {
                 <h1 className="text-xl font-bold mb-4">Criar Usuário</h1>
 
                 <FormUserContent
-                    initialData={initialData}
+                    initialData={user}
                     endpoint={route("users.store")}
-                    related={{ alunos }}
+                    related={{ alunos, enderecos }}
                 />
             </div>
         </AppLayout>

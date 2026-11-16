@@ -23,6 +23,7 @@ class Turma extends Model
         'whatsapp',
         'spotify',
         'nucleo_id',
+        'professor_id'
     ];
 
     protected $with = [
@@ -65,6 +66,11 @@ class Turma extends Model
     public function nucleo()
     {
         return $this->belongsTo(Nucleo::class);
+    }
+
+    public function professor()
+    {
+        return $this->belongsTo(Professor::class);
     }
 
     public function matriculas()

@@ -6,6 +6,7 @@ use App\Helpers\Filtra;
 use App\Helpers\Trata;
 use App\Models\Nucleo;
 use App\Models\Turma;
+use App\Models\Professor;
 use App\Http\Requests\Settings\TurmaRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -56,9 +57,13 @@ class TurmaController extends Controller
     public function create(Turma $turma)
     {
         try {
+            $professores = Professor::all();
+            $turma->setRelation('professor', collect());
+
             return Inertia::render('turmas/create', [
                 'turma' => $turma,
                 'nucleos' => Nucleo::all(),
+                'professores' => $professores
             ]);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
@@ -131,6 +136,7 @@ class TurmaController extends Controller
             return Inertia::render('turmas/edit', [
                 'turma' => $turma->load(['pacotes']),
                 'nucleos' => Nucleo::all(),
+                'professores' => Professor::all()
             ]);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);

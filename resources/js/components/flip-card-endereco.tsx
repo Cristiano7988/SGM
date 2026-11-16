@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Endereco, Aluno } from "@/types/models";
+import { Aluno, Endereco, User } from "@/types/models";
 import { Link } from "@inertiajs/react";
 
 export default function FlipCardEndereco({ endereco }: { endereco: Endereco }) {
@@ -49,13 +49,17 @@ export default function FlipCardEndereco({ endereco }: { endereco: Endereco }) {
             className="cursor-pointer m-auto absolute left-0 top-1/2"
           />
           <p><b>Alunos:</b></p>
-          {!!endereco.alunos?.length ? <div className="flex flex-col gap-1">
-            {endereco.alunos.map((aluno: Aluno) => {
-              return <div key={aluno.id} className="flex items-center gap-1"><Link className="text-sm" href={route('alunos.show', { id: aluno.id })}>
-                {aluno.nome}
-              </Link>
-            </div>})}
-          </div> : <p>Nenhum aluno associado.</p>}
+          {!!endereco.users?.length
+          ? <div className="flex flex-col gap-1">
+            {endereco.users.map((user: User) => <>
+              {user.alunos?.map((aluno: Aluno) => {
+                return <div key={aluno.id} className="flex items-center gap-1"><Link className="text-sm" href={route('alunos.show', { id: aluno.id })}>
+                  {aluno.nome}
+                </Link>
+              </div>})}
+            </>)}
+            </div>
+          : <p>Nenhum aluno associado.</p>}
         </div>
       </motion.div>
     </div>

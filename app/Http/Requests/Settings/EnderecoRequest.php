@@ -13,13 +13,13 @@ class EnderecoRequest extends FormRequest
      */
     public function rules(): array
     {
-        if ($this->input('alunos')) {
+        if ($this->input('users')) {
             $this->merge([
-                'alunos' => collect($this->input('alunos'))
+                'users' => collect($this->input('users'))
                     ->unique('id')
-                    ->mapWithKeys(function ($aluno) {
+                    ->mapWithKeys(function ($user) {
                         return [
-                            $aluno['id'] => $aluno['id']
+                            $user['id'] => $user['id']
                         ];
                     })
                     ->toArray()
@@ -35,8 +35,8 @@ class EnderecoRequest extends FormRequest
             'estado' => ['required', 'string', 'max:2'],
             'pais' => ['required', 'string', 'max:255'],
             'cep' => ['required', 'string', 'max:9'],
-            'alunos' => ['nullable', 'array'],
-            'alunos.*.aluno_id' => ['integer', 'exists:alunos,id'],
+            'uses' => ['nullable', 'array'],
+            'users.*.user_id' => ['integer', 'exists:users,id'],
         ];
     }
 }

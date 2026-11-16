@@ -1,7 +1,7 @@
 import { Head } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
-import { Aluno, Endereco } from '@/types/models';
+import { User, Endereco } from '@/types/models';
 import Session from '@/components/session';
 import { FormEnderecoContent } from '@/components/form-elements/form-endereco-content';
 
@@ -10,20 +10,8 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Criar Endereço', href: '#' },
 ];
 
-export default function Create(props: { session: any, alunos: Aluno[] }) {
-    const { session, alunos } = props;
-    const initialData: Endereco = {
-        id: 0,
-        cep: '',
-        pais: '',
-        estado: '',
-        cidade: '',
-        bairro: '',
-        logradouro: '',
-        numero: '',
-        complemento: '',
-        alunos: []
-    };
+export default function Create(props: { session: any, endereco: Endereco, users: User[] }) {
+    const { session, endereco, users } = props;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -34,9 +22,9 @@ export default function Create(props: { session: any, alunos: Aluno[] }) {
                 <h1 className="text-xl font-bold mb-4">Criar Endereço</h1>
 
                 <FormEnderecoContent
-                    initialData={initialData}
+                    initialData={endereco}
                     endpoint={route("enderecos.store")}
-                    related={{ alunos }}
+                    related={{ users }}
                 />
             </div>
         </AppLayout>

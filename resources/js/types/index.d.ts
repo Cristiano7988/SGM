@@ -87,7 +87,7 @@ export interface CreatePropsPacote extends EditPropsPacote {};
 
 export interface IndexPropsTurma extends IndexProps<Turma>, RelacionadasATurma {};
 export interface ShowPropsTurma { turma: Turma & RelacionadasATurma };
-export interface EditPropsTurma extends Props, FormProps, RelacionadasATurma { turma: Turma; };
+export interface EditPropsTurma extends Props, FormProps, RelacionadasATurma { turma: Turma; professores: Professor[] };
 export interface CreatePropsTurma extends EditPropsTurma {};
 
 // Alunos

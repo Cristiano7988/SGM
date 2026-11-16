@@ -4,7 +4,7 @@ import { InputTextContent } from "./input-text-content";
 import { SelectModelContent } from "./select-model-content";
 import { InputDateContent } from "./input-date-content";
 import { Unlink } from "lucide-react";
-import { Aluno, Endereco, FormContentProps, User } from "@/types/models";
+import { Aluno, FormContentProps, User } from "@/types/models";
 import { FormProps } from "@/types/index";
 import ErrorLabel from "../error-label";
 
@@ -22,9 +22,6 @@ export function FormAlunoContent({ initialData, endpoint, related }: FormContent
 
     const userInicial = { id: null, pivot: { vinculo: "" }};
     const users = edit ? data.users : [userInicial];
-
-    const enderecosInicial = { id: null, cep: "", rua: "", numero: "", complemento: "", bairro: "", cidade: "", estado: "" };
-    const enderecos = edit ? data.enderecos : [enderecosInicial];
 
     const addResponsavel = () => setData("users", [...users, userInicial]);
 
@@ -55,29 +52,6 @@ export function FormAlunoContent({ initialData, endpoint, related }: FormContent
 
         setData("users", updatedUsers);
         clearErrors(`users.${index}.pivot.vinculo`);
-    };
-
-    const addEndereco = () => setData("enderecos", [...enderecos, enderecosInicial]);
-
-    const removeEndereco = (index: number) => {
-        const updatedEnderecos = enderecos.filter((u: any, i: number) => i !== index);
-
-        setData("enderecos", updatedEnderecos);
-        clearErrors(`enderecos.${index}`);
-        clearErrors("enderecos");
-    };
-
-    const updateEndereco = (index: number, endereco_id: number) => {
-        const updatedEnderecos = [...enderecos];
-        const endereco = related.enderecos.find((e: Endereco) => e.id == endereco_id);
-
-        updatedEnderecos[index] = {
-            ...endereco
-        };
-
-        setData("enderecos", updatedEnderecos);
-        clearErrors(`enderecos.${index}`);
-        clearErrors("enderecos");
     };
 
     return (<>
@@ -135,34 +109,9 @@ export function FormAlunoContent({ initialData, endpoint, related }: FormContent
                 />}
             </div>))}
 
-            {!!enderecos?.length && <hr />}
-
-            {!!enderecos?.length && <h2 className="text-lg font-semibold">Endereços vinculados a este aluno</h2>}
-
-            {enderecos?.map((endereco: Endereco, index: number) => (<div key={index + endereco.id} className="flex gap-2">
-                <div className="flex items-center gap-2 w-full">
-                    <SelectModelContent
-                        column="enderecos"
-                        titulo="Endereço"
-                        id={endereco?.id}
-                        array={related.enderecos}
-                        setData={(column: string, endereco_id: number) => updateEndereco(index, endereco_id)}
-                        error={errors[`enderecos.${index}`]}
-                    />
-
-                    {index > 0 && (
-                        <Unlink
-                            className="cursor-pointer text-red-500 hover:text-red-700"
-                            onClick={() => removeEndereco(index)}
-                        />
-                    )}
-                </div>
-            </div>))}
-
             {errors.users && <ErrorLabel error={errors.users} />}
 
             <div className="bg-background bottom-4 fixed flex gap-4 items-center p-4 right-4">
-
                 <Link
                     href="/users/create"
                     className="px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
@@ -173,18 +122,6 @@ export function FormAlunoContent({ initialData, endpoint, related }: FormContent
                     onClick={addResponsavel}
                     className="cursor-pointer px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
                     children="Vincular outro usuário"
-                />
-
-                <Link
-                    href="/enderecos/create"
-                    className="px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
-                    children="Criar novo endereço"
-                />
-
-                <div
-                    onClick={addEndereco}
-                    className="cursor-pointer px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
-                    children="Vincular outro endereço"
                 />
 
                 {!hasErrors && (

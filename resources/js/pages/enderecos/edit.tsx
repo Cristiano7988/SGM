@@ -1,7 +1,7 @@
 import { Head, useForm } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
-import { Aluno, Endereco } from '@/types/models';
+import { Endereco, User } from '@/types/models';
 import Session from '@/components/session';
 import { ButtonSubmitContent } from '@/components/form-elements/button-submit-content';
 import { FormEnderecoContent } from '@/components/form-elements/form-endereco-content';
@@ -11,8 +11,8 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Editar Endereço', href: '#' },
 ];
 
-export default function Edit(props: { session: any, endereco: Endereco, alunos: Aluno[] }) {
-    const { endereco, alunos, session } = props;
+export default function Edit(props: { session: any, endereco: Endereco, users: User[] }) {
+    const { endereco, users, session } = props;
     const { processing, delete: deleteUser } = useForm();
     
     const submit = (e: React.FormEvent) => {
@@ -31,7 +31,7 @@ export default function Edit(props: { session: any, endereco: Endereco, alunos: 
                 <FormEnderecoContent
                     initialData={endereco}
                     endpoint={route("enderecos.update", endereco.id)}
-                    related={{ alunos }}
+                    related={{ users }}
                 />
 
                 <form onSubmit={submit} className='mt-4'>

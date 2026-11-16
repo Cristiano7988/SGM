@@ -65,7 +65,7 @@ class AlunoController extends Controller
      * Show the form for creating a new resource.
      *
      */
-    public function create()
+    public function create(Aluno $aluno)
     {
         $user = Auth::user();
 
@@ -73,7 +73,12 @@ class AlunoController extends Controller
             ? User::allWithHisPivot(false)
             : $user->alunos->flatMap->users->unique('id');
 
-        return Inertia::render('alunos/create', [ 'users' => $users ]);
+        $aluno->setRelation('users', collect([]));
+        
+        return Inertia::render('alunos/create', [
+            'aluno' => $aluno,
+            'users' => $users
+        ]);
     }
 
     /**
@@ -143,10 +148,10 @@ class AlunoController extends Controller
 
             $enderecos = $user && $user->is_admin
                 ? Endereco::all()
-                : $aluno->enderecos;
+                : $user->enderecos;
 
             return Inertia::render('alunos/edit', [
-                'aluno' => $aluno->load(['users', 'matriculas', 'enderecos']),
+                'aluno' => $aluno->load(['users', 'matriculas']),
                 'users' => $users,
                 'matriculas' => $matriculas,
                 'enderecos' => $enderecos,

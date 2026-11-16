@@ -12,6 +12,8 @@ export interface User {
     pivot: AlunoUser & UserProfessor;
     matriculas?: Matricula[];
     alunos?: Aluno[];
+    endereco_id: number;
+    endereco: Endereco
 }
 
 export interface Professor {
@@ -32,6 +34,9 @@ export interface Endereco {
     logradouro: string;
     numero: string;
     complemento: string;
+    latitude: string;
+    longitude: string;
+    users?: User[];
     alunos?: Aluno[];
 }
 
@@ -130,7 +135,7 @@ export interface Pacote {
     valor: number;
     valor_formatado: string;
     vigencia: string,
-    aulas_na_semana: Aula[]
+    aulas: Aula[],
 }
 
 export interface RelacionadasAoPacote {

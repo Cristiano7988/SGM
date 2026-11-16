@@ -1,7 +1,7 @@
 import { Head } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
-import { Aluno, RelacionadasAoAluno, Matricula, User, AlunoUser } from '@/types/models';
+import { Aluno, Matricula, User } from '@/types/models';
 import Session from '@/components/session';
 import { FormAlunoContent } from '@/components/form-elements/form-aluno-content';
 
@@ -10,15 +10,8 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Criar Aluno', href: '#' },
 ];
 
-export default function Create(props: { session: any, users: User[], matriculas: Matricula[] }) {
-    const { users, matriculas } = props;
-    const initialData: Aluno & RelacionadasAoAluno  = {
-        nome: '',
-        data_de_nascimento: '',
-        data_de_nascimento_formatada: '',
-        idade: '',
-        users: []
-    };
+export default function Create(props: { session: any, users: User[], aluno: Aluno, matriculas: Matricula[] }) {
+    const { users, aluno, matriculas } = props;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -29,7 +22,7 @@ export default function Create(props: { session: any, users: User[], matriculas:
                 <h1 className="text-xl font-bold mb-4">Criar Aluno</h1>
 
                 <FormAlunoContent
-                    initialData={initialData}
+                    initialData={aluno}
                     endpoint={route("alunos.store")}
                     related={{ users, matriculas }}
                 />

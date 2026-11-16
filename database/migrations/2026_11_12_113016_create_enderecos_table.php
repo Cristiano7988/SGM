@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('logradouro', 100)->nullable();
             $table->string('numero', 10)->nullable();
             $table->string('complemento', 100)->nullable();
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
             $table->timestamps();
         });
     }

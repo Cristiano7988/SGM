@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Settings\EnderecoRequest;
 use App\Models\Endereco;
 use App\Models\Aluno;
+use App\Models\User;
 use App\Helpers\Trata;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class EnderecoController extends Controller
 {
@@ -17,10 +19,10 @@ class EnderecoController extends Controller
     public function index()
     {
         $enderecos = Endereco::query();
-        $enderecos->with('alunos');
-        $alunos = Aluno::all();
+        $enderecos->with('users.alunos');
+        $users = User::all();
         $pagination = Trata::resultado($enderecos, 'logradouro');
-        return Inertia::render('enderecos/index', compact('pagination', 'alunos'));
+        return Inertia::render('enderecos/index', compact('pagination', 'users'));
     }
 
     /**
@@ -29,11 +31,12 @@ class EnderecoController extends Controller
     public function create()
     {
         $user = Auth::user();
-        $alunos = $user && $user->is_admin
-            ? Aluno::all()
-            : $user->alunos;
-
-        return Inertia::render('enderecos/create', compact('alunos'));
+        $users = $user && $user->is_admin
+            ? User::all()
+            : [$user];
+        $endereco = new Endereco();
+        $endereco->setRelation("users", collect([]));
+        return Inertia::render('enderecos/create', compact('users', 'endereco'));
     }
 
     /**
@@ -42,7 +45,26 @@ class EnderecoController extends Controller
     public function store(EnderecoRequest $request)
     {
         try {
-            $endereco = Endereco::create($request->validated());
+            $access_token = env("VITE_APP_MAPBOX_TOKEN");
+            $dados = $request->validated();
+
+            $dados['localidade'] = $dados['cidade'];
+            $dados['uf'] = $dados['estado'];
+            
+            $resultado = Http::get('https://api.mapbox.com/search/geocode/v6/forward', [
+                'q' => $dados,
+                'access_token' => $access_token,
+                'country' => 'BR',
+                'language' => 'pt',
+                'limit' => 1,
+            ])->json();
+
+            $coordenadas = $resultado['features'][0]['properties']['coordinates'];
+
+            $dados['longitude'] = $coordenadas['longitude'];
+            $dados['latitude'] = $coordenadas['latitude'];
+
+            $endereco = Endereco::create($dados);
             if ($request->alunos) $endereco->alunos()->sync($request->alunos);
             $mensagem = "Endereço {$endereco->logradouro}, {$endereco->numero} criado.";
 
@@ -62,7 +84,7 @@ class EnderecoController extends Controller
      */
     public function show(Endereco $endereco)
     {
-        $endereco->load('alunos');
+        $endereco->load('users');
         return Inertia::render('enderecos/show', compact('endereco'));
     }
 
@@ -72,12 +94,12 @@ class EnderecoController extends Controller
     public function edit(Endereco $endereco)
     {
         $user = Auth::user();
-        $endereco->load('alunos');
-        $alunos = $user && $user->is_admin
-            ? Aluno::all()
-            : $user->alunos;
+        $endereco->load('users');
+        $users = $user && $user->is_admin
+            ? User::all()
+            : [$user];
 
-        return Inertia::render('enderecos/edit', compact('endereco', 'alunos'));
+        return Inertia::render('enderecos/edit', compact('endereco', 'users'));
     }
 
     /**
@@ -86,8 +108,32 @@ class EnderecoController extends Controller
     public function update(EnderecoRequest $request, Endereco $endereco)
     {
         try {
-            $endereco->update($request->validated());
-            if ($request->alunos) $endereco->alunos()->sync($request->alunos);
+            $access_token = env("VITE_APP_MAPBOX_TOKEN");
+            $dados = $request->validated();
+
+            $dados['localidade'] = $dados['cidade'];
+            $dados['uf'] = $dados['estado'];
+            
+            $resultado = Http::get('https://api.mapbox.com/search/geocode/v6/forward', [
+                'q' => $dados,
+                'access_token' => $access_token,
+                'country' => 'BR',
+                'language' => 'pt',
+                'limit' => 1,
+            ])->json();
+
+            $coordenadas = $resultado['features'][0]['properties']['coordinates'];
+
+            $dados['longitude'] = $coordenadas['longitude'];
+            $dados['latitude'] = $coordenadas['latitude'];
+
+            $endereco->update($dados);
+
+            if ($request->users) {
+                User::whereIn('id', $request->users)
+                    ->update(['endereco_id' => $endereco->id]);
+            }
+
             $mensagem = "Endereço {$endereco->logradouro}, {$endereco->numero} atualizado.";
 
             return isWeb()
