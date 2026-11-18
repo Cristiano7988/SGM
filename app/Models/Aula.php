@@ -13,6 +13,10 @@ class Aula extends Model
         'endereco_id',
         'dia',
         'horario',
+        'valor',
+        'taxa_de_deslocamento',
+        'tempo_de_deslocamento',
+        'distancia'
     ];
 
     protected $casts = [
@@ -20,17 +24,45 @@ class Aula extends Model
         'endereco_id' => 'integer',
         'dia' => 'date:Y-m-d',
         'horario' => 'datetime:H:i',
+        'valor' => 'float',
+        'taxa_de_deslocamento' => 'float',
+        'tempo_de_deslocamento' => 'integer',
+        'distancia' => 'decimal:2',
     ];
 
     protected $appends = [
         'dia_formatado',
         'dia_da_semana',
         'dia_da_semana_index',
+        'valor_formatado',
+        'taxa_de_deslocamento_formatada',
+        'tempo_de_deslocamento_formatado',
+        'distancia_formatada'
     ];
 
     function getDiaFormatadoAttribute()
     {
         return Formata::data($this->dia);
+    }
+
+    public function getValorFormatadoAttribute()
+    {
+        return "R$ " . number_format($this->valor, 2, ',', '.');
+    }
+
+    public function getDistanciaFormatadaAttribute()
+    {
+        return number_format($this->distancia, 2, ',', '.') . " Km";
+    }
+
+    public function getTaxaDeDeslocamentoFormatadaAttribute()
+    {
+        return "R$ " . number_format($this->taxa_de_deslocamento, 2, ',', '.');
+    }
+
+    public function getTempoDeDeslocamentoFormatadoAttribute()
+    {
+        return $this->tempo_de_deslocamento . " min.";
     }
 
     function getDiadaSemanaAttribute()

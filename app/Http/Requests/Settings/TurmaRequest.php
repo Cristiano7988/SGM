@@ -34,6 +34,7 @@ class TurmaRequest extends FormRequest
             'whatsapp' => ['nullable', 'url'],
             'spotify' => ['nullable', 'url'],
             'nucleo_id' => ['nullable', 'numeric', 'min:1', 'exists:nucleos,id'],
+            'professor_id' => ['nullable', 'numeric', 'min:1', 'exists:professores,id'],
         ];
     }
 }

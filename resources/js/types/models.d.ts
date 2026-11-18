@@ -11,7 +11,7 @@ export interface User {
     instagram: string;
     pivot: AlunoUser & UserProfessor;
     matriculas?: Matricula[];
-    alunos?: Aluno[];
+    alunos: Aluno[];
     endereco_id: number;
     endereco: Endereco
 }
@@ -104,6 +104,8 @@ export interface Turma {
     spotify: string,
     nucleo_id: number,
     nucleo: Nucleo;
+    professor_id: number;
+    professor: Prrofessor;
 }
 
 export interface Aula {
@@ -116,6 +118,14 @@ export interface Aula {
     pacote?: Pacote,
     endereco_id: number,
     endereco?: Endereco,
+    valor: number,
+    tempo_de_deslocamento: number,
+    distancia: number,
+    taxa_de_deslocamento: number,
+    valor_formatado: string,
+    tempo_de_deslocamento_formatado: string,
+    distancia_formatada: string,
+    taxa_de_deslocamento_formatada: string,
 }
 
 export interface RelacionadasATurma {

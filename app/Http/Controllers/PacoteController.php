@@ -9,7 +9,9 @@ use App\Models\Turma;
 use App\Models\Pacote;
 use App\Models\Aula;
 use App\Models\Matricula;
+use App\Models\User;
 use App\Models\Endereco;
+use App\Models\Nucleo;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -67,17 +69,39 @@ class PacoteController extends Controller
     public function create()
     {
         $user = auth()->user();
-        $enderecos = $user && $user->is_admin
-            ? Endereco::all()
-            : $user->enderecos;
+        if ($user && $user->is_admin) {
+            $enderecos = Endereco::all();
+        } else {
+            // endereços relacionados aos alunos do usuário
+            $enderecosDosAlunos = $user->getEnderecosDosAlunos();
+    
+            // endereços relacionados aos professores responsáveis pela turmas pertencentes aos núcleos disponíveis para os alunos do usuário logado
+            $enderecosDosProfessores = Nucleo::getTurmas($user->alunos->pluck("meses"))->pluck("professor.user.endereco");
 
-        $pacote = new Pacote();
-        $aula = new Aula();
+            // Merge das turmas pertencentes aos núcleos voltados para os alunos do usuário logado 
+            $enderecos = $enderecosDosAlunos
+                ->concat($enderecosDosProfessores)
+                ->filter()
+                ->unique('id')
+                ->values();
+        }
 
-        $pacote->setRelation('aulas', collect([]));
+        $pacote = new Pacote([
+            "valor" => 0,
+            "ativo" => 0
+        ]);
+        $aula = new Aula([
+            'dia' => "",
+            'valor' => 0,
+            'tempo_de_deslocamento' => 0,
+            'distancia' => 0,
+            'taxa_de_deslocamento' => 0,
+        ]);
+
+        $pacote->setRelation('aulas', collect([$aula]));
         return Inertia::render('pacotes/create', [
             'pacote' => $pacote,
-            'turmas' => Turma::all(),
+            'turmas' => Turma::all()->load('professor'),
             'enderecos' => $enderecos
         ]);
     }
@@ -145,8 +169,8 @@ class PacoteController extends Controller
                 : $user->enderecos;
                 
             return Inertia::render('pacotes/edit', [
-                'pacote' => $pacote->load(['aulas']),
-                'turmas' => Turma::all(),
+                'pacote' => $pacote->load(['aulas.endereco']),
+                'turmas' => Turma::all()->load(['professor']),
                 'enderecos' => $enderecos
             ]);
         } catch (\Throwable $th) {

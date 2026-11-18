@@ -15,6 +15,10 @@ return new class extends Migration
             $table->id();
             $table->date('dia');
             $table->time('horario');
+            $table->decimal('valor', 10, 2)->default(0);
+            $table->decimal('taxa_de_deslocamento', 10, 2)->default(0);
+            $table->integer('tempo_de_deslocamento')->default(0);
+            $table->decimal('distancia', 10, 2)->default(0);
             $table->foreignId('pacote_id')->constrained()->onDelete('cascade');
             $table->foreignId('endereco_id')->constrained()->onDelete('cascade');
             $table->timestamps();

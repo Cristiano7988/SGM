@@ -1,30 +1,30 @@
 import { Link, useForm } from "@inertiajs/react";
 import { ButtonSubmitContent } from "./button-submit-content";
-import { InputTextContent } from "./input-text-content";
 import { SelectModelContent } from "./select-model-content";
 import { SwitchContent } from "./switch-content";
-import { FormContentProps, Pacote, Aula } from "@/types/models";
+import { FormContentProps, Pacote, Aula, Turma, } from "@/types/models";
 import { FormProps } from "@/types";
-import { Unlink } from "lucide-react";
 import ErrorLabel from "../error-label";
-import { InputDateContent } from "./input-date-content";
 import { useEffect, useState } from "react";
-import { InputTimeContent } from "./input-time-content";
+import { FormAulaContent } from "./form-aula-content";
 
 export function FormPacoteContent({ initialData, endpoint, related }: FormContentProps<Pacote>) {
     const { data: dataForm, setData, errors, clearErrors, hasErrors, processing, post, put } = useForm<FormProps<Pacote>>(initialData);
     const edit = location.pathname.includes("edit");
-    const [dia] = new Date().toISOString().split('T');
-    const aulaInicial = { id: 0, dia, dia_formatado: dia, dia_da_semana: "", horario: "00:00", pacote_id: 0, endereco_id: 0 };
+    const [aulaInicial] = initialData.aulas
     const [aulas, setAulas] = useState([aulaInicial]);
 
     useEffect(() => {
-        setAulas(edit ? dataForm.aulas : [aulaInicial]);
+        setAulas(edit ? dataForm.aulas : []);
     }, []);
 
     useEffect(() => {
         setData("aulas", aulas);
         clearErrors("aulas");
+
+        const total = aulas.reduce((soma, aula) => soma + aula.valor, 0);
+        setData("valor", total);
+        setData("valor_formatado", total.toFixed(2).replace(".", ","));
     }, [aulas]);
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -36,37 +36,6 @@ export function FormPacoteContent({ initialData, endpoint, related }: FormConten
     };
     
     const addAula = () => setAulas([...aulas, aulas.length ? aulas[aulas.length - 1] : aulaInicial]);
-
-    const removeAula = (index: number) => {
-        delete aulas[index];
-
-        setAulas(aulas.filter(Boolean));
-        clearErrors(`aulas.${index}`);
-    };
-
-    const updateDia = (index: number, value: string) => {
-        const newAulas = [...aulas];
-        newAulas[index] = { ...newAulas[index], dia: value };
-
-        setAulas(newAulas);
-        clearErrors(`aulas.${index}.dia`);
-    };
-
-    const updateHorario = (index: number, value: string) => {
-        const newAulas = [...aulas];
-        newAulas[index] = { ...newAulas[index], horario: value };
-
-        setAulas(newAulas);
-        clearErrors(`aulas.${index}.horario`);
-    };
-
-    const updateEndereco = (index: number, value: number) => {
-        const updatedAulas = [...dataForm.aulas];
-        updatedAulas[index].endereco_id = value;
-
-        setData("aulas", updatedAulas);
-        clearErrors(`aulas.${index}.endereco_id`);
-    };
 
     return (
         <form onSubmit={submit} className="flex flex-col gap-6 space-y-4">
@@ -88,40 +57,30 @@ export function FormPacoteContent({ initialData, endpoint, related }: FormConten
                 error={errors.ativo}
             />
 
-            <hr />
+            {!!aulas.length && <>
+                <hr />
 
-            <h2 style={{ margin: "unset" }} className="text-lg font-semibold">Aulas deste pacote</h2>
+                <h2 style={{ margin: "unset" }} className="text-lg font-semibold">Aulas deste pacote</h2>
 
-            {aulas.map((aula: Aula, index: number) => (
-                <div key={index} className="flex items-end gap-2">
-                    <InputDateContent
-                        column="dia"
-                        value={aula.dia}
-                        min={dia}
-                        setData={(_: any, value: string) => updateDia(index, value)}
-                        error={errors[`aulas.${index}.dia`]}
+                {aulas.map((aula: Aula, index: number) => (
+                    <FormAulaContent
+                        key={index}
+                        aula={aula}
+                        index={index}
+                        turma={related.turmas.find((t: Turma) => t.id === dataForm.turma_id)}
+                        setAulas={setAulas}
+                        dataForm={dataForm}
+                        errors={errors}
                         clearErrors={clearErrors}
+                        related={related}
                     />
-                    <InputTimeContent
-                        column="horario"
-                        value={aula.horario}
-                        setData={(_: any, value: string) => updateHorario(index, value)}
-                        error={errors[`aulas.${index}.horario`]}
-                    />
-                    <SelectModelContent
-                        column="endereco_id"
-                        titulo="Endereço"
-                        id={dataForm.aulas[index]?.endereco_id}
-                        array={related.enderecos}
-                        setData={(_: any, value: number) => updateEndereco(index, value)}
-                        error={errors[`aulas.${index}.endereco_id`]}
-                    />
-                    <Unlink
-                        className="cursor-pointer text-red-500 hover:text-red-700"
-                        onClick={() => removeAula(index)}
-                    />
-                </div>
-            ))}
+                ))}
+                
+                {!!dataForm.valor && <div className="bg-gray-100 dark:bg-gray-900 p-4 gap-2 flex flex-col">
+                    <h3>Total:</h3>
+                    <p><b>Valor:</b> {dataForm.valor_formatado}</p>
+                </div>}
+            </>}
 
             {errors.aulas && <ErrorLabel error={errors.aulas} />}
 
@@ -129,13 +88,13 @@ export function FormPacoteContent({ initialData, endpoint, related }: FormConten
                 <Link
                     href="/turmas/create"
                     className="px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
-                    children="Criar nova turma"
+                    children="Criar turma"
                 />
-                <div
+                {dataForm.turma_id && <div
                     onClick={addAula}
                     className="cursor-pointer px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
-                    children="Vincular outra aula"
-                />
+                    children="Vincular aula"
+                />}
 
                 {!hasErrors && (
                     <ButtonSubmitContent

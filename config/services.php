@@ -34,5 +34,8 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'ors' => [
+        'key' => env('ORS_API_KEY'),
+    ],
 
 ];

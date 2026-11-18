@@ -45,7 +45,7 @@ class EnderecoController extends Controller
     public function store(EnderecoRequest $request)
     {
         try {
-            $access_token = env("VITE_APP_MAPBOX_TOKEN");
+            $access_token = env("VITE_MAPBOX_TOKEN");
             $dados = $request->validated();
 
             $dados['localidade'] = $dados['cidade'];
@@ -108,14 +108,15 @@ class EnderecoController extends Controller
     public function update(EnderecoRequest $request, Endereco $endereco)
     {
         try {
-            $access_token = env("VITE_APP_MAPBOX_TOKEN");
+            $access_token = env("VITE_MAPBOX_TOKEN");
             $dados = $request->validated();
 
-            $dados['localidade'] = $dados['cidade'];
-            $dados['uf'] = $dados['estado'];
-            
+            $q = "{$dados['logradouro']}, {$dados['numero']}, "
+                . "{$dados['bairro']}, {$dados['cidade']}, "
+                . "{$dados['estado']}, Brasil";
+
             $resultado = Http::get('https://api.mapbox.com/search/geocode/v6/forward', [
-                'q' => $dados,
+                'q' => $q,
                 'access_token' => $access_token,
                 'country' => 'BR',
                 'language' => 'pt',

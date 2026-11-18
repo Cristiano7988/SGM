@@ -51,10 +51,10 @@ export function FormEnderecoContent({ initialData, endpoint, related }: FormCont
         fetch(`https://viacep.com.br/ws/${data.cep}/json/`)
             .then((r) => r.ok ? r.json() : false)
             .then((resultado) => {
-                setData("logradouro", resultado.logradouro);
-                setData("bairro", resultado.bairro);
-                setData("cidade", resultado.localidade);
-                setData("estado", resultado.uf);
+                setData("logradouro", resultado.logradouro ?? data.logradouro);
+                setData("bairro", resultado.bairro ?? data.bairro);
+                setData("cidade", resultado.localidade ?? data.cidade);
+                setData("estado", resultado.uf ?? data.estado);
                 setData("pais", "Brasil");
             });
     }, [data.cep]);

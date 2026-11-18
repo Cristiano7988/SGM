@@ -19,7 +19,9 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
             : post(endpoint);
     };
 
-    const [alunoInicial] = initialData.alunos;
+    const [alunoInicial] = initialData.alunos
+
+    if (alunoInicial) delete alunoInicial.id;
 
     const addAluno = () => setData("alunos", [...data.alunos, alunoInicial]);
 
@@ -34,21 +36,27 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
     const updateAluno = (index: number, aluno_id: number) => {
         if (!data.alunos) return;
 
-        const updatedAlunos = [...data.alunos];
-        const aluno = related.alunos.find((a: Aluno) => a.id == aluno_id);
-        updatedAlunos[index] = aluno;
+        const aluno = related.alunos.find((a: Aluno) => a?.id == aluno_id);
+        const updatedAlunos = [
+            ...data.alunos,
+            aluno
+        ];
 
         setData("alunos", updatedAlunos);
         clearErrors(`alunos.${index}`);
         clearErrors("alunos");
     };
 
-    const updateVinculo = (index: number, value: string) => {
-        const updatedAlunos = [...data.alunos];
-        updatedAlunos[index].pivot.vinculo = value;
+    const updateVinculo = (aluno_id: number, value: string) => {
+        const aluno = related.alunos.find((a: Aluno) => a?.id == aluno_id);
+        aluno.pivot.vinculo = value;
+        const updatedAlunos = [
+            ...data.alunos,
+            aluno,
+        ];
 
         setData("alunos", updatedAlunos);
-        clearErrors(`alunos.${index}.pivot.vinculo`);
+        // clearErrors(`alunos.${index}.pivot.vinculo`);
     };
 
     return (<>
@@ -135,7 +143,7 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
                 <hr />
                 <h2 className="text-lg font-semibold">Alunos vinculados a este usuário</h2>
             
-                {data.alunos.map((aluno: Aluno, index: number) => (<div key={index + aluno.id} className="flex gap-2">
+                {data.alunos.map((aluno: Aluno, index: number) => (<div key={index} className="flex gap-2">
                     <div className="flex items-center gap-2 w-full">
                         <SelectModelContent
                             column="alunos"
@@ -149,8 +157,8 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
                             column="vinculo"
                             titulo="Vínculo"
                             title="O que este usuário é deste aluno? Mãe? Pai? ..."
-                            value={data.alunos[index]?.pivot?.vinculo}
-                            setData={(_column: string, value: string) => updateVinculo(index, value)}
+                            value={aluno?.pivot?.vinculo}
+                            setData={(_column: string, value: string) => updateVinculo(aluno?.id, value)}
                             error={errors[`alunos.${index}.pivot.vinculo`]}
                             clearErrors={clearErrors}
                         />

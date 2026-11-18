@@ -12,6 +12,7 @@ class Pacote extends Model
     protected $fillable = [
         'ativo',
         'turma_id',
+        'valor'
     ];
 
     protected $with = [
@@ -19,7 +20,6 @@ class Pacote extends Model
     ];
 
     protected $appends = [
-        'valor',
         'valor_formatado',
         'aulas_na_semana',
         'aulas_na_semana_index',
@@ -29,18 +29,13 @@ class Pacote extends Model
         'total_de_aulas'
     ];
 
-    public function getValorAttribute()
-    {
-        $aulas = $this->relationLoaded('aulas')
-            ? $this->aulas->count()
-            : $this->aulas()->count();
-
-        $turma = $this->relationLoaded('turma')
-            ? $this->turma
-            : $this->turma()->first();
-
-        return $aulas * ($turma->valor ?? 0);
-    }
+    protected $casts = [
+        'ativo' => 'boolean',
+        'turma_id' => 'integer',
+        'valor' => 'float',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
     public function getValorFormatadoAttribute()
     {

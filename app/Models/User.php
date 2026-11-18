@@ -87,6 +87,11 @@ class User extends Authenticatable
         return $this->hasMany(Erro::class);
     }
 
+    public function getEnderecosDosAlunos()
+    {
+        return $this->alunos->flatMap->users->pluck("endereco");
+    }
+
     public function endereco()
     {
         return $this->belongsTo(Endereco::class, 'endereco_id');

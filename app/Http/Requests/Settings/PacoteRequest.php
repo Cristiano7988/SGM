@@ -14,6 +14,7 @@ class PacoteRequest extends FormRequest
      */
     public function rules(): array
     {
+        $user = auth()->user();
 
         return [
             'ativo' => ['required', 'boolean'],
@@ -22,8 +23,9 @@ class PacoteRequest extends FormRequest
                 'numeric',
                 'exists:turmas,id',
             ],
+            'valor' => ['required', 'numeric', 'min:0'],
             'aulas' => ['array'],
-            'aulas.*.dia' => ['required', 'date_format:Y-m-d', 'after_or_equal:today'],
+            'aulas.*.dia' => ['required', 'date_format:Y-m-d', $user->is_admin ? '' : 'after_or_equal:today'],
             'aulas.*.horario' => ['required', 'date_format:H:i'],
         ];
     }

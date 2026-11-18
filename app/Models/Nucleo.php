@@ -51,6 +51,21 @@ class Nucleo extends Model
         return explode("\n\n", $this->attributes['descricao']);
     }
 
+    public static function getTurmas($meses)
+    {
+        $now = now();
+
+        return self::where('inicio_matricula', '<=', $now)
+            ->where('fim_matricula', '>=', $now)
+            ->where('idade_minima', '<=', $meses->max())
+            ->where('idade_maxima', '>=', $meses->min())
+            ->with('turmas')
+            ->get()
+            ->flatMap->turmas
+            ->unique('id')
+            ->values();
+    }
+
     /**
      * Relacionamentos
      */

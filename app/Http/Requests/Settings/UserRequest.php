@@ -24,7 +24,6 @@ class UserRequest extends FormRequest
                     ->mapWithKeys(function ($aluno) {
                         return [
                             $aluno['id'] => [
-                                'id' => $aluno['id'],
                                 'vinculo' => $aluno['pivot']['vinculo']
                             ]
                         ];
