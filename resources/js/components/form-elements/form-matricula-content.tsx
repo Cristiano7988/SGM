@@ -46,10 +46,10 @@ export function FormMatriculaContent({ initialData, endpoint, related }: FormCon
     }
 
     const filtraPacotesDeAlunosMatriculados = (pacote: Pacote) => {
-        const aluno = related.alunos.find((aluno: Aluno) => aluno.id == data.aluno_id);
-        const matricula = aluno.matriculas.find((matricula: Matricula) => matricula.pacote.turma_id == pacote.turma_id);
+        // const aluno = related.alunos.find((aluno: Aluno) => aluno.id == data.aluno_id);
+        // const matricula = aluno.matriculas.find((matricula: Matricula) => matricula.pacote.turma_id == pacote.turma_id);
 
-        return !matricula;
+        // return !matricula;
     }
 
     useEffect(() => {

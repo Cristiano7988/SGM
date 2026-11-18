@@ -11,6 +11,7 @@ class Aula extends Model
     protected $fillable = [
         'pacote_id',
         'endereco_id',
+        'turma_id',
         'dia',
         'horario',
         'valor',
@@ -39,6 +40,16 @@ class Aula extends Model
         'tempo_de_deslocamento_formatado',
         'distancia_formatada'
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (Aula $aula) {
+            if ($aula->turma_id && ! $aula->endereco_id) {
+                $turma = Turma::find($aula->turma_id);
+                $aula->endereco_id = $turma?->endereco_id;
+            }
+        });
+    }
 
     function getDiaFormatadoAttribute()
     {
@@ -80,8 +91,19 @@ class Aula extends Model
         return $this->belongsTo(Pacote::class);
     }
 
+    public function turma()
+    {
+        return $this->belongsTo(Turma::class);
+    }
+
     public function endereco()
     {
         return $this->belongsTo(Endereco::class);
+    }
+
+    public function alunos()
+    {
+        // remover após aajustar pro adrão
+        return $this->belongsToMany(Aluno::class, 'alunos_aulas')->withTimestamps();
     }
 }

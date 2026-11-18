@@ -52,7 +52,7 @@ class Turma extends Model
 
     function getVagasPreenchidasAttribute(): int
     {
-        return $this->matriculas->filter(function ($m) { return !$m->vencida; })->count();
+        return 0;//$this->matriculas->filter(function ($m) { return !$m->vencida; })->count();
     }
 
     public static function allDisponiveis()
@@ -78,8 +78,8 @@ class Turma extends Model
         return $this->hasManyThrough(Matricula::class, Pacote::class);
     }
 
-    public function pacotes()
+    public function aulas()
     {
-        return $this->hasMany(Pacote::class);
+        return $this->hasMany(Aula::class);
     }
 }

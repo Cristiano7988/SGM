@@ -22,7 +22,6 @@ export default function Show(props: ShowPropsPacote) {
                         <p><strong>Valor:</strong> {pacote.valor_formatado}</p>
                         <p><strong>Disponível:</strong> {pacote.ativo ? "Sim" : "Não"}</p>
                         <hr />
-                        <p><strong>Turma:</strong> <Link href={"/turmas/" + pacote.turma_id} children={pacote.turma.nome} /></p>
                         <hr />
                         <p><strong>Aulas:</strong></p>
                         {pacote.aulas.map((aula) => <p key={aula.id}>{aula.dia_formatado} às {aula.horario} {aula.endereco && <span>na {aula.endereco.logradouro}, {aula.endereco.numero}, {aula.endereco.complemento} - bairro {aula.endereco.bairro}</span>}</p>)}

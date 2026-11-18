@@ -37,7 +37,6 @@ export interface Endereco {
     latitude: string;
     longitude: string;
     users?: User[];
-    alunos?: Aluno[];
 }
 
 export interface AlunoUser {
@@ -114,10 +113,13 @@ export interface Aula {
     dia: string,
     dia_formatado: string,
     dia_da_semana: string,
-    pacote_id: number | null,
+    pacote_id: number,
+    turma?: Turma,
+    turma_id: number,
     pacote?: Pacote,
     endereco_id: number,
     endereco?: Endereco,
+    alunos: Aluno[],
     valor: number,
     tempo_de_deslocamento: number,
     distancia: number,
@@ -140,16 +142,15 @@ export interface RelacionadasATurma {
 export interface Pacote {
     id: number;
     ativo: boolean;
-    turma_id: number;
     turma?: Turma;
     valor: number;
     valor_formatado: string;
     vigencia: string,
     aulas: Aula[],
+    turmas: Turma[]
 }
 
 export interface RelacionadasAoPacote {
-    turma: Turma;
     aulas: Aula[];
     // Para o filtro de Pacote
     turmas: Turma[];
@@ -164,6 +165,7 @@ export interface Aluno {
     idade: string
     pivot: AlunoUser
     matriculas: Matricula[];
+    aulas: Aula[]
 }
 
 export interface RelacionadasAoAluno {

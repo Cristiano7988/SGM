@@ -1,8 +1,7 @@
 import { Link, useForm } from "@inertiajs/react";
 import { ButtonSubmitContent } from "./button-submit-content";
-import { SelectModelContent } from "./select-model-content";
 import { SwitchContent } from "./switch-content";
-import { FormContentProps, Pacote, Aula, Turma, } from "@/types/models";
+import { FormContentProps, Pacote, Aula, } from "@/types/models";
 import { FormProps } from "@/types";
 import ErrorLabel from "../error-label";
 import { useEffect, useState } from "react";
@@ -12,11 +11,7 @@ export function FormPacoteContent({ initialData, endpoint, related }: FormConten
     const { data: dataForm, setData, errors, clearErrors, hasErrors, processing, post, put } = useForm<FormProps<Pacote>>(initialData);
     const edit = location.pathname.includes("edit");
     const [aulaInicial] = initialData.aulas
-    const [aulas, setAulas] = useState([aulaInicial]);
-
-    useEffect(() => {
-        setAulas(edit ? dataForm.aulas : []);
-    }, []);
+    const [aulas, setAulas] = useState(edit ? initialData.aulas : []);
 
     useEffect(() => {
         setData("aulas", aulas);
@@ -39,15 +34,6 @@ export function FormPacoteContent({ initialData, endpoint, related }: FormConten
 
     return (
         <form onSubmit={submit} className="flex flex-col gap-6 space-y-4">
-            <SelectModelContent
-                column="turma_id"
-                titulo="Turmas"
-                id={dataForm.turma_id}
-                array={related.turmas}
-                setData={setData}
-                error={errors.turma_id}
-            />
-
             <SwitchContent
                 column="ativo"
                 titulo="Ativo"
@@ -67,9 +53,7 @@ export function FormPacoteContent({ initialData, endpoint, related }: FormConten
                         key={index}
                         aula={aula}
                         index={index}
-                        turma={related.turmas.find((t: Turma) => t.id === dataForm.turma_id)}
                         setAulas={setAulas}
-                        dataForm={dataForm}
                         errors={errors}
                         clearErrors={clearErrors}
                         related={related}
@@ -86,15 +70,25 @@ export function FormPacoteContent({ initialData, endpoint, related }: FormConten
 
             <div className="bg-background bottom-4 fixed flex gap-4 items-center p-4 right-4">
                 <Link
+                    href="/enderecos/create"
+                    className="px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
+                    children="Criar endereço"
+                />
+                <Link
+                    href="/alunos/create"
+                    className="px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
+                    children="Criar aluno"
+                />
+                <Link
                     href="/turmas/create"
                     className="px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
                     children="Criar turma"
                 />
-                {dataForm.turma_id && <div
+                <div
                     onClick={addAula}
                     className="cursor-pointer px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
                     children="Vincular aula"
-                />}
+                />
 
                 {!hasErrors && (
                     <ButtonSubmitContent

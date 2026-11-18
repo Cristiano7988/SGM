@@ -16,7 +16,6 @@ class PacoteFactory extends Factory
         return [
             'valor' => $this->faker->numberBetween(0, 500),
             'ativo' => $this->faker->boolean(),
-            'turma_id' => Turma::inRandomOrder()->first()->id,
         ];
     }
 }

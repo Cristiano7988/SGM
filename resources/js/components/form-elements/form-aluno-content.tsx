@@ -115,13 +115,13 @@ export function FormAlunoContent({ initialData, endpoint, related }: FormContent
                 <Link
                     href="/users/create"
                     className="px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
-                    children="Criar novo usuário"
+                    children="Criar usuário"
                 />
 
                 <div
                     onClick={addResponsavel}
                     className="cursor-pointer px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
-                    children="Vincular outro usuário"
+                    children="Vincular usuário"
                 />
 
                 {!hasErrors && (

@@ -1,4 +1,4 @@
-import CardPacote from '@/components/card-pacote';
+import FlipCardPacote from '@/components/flip-card-pacote';
 import Filtros from '@/components/filtros';
 import Session from '@/components/session';
 import AppLayout from '@/layouts/app-layout';
@@ -53,7 +53,7 @@ export default function Index(props: IndexPropsPacote) {
 
                 {pagination.data.length
                     ? <div className="flex flex-wrap justify-between gap-4">
-                        {pagination.data.map((pacote: Pacote) => <CardPacote key={pacote.id} pacote={pacote} />)}
+                        {pagination.data.map((pacote: Pacote) => <FlipCardPacote key={pacote.id} pacote={pacote} />)}
                     </div>
                     : <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex flex-col justify-center items-center overflow-hidden rounded-xl border md:min-h-min">
                         <div className="m-auto">Sem resultados</div>

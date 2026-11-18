@@ -34,7 +34,6 @@ export default function FlipCardMatricula({ matricula }: { matricula: Matricula 
             </div>
             <div className="flex flex-col m-auto gap-2">
               <p><b>Aluno:</b> <Link className="tex-sm" href={`/alunos/${matricula.aluno_id}`}>{matricula.aluno?.nome}</Link></p>
-              <p><b>Turma:</b> <Link className="tex-sm" href={`/turmas/${matricula.pacote?.turma_id}`}>{matricula.pacote?.turma?.nome}</Link></p>
               <p><b>Dias:</b> {matricula.pacote?.aulas_na_semana.map((aula: Aula) => <p key={aula.id} className="text-sm">
                 <span className="capitalize">{aula.dia_da_semana}</span> às {aula.horario}
               </p>)}</p>

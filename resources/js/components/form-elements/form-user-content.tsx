@@ -34,29 +34,25 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
     };
 
     const updateAluno = (index: number, aluno_id: number) => {
-        if (!data.alunos) return;
+        const aluno = related.alunos.find((a: Aluno) => a.id == aluno_id);
+        if (!aluno) return;
 
-        const aluno = related.alunos.find((a: Aluno) => a?.id == aluno_id);
-        const updatedAlunos = [
-            ...data.alunos,
-            aluno
-        ];
+        setData("alunos", data.alunos.map((a, i) =>
+            i === index
+                ? { ...aluno, pivot: { ...aluno.pivot, vinculo: a?.pivot?.vinculo ?? "" } }
+                : a
+        ));
 
-        setData("alunos", updatedAlunos);
         clearErrors(`alunos.${index}`);
         clearErrors("alunos");
     };
 
-    const updateVinculo = (aluno_id: number, value: string) => {
-        const aluno = related.alunos.find((a: Aluno) => a?.id == aluno_id);
-        aluno.pivot.vinculo = value;
-        const updatedAlunos = [
-            ...data.alunos,
-            aluno,
-        ];
-
-        setData("alunos", updatedAlunos);
-        // clearErrors(`alunos.${index}.pivot.vinculo`);
+    const updateVinculo = (index: number, value: string) => {
+        setData("alunos", data.alunos.map((aluno, i) =>
+            i === index
+                ? { ...aluno, pivot: { ...aluno.pivot, vinculo: value } }
+                : aluno
+        ));
     };
 
     return (<>
@@ -151,14 +147,14 @@ export function FormUserContent({ initialData, endpoint, related }: FormContentP
                             id={aluno?.id}
                             array={related.alunos}
                             setData={(_column: string, aluno_id: number) => updateAluno(index, aluno_id)}
-                            error={errors["alunos"] ?? errors[`alunos.${index}`] ?? errors[`alunos.${index}.id`] ?? errors[`alunos.${index}.vinculo`]}
+                            error={errors["alunos"] ?? errors[`alunos.${index}`] ?? errors[`alunos.${index}.id`] ?? errors[`alunos.${index}.pivot.vinculo`]}
                         />
                         <InputTextContent
                             column="vinculo"
                             titulo="Vínculo"
                             title="O que este usuário é deste aluno? Mãe? Pai? ..."
                             value={aluno?.pivot?.vinculo}
-                            setData={(_column: string, value: string) => updateVinculo(aluno?.id, value)}
+                            setData={(_column: string, value: string) => updateVinculo(index, value)}
                             error={errors[`alunos.${index}.pivot.vinculo`]}
                             clearErrors={clearErrors}
                         />

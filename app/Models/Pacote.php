@@ -11,7 +11,6 @@ class Pacote extends Model
     use HasFactory;
     protected $fillable = [
         'ativo',
-        'turma_id',
         'valor'
     ];
 
@@ -26,12 +25,12 @@ class Pacote extends Model
         'vigencia',
         'vencido',
         'vagas_preenchidas',
-        'total_de_aulas'
+        'total_de_aulas',
+        'turmas',
     ];
 
     protected $casts = [
         'ativo' => 'boolean',
-        'turma_id' => 'integer',
         'valor' => 'float',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -84,6 +83,15 @@ class Pacote extends Model
         return $this->aulas()->count();
     }
 
+    function getTurmasAttribute()
+    {
+        return $this->aulas
+            ->pluck('turma')
+            ->filter()
+            ->unique('id')
+            ->values();
+    }
+
     public static function disponiveis()
     {
         return Pacote::has('aulas')
@@ -96,14 +104,9 @@ class Pacote extends Model
             ->values();
     }
 
-    public function turma()
-    {
-        return $this->belongsTo(Turma::class);
-    }
-
     public function aulas()
     {
-        return $this->hasMany(Aula::class);
+        return $this->hasMany(Aula::class)->orderBy('dia');
     }
 
     public function matriculas()

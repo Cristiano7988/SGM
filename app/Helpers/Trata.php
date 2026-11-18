@@ -21,7 +21,7 @@ class Trata
 
         $order_by = $order_by ?? $padrao;
         $sort = $sort ?? 'asc';
-        $per_page = $per_page ?? 10;
+        $per_page = $per_page ?? 12;
 
         $table = $table->orderBy($order_by, $sort)->paginate($per_page);
         

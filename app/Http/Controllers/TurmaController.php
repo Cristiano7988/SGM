@@ -23,7 +23,6 @@ class TurmaController extends Controller
         try {
             extract(request()->all());
             $turmas = Turma::query();
-            $turmas->with(['pacotes']);
 
             $turmas
                 ->leftJoin('nucleos', 'turmas.nucleo_id', 'nucleos.id')
@@ -134,7 +133,7 @@ class TurmaController extends Controller
     {
         try {
             return Inertia::render('turmas/edit', [
-                'turma' => $turma->load(['pacotes']),
+                'turma' => $turma,
                 'nucleos' => Nucleo::all(),
                 'professores' => Professor::all()
             ]);
@@ -185,7 +184,7 @@ class TurmaController extends Controller
     {
         try {
             DB::beginTransaction();
-            $turma->pacotes()->delete();
+            // $turma->pacotes()->delete();
             Storage::delete($turma->imagem);
             $turma->delete();
             DB::commit();

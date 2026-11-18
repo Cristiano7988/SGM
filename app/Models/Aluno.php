@@ -73,7 +73,13 @@ class Aluno extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class)->withPivot('vinculo')->withTimestamps();
+        return $this->belongsToMany(User::class)->withPivot('vinculo')->orderBy("nome")->withTimestamps();
+    }
+
+    public function aulas()
+    {
+        // remover após ajustar o padrão
+        return $this->belongsToMany(Aula::class, 'alunos_aulas')->withTimestamps();
     }
 
     public function matriculas()

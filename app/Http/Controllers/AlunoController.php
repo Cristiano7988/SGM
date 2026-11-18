@@ -151,7 +151,7 @@ class AlunoController extends Controller
                 : $user->enderecos;
 
             return Inertia::render('alunos/edit', [
-                'aluno' => $aluno->load(['users', 'matriculas']),
+                'aluno' => $aluno->load(['users', 'matriculas', 'aulas']),
                 'users' => $users,
                 'matriculas' => $matriculas,
                 'enderecos' => $enderecos,

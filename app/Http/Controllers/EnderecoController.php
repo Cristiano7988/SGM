@@ -7,9 +7,11 @@ use App\Models\Endereco;
 use App\Models\Aluno;
 use App\Models\User;
 use App\Helpers\Trata;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
 
 class EnderecoController extends Controller
 {
@@ -45,31 +47,46 @@ class EnderecoController extends Controller
     public function store(EnderecoRequest $request)
     {
         try {
-            $access_token = env("VITE_MAPBOX_TOKEN");
             $dados = $request->validated();
 
-            $dados['localidade'] = $dados['cidade'];
-            $dados['uf'] = $dados['estado'];
-            
-            $resultado = Http::get('https://api.mapbox.com/search/geocode/v6/forward', [
-                'q' => $dados,
-                'access_token' => $access_token,
-                'country' => 'BR',
-                'language' => 'pt',
-                'limit' => 1,
-            ])->json();
+            $enderecoBusca = implode(', ', array_filter([
+                $dados['logradouro'] ?? null,
+                $dados['numero'] ?? null,
+                $dados['bairro'] ?? null,
+                $dados['cidade'] ?? null,
+                $dados['estado'] ?? null,
+                'Brasil',
+            ]));
 
-            $coordenadas = $resultado['features'][0]['properties']['coordinates'];
+            $resultado = Cache::remember(
+                'geocode_' . md5($enderecoBusca),
+                now()->addDays(30),
+                fn () => Http::withHeaders([
+                    'User-Agent' => 'MeuSistema/1.0 (cristianooliveiramorales@gmail.com)',
+                ])->get('https://nominatim.openstreetmap.org/search', [
+                    'q' => $enderecoBusca,
+                    'format' => 'jsonv2',
+                    'limit' => 1,
+                    'countrycodes' => 'br',
+                ])->json()
+            );
 
-            $dados['longitude'] = $coordenadas['longitude'];
-            $dados['latitude'] = $coordenadas['latitude'];
+            if (empty($resultado[0])) {
+                $status = "error";
+                $mensagem = "Endereço {$request->logradouro}, {$request->numero} criado, mas sem as coordenadas.";
+            } else {
+                $dados['longitude'] = (float) $resultado[0]['lon'];
+                $dados['latitude'] = (float) $resultado[0]['lat'];
+
+                $status = "success";
+                $mensagem = "Endereço {$request->logradouro}, {$request->numero} editado.";
+            }
 
             $endereco = Endereco::create($dados);
             if ($request->alunos) $endereco->alunos()->sync($request->alunos);
-            $mensagem = "Endereço {$endereco->logradouro}, {$endereco->numero} criado.";
 
             return isWeb()
-                ? redirect()->route('enderecos.index')->with('success', $mensagem)
+                ? redirect()->route('enderecos.index')->with($status, $mensagem)
                 : response($mensagem);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
@@ -108,25 +125,40 @@ class EnderecoController extends Controller
     public function update(EnderecoRequest $request, Endereco $endereco)
     {
         try {
-            $access_token = env("VITE_MAPBOX_TOKEN");
             $dados = $request->validated();
 
-            $q = "{$dados['logradouro']}, {$dados['numero']}, "
-                . "{$dados['bairro']}, {$dados['cidade']}, "
-                . "{$dados['estado']}, Brasil";
+            $enderecoBusca = implode(', ', array_filter([
+                $dados['logradouro'] ?? null,
+                $dados['numero'] ?? null,
+                $dados['bairro'] ?? null,
+                $dados['cidade'] ?? null,
+                $dados['estado'] ?? null,
+                'Brasil',
+            ]));
 
-            $resultado = Http::get('https://api.mapbox.com/search/geocode/v6/forward', [
-                'q' => $q,
-                'access_token' => $access_token,
-                'country' => 'BR',
-                'language' => 'pt',
-                'limit' => 1,
-            ])->json();
+            $resultado = Cache::remember(
+                'geocode_' . md5($enderecoBusca),
+                now()->addDays(30),
+                fn () => Http::withHeaders([
+                    'User-Agent' => 'MeuSistema/1.0 (cristianooliveiramorales@gmail.com)',
+                ])->get('https://nominatim.openstreetmap.org/search', [
+                    'q' => $enderecoBusca,
+                    'format' => 'jsonv2',
+                    'limit' => 1,
+                    'countrycodes' => 'br',
+                ])->json()
+            );
 
-            $coordenadas = $resultado['features'][0]['properties']['coordinates'];
+            if (empty($resultado[0])) {
+                $status = "error";
+                $mensagem = "Endereço {$request->logradouro}, {$request->numero} editado, mas sem as coordenadas.";
+            } else {                
+                $dados['longitude'] = (float) $resultado[0]['lon'];
+                $dados['latitude'] = (float) $resultado[0]['lat'];
 
-            $dados['longitude'] = $coordenadas['longitude'];
-            $dados['latitude'] = $coordenadas['latitude'];
+                $status = "success";
+                $mensagem = "Endereço {$request->logradouro}, {$request->numero} editado.";
+            }
 
             $endereco->update($dados);
 
@@ -135,10 +167,8 @@ class EnderecoController extends Controller
                     ->update(['endereco_id' => $endereco->id]);
             }
 
-            $mensagem = "Endereço {$endereco->logradouro}, {$endereco->numero} atualizado.";
-
             return isWeb()
-                ? redirect()->route('enderecos.index')->with('success', $mensagem)
+                ? redirect()->route('enderecos.index')->with($status, $mensagem)
                 : response($mensagem);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);

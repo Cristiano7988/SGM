@@ -8,6 +8,7 @@ use App\Http\Requests\Settings\PacoteRequest;
 use App\Models\Turma;
 use App\Models\Pacote;
 use App\Models\Aula;
+use App\Models\Aluno;
 use App\Models\Matricula;
 use App\Models\User;
 use App\Models\Endereco;
@@ -30,12 +31,10 @@ class PacoteController extends Controller
             $pacotes
                 ->leftJoin('aulas', 'pacotes.id', 'aulas.pacote_id')
                 ->leftJoin('matriculas', 'pacotes.id', 'matriculas.pacote_id')
-                ->leftJoin('turmas', 'pacotes.turma_id', 'turmas.id')
                 ->select(['pacotes.*'])->groupBy('pacotes.id');
             
             $pacotes->with([
-                'turma',
-                'aulas',
+                'aulas.turma',
             ]);
 
             if (isset($matriculas)) $pacotes = Filtra::resultado($pacotes, $matriculas, 'matriculas.id')->with('matriculas');
@@ -71,12 +70,17 @@ class PacoteController extends Controller
         $user = auth()->user();
         if ($user && $user->is_admin) {
             $enderecos = Endereco::all();
+            $turmas = Turma::all();
+            $alunos = Aluno::all();
         } else {
             // endereços relacionados aos alunos do usuário
             $enderecosDosAlunos = $user->getEnderecosDosAlunos();
     
-            // endereços relacionados aos professores responsáveis pela turmas pertencentes aos núcleos disponíveis para os alunos do usuário logado
-            $enderecosDosProfessores = Nucleo::getTurmas($user->alunos->pluck("meses"))->pluck("professor.user.endereco");
+            $turmas = Nucleo::getTurmas($user->alunos->pluck("meses"));
+            $alunos = $user->alunos;
+
+            // endereços relacionados aos usuários dos professores responsáveis pelas turmas pertencentes aos núcleos disponíveis para os alunos do usuário logado
+            $enderecosDosProfessores = $turmas->pluck("professor.user.endereco");
 
             // Merge das turmas pertencentes aos núcleos voltados para os alunos do usuário logado 
             $enderecos = $enderecosDosAlunos
@@ -98,37 +102,63 @@ class PacoteController extends Controller
             'taxa_de_deslocamento' => 0,
         ]);
 
+        $turma = new Turma();
+        $aluno = new Aluno([
+            "id" => 0,
+            "nome" => ""
+        ]);
+
+        $aula->setRelation('turma', $turma);
+        $aula->setRelation('alunos', collect([$aluno]));
         $pacote->setRelation('aulas', collect([$aula]));
         return Inertia::render('pacotes/create', [
             'pacote' => $pacote,
             'turmas' => Turma::all()->load('professor'),
-            'enderecos' => $enderecos
+            'enderecos' => $enderecos,
+            'turmas' => $turmas->load("professor"),
+            'alunos' => $alunos,
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\Settings\PacoteRequest  $request
-     */
-    public function store(PacoteRequest $request)
-    {
-        try {
-            $pacote = Pacote::create($request->validated());
+/**
+ * @param  \App\Http\Requests\Settings\PacoteRequest  $request
+ */
+public function store(PacoteRequest $request)
+{
+    try {
+        $pacote = DB::transaction(function () use ($request) {
+            $dadosValidados = $request->validated();
 
-            $pacote->aulas()->createMany($request->aulas);
-            $mensagem = "Pacote {$pacote->vigencia} criado.";
+            $pacote = Pacote::create($dadosValidados);
 
-            return isWeb()
-                ? redirect()->route('pacotes.index')->with('success', $mensagem)
-                : response($mensagem);
-        } catch (\Throwable $th) {
-            $mensagem = Trata::erro($th);
-            return isWeb()
-                ? redirect()->route('pacotes.index')
-                : response($mensagem);
-        }
+            if (! empty($dadosValidados['aulas'])) {
+                foreach ($dadosValidados['aulas'] as $aulaData) {
+                    // 1. Cria a aula vinculada ao pacote
+                    $aula = $pacote->aulas()->create($aulaData);
+
+                    // 2. Salva os alunos na tabela pivô alunos_aulas
+                    if (! empty($aulaData['aluno_ids'])) {
+                        $aula->alunos()->sync($aulaData['aluno_ids']);
+                    }
+                }
+            }
+
+            return $pacote;
+        });
+
+        $mensagem = "Pacote {$pacote->vigencia} criado.";
+
+        return isWeb()
+            ? redirect()->route('pacotes.index')->with('success', $mensagem)
+            : response($mensagem);
+    } catch (\Throwable $th) {
+        $mensagem = Trata::erro($th);
+
+        return isWeb()
+            ? redirect()->route('pacotes.index')->with('error', $mensagem)
+            : response($mensagem);
     }
+}
 
     /**
      * Display the specified resource.
@@ -167,11 +197,26 @@ class PacoteController extends Controller
             $enderecos = $user && $user->is_admin
                 ? Endereco::all()
                 : $user->enderecos;
-                
+
+            $alunos = $user && $user->is_admin
+                ? Aluno::all()
+                : $user->alunos;
+
             return Inertia::render('pacotes/edit', [
-                'pacote' => $pacote->load(['aulas.endereco']),
+                'pacote' => $pacote->load([
+                    'aulas',
+                    'aulas.endereco',
+                    'aulas.alunos',
+                    'aulas.turma.professor.users.endereco',
+                ]),
                 'turmas' => Turma::all()->load(['professor']),
-                'enderecos' => $enderecos
+                'enderecos' => $enderecos,
+                'alunos' => $alunos->load([
+                    'aulas',
+                    'aulas.endereco',
+                    'aulas.alunos',
+                    'aulas.turma',
+                ])
             ]);
         } catch (\Throwable $th) {
             $mensagem = Trata::erro($th);
@@ -186,51 +231,95 @@ class PacoteController extends Controller
      * @param  App\Http\Requests\Settings\PacoteRequest;  $request
      * @param  \App\Models\Pacote  $pacote
      */
-    public function update(PacoteRequest $request, Pacote $pacote)
-    {
-        try {
-            $pacote->update($request->validated());
-            $pacote->aulas()->delete();
-            $pacote->aulas()->createMany($request->aulas);
+public function update(PacoteRequest $request, Pacote $pacote)
+{
+    try {
+        DB::transaction(function () use ($request, $pacote) {
+            $dadosValidados = $request->validated();
 
-            $mensagem = "Pacote {$pacote->vigencia} editado.";
+            $pacote->update($dadosValidados);
 
-            return isWeb()
-                ? redirect()->route('pacotes.index')->with('success', $mensagem)
-                : response($mensagem);
-        } catch (\Throwable $th) {
-            $mensagem = Trata::erro($th);
+            // Remove as aulas antigas (e seus vínculos se houver cascade ou detach)
+            $pacote->aulas()->each(function ($aulaAntiga) {
+                $aulaAntiga->alunos()->detach();
+                $aulaAntiga->delete();
+            });
 
-            return isWeb()
-                ? redirect()->route('pacotes.index')
-                : response($mensagem);
-        }
+            if (! empty($dadosValidados['aulas'])) {
+                foreach ($dadosValidados['aulas'] as $aulaData) {
+                    // 1. Cria a aula no banco
+                    $aula = $pacote->aulas()->create($aulaData);
+
+                    // 2. Salva os alunos na tabela pivô alunos_aulas
+                    if (! empty($aulaData['aluno_ids'])) {
+                        $aula->alunos()->sync($aulaData['aluno_ids']);
+                    }
+                }
+            }
+        });
+
+        $mensagem = "Pacote {$pacote->vigencia} editado.";
+
+        return isWeb()
+            ? redirect()->route('pacotes.index')->with('success', $mensagem)
+            : response($mensagem);
+    } catch (\Throwable $th) {
+        $mensagem = Trata::erro($th);
+
+        return isWeb()
+            ? redirect()->route('pacotes.index')->with('error', $mensagem)
+            : response($mensagem);
     }
+}
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Pacote  $pacote
-     */
-    public function destroy(Pacote $pacote)
-    {
-        try {
-            DB::beginTransaction();
-            $pacote->aulas()->delete();
-            $excluido = Trata::exclusao($pacote, 'Pacote');
-            if ($excluido) DB::commit(); // Exclui somente se conseguir notificar o cliente
 
-            $mensagem = "Pacote {$pacote->vigencia} deletado.";
+/**
+ * Remove the specified resource from storage.
+ *
+ * @param  \App\Models\Pacote  $pacote
+ */
+public function destroy(Pacote $pacote)
+{
+    try {
+        DB::beginTransaction();
+
+        // 1. Guarda a vigência antes de deletar o registro
+        $vigencia = $pacote->vigencia;
+
+        // 2. Remove os vínculos na tabela pivô (alunos_aulas) e deleta cada aula
+        $pacote->aulas()->each(function ($aula) {
+            $aula->alunos()->detach();
+            $aula->delete();
+        });
+
+        // 3. Tenta excluir o pacote e notificar
+        $excluido = Trata::exclusao($pacote, 'Pacote');
+
+        if (! $excluido) {
+            DB::rollBack();
+
+            $erro = "Não foi possível excluir o pacote {$vigencia}.";
 
             return isWeb()
-                ? redirect()->route('pacotes.index')->with('success', $mensagem)
-                : response($mensagem);
-        } catch (\Throwable $th) {
-            $mensagem = Trata::erro($th);
-
-            return isWeb()
-                ? redirect()->route('pacotes.index')
-                : response($mensagem);
+                ? redirect()->route('pacotes.index')->with('error', $erro)
+                : response($erro, 422);
         }
+
+        DB::commit();
+
+        $mensagem = "Pacote {$vigencia} deletado.";
+
+        return isWeb()
+            ? redirect()->route('pacotes.index')->with('success', $mensagem)
+            : response($mensagem);
+    } catch (\Throwable $th) {
+        DB::rollBack();
+        $mensagem = Trata::erro($th);
+
+        return isWeb()
+            ? redirect()->route('pacotes.index')->with('error', $mensagem)
+            : response($mensagem, 500);
     }
+}
+
 }

@@ -26,6 +26,11 @@ class Professor extends Model
         )->values()->first();
     }
 
+    public function turmas()
+    {
+        return $this->hasMany(Turma::class);
+    }
+
     public function users()
     {
         return $this->belongsToMany(User::class, 'users_professores')

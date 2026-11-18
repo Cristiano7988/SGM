@@ -80,7 +80,7 @@ export interface CreatePropsNucleo extends EditPropsNucleo {};
 
 export interface IndexPropsPacote extends IndexProps<Pacote>, RelacionadasAoPacote {};
 export interface ShowPropsPacote { pacote: Pacote & RelacionadasAoPacote; };
-export interface EditPropsPacote extends Props, FormProps, RelacionadasAoPacote { pacote: Pacote; enderecos: Endereco[]; };
+export interface EditPropsPacote extends Props, FormProps, RelacionadasAoPacote { pacote: Pacote; enderecos: Endereco[]; alunos: Aluno[] };
 export interface CreatePropsPacote extends EditPropsPacote {};
 
 // Turma

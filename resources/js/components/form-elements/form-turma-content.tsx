@@ -179,7 +179,7 @@ export function FormTurmaContent({ initialData, endpoint, related }: FormContent
                 <div
                     onClick={addProfessor}
                     className="cursor-pointer px-4 py-2 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium bg-blue-100 rounded text-blue-600 hover:bg-blue-200"
-                    children="Vincular outro Professor"
+                    children="Vincular professor"
                 />
 
                 {!hasErrors && <ButtonSubmitContent
